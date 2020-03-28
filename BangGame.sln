@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{17A228A8-78F0-407D-A376-A15EC50B0E9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{17A228A8-78F0-407D-A376-A15EC50B0E9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Tests", "..\Domain.Tests\Domain.Tests.csproj", "{E34CF71D-6378-439C-80B0-E58AAAC6F5B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csproj", "{4E6628A3-84C9-41FB-A543-81F024BF4677}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{4E6628A3-84C9-41FB-A543-81F024BF4677}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Tests", "Server.Tests\Server.Tests.csproj", "{77BA0F7F-DB94-4C34-A5E0-73222867A879}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.Tests", "Server.Tests\Server.Tests.csproj", "{77BA0F7F-DB94-4C34-A5E0-73222867A879}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +19,6 @@ Global
 		{17A228A8-78F0-407D-A376-A15EC50B0E9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17A228A8-78F0-407D-A376-A15EC50B0E9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17A228A8-78F0-407D-A376-A15EC50B0E9A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E34CF71D-6378-439C-80B0-E58AAAC6F5B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E34CF71D-6378-439C-80B0-E58AAAC6F5B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E34CF71D-6378-439C-80B0-E58AAAC6F5B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E34CF71D-6378-439C-80B0-E58AAAC6F5B2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4E6628A3-84C9-41FB-A543-81F024BF4677}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4E6628A3-84C9-41FB-A543-81F024BF4677}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E6628A3-84C9-41FB-A543-81F024BF4677}.Release|Any CPU.ActiveCfg = Release|Any CPU
