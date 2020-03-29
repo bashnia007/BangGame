@@ -1,37 +1,27 @@
 ﻿using Domain.TCP;
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Server
 {
-    class Server
+    public class Server
     {
         private TcpListener _tcpListener; 
-        private readonly List<Client> _clients = new List<Client>(); 
-
-        protected internal void AddConnection(Client client)
+        private readonly BlockingCollection<Client> _clients = new BlockingCollection<Client>();
+        private const int IntervalToCheckConnections = 10 * 1000;
+        
+        public void Listen()
         {
-            Console.WriteLine($"Client {client.Id} connected");
-            _clients.Add(client);
-        }
+            System.Timers.Timer timer = new System.Timers.Timer();
+            timer.Interval = IntervalToCheckConnections;
+            timer.Elapsed += CheckClientConnections;
+            timer.Start();
 
-        protected internal void RemoveConnection(string id)
-        {
-            Client client = _clients.FirstOrDefault(c => c.Id == id);
-            if (client != null)
-            {
-                Console.WriteLine($"Client {client.Id} disconnected");
-                _clients.Remove(client);
-            }
-        }
-
-        protected internal void Listen()
-        {
             try
             {
                 _tcpListener = new TcpListener(IPAddress.Parse(TcpConfig.Ip), TcpConfig.Port);
@@ -57,18 +47,55 @@ namespace Server
             finally
             {
                 StopServer();
+                timer.Stop();
             }
         }
-        
-        protected internal void StopServer()
+
+        private void CheckClientConnections(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            Task.Run(() =>
+            {
+                foreach (var client in _clients.ToArray())
+                {
+                    if (!client.TcpClient.Connected)
+                    {
+                        RemoveConnection(client.Id);
+
+                    }
+                }
+            });
+        }
+
+        public void StopServer()
         {
             _tcpListener.Stop(); 
 
             for (int i = 0; i < _clients.Count; i++)
             {
-                _clients[i].Close(); 
+                _clients.ToArray()[i].Close(); 
             }
             Environment.Exit(0); 
+        }
+
+        public BlockingCollection<Client> GetConnectedClients()
+        {
+            return _clients;
+        }
+        
+        private void AddConnection(Client client)
+        {
+            Console.WriteLine($"Client {client.Id} connected");
+            _clients.TryAdd(client);
+        }
+
+        private void RemoveConnection(string id)
+        {
+            Client client = _clients.FirstOrDefault(c => c.Id == id);
+            if (client != null)
+            {
+                Console.WriteLine($"Client {client.Id} disconnected");
+                _clients.TryTake(out client);
+            }
         }
     }
 }

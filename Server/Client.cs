@@ -1,15 +1,12 @@
 ﻿using Domain.Messages;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 
 namespace Server
 {
-    class Client
+    public class Client
     {
         public delegate void RemoveConnectionHandler(string id);
         public delegate void AddConnectionHandler(Client client);
@@ -18,21 +15,20 @@ namespace Server
 
         public string Id { get; }
         private NetworkStream _stream { get; set; }
-        private TcpClient _client;
+        public TcpClient TcpClient;
 
         public Client(TcpClient tcpClient)
         {
             Id = Guid.NewGuid().ToString();
-            _client = tcpClient;
-
-            AddConnection?.Invoke(this);
+            TcpClient = tcpClient;
         }
 
         public void Process()
         {
+            AddConnection?.Invoke(this);
             try
             {
-                _stream = _client.GetStream();
+                _stream = TcpClient.GetStream();
 
                 // receiving messages from client
                 while (true)
@@ -62,7 +58,7 @@ namespace Server
         public void Close()
         {
             _stream?.Close();
-            _client?.Close();
+            TcpClient?.Close();
         }
     }
 }
