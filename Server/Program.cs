@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Game;
+using System;
 using System.Threading;
 
 namespace Server
@@ -8,9 +9,16 @@ namespace Server
         private static Server _server;
         private static Thread _listenThread;
 
+        static void Test()
+        {
+            GameInitializer gameInitializer = new GameInitializer();
+            gameInitializer.CreateGameSet();
+        }
+
         static void Main(string[] args)
         {
-            try
+            Test();
+            /*try
             {
                 _server = new Server();
                 _listenThread = new Thread(_server.Listen);
@@ -30,7 +38,7 @@ namespace Server
                 {
                     _listenThread.Abort();
                 }
-            }
+            }*/
         }
     }
 }

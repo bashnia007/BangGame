@@ -1,7 +1,7 @@
 ﻿using Domain.Players;
 using System.Collections.Generic;
 
-namespace Domain
+namespace Domain.Game
 {
     public class Game
     {
