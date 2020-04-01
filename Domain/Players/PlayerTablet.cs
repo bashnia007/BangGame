@@ -1,4 +1,5 @@
 ﻿using Domain.PlayingCards;
+using System.Collections.Generic;
 
 namespace Domain.Players
 {
@@ -12,5 +13,6 @@ namespace Domain.Players
         public WeaponCard WeaponCard { get; set; }
         public Character.Character Character { get; set; }
         public bool IsSheriff { get; set; }
+        public List<LongTermFeatureCard> LongTermFeatureCards { get; set; }
     }
 }
