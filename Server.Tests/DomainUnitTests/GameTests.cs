@@ -13,7 +13,7 @@ namespace Bang.Tests.DomainUnitTests
     public class GameTests
     {
         [Fact]
-        public void ShouldProvideSheriffAdditionalLife()
+        public void GameInitialize_ForSheriff_ProvidesAdditionalLife()
         {
             var game = new Game(CreatePlayers(4));
             game.Initialize();

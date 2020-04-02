@@ -11,14 +11,14 @@ namespace Bang.Tests.DomainUnitTests
     public class GameInitializationTests
     {
         [Fact]
-        public void ShouldCreateEightyPlayingCards()
+        public void CreatePlayingCards_Always_CreatesEightyCards()
         {
             var gameSet = GameInitializer.CreateGameSet(4);
             Assert.Equal(80, gameSet.Deck.Count);
         }
 
         [Fact]
-        public void ShouldCreateSixteenCharacters()
+        public void CreateCharacters_Always_CreatesSixteenCharacters()
         {
             var gameSet = GameInitializer.CreateGameSet(4);
             Assert.Equal(16, gameSet.Characters.Count);
@@ -28,7 +28,7 @@ namespace Bang.Tests.DomainUnitTests
         [InlineData(2)]
         [InlineData(3)]
         [InlineData(8)]
-        public void ShouldThrowArgumentExceptionWhenFewOrManyPlayers(int playersAmount)
+        public void CreateGame_WithIncorrectPlayersAmount_ThrowsException(int playersAmount)
         {
             Assert.Throws<ArgumentException>(() =>
             {
@@ -41,7 +41,7 @@ namespace Bang.Tests.DomainUnitTests
         [InlineData(5, 2, 1)]
         [InlineData(6, 3, 1)]
         [InlineData(7, 3, 2)]
-        public void ShouldCreateProperlyRoles(int playersAmount, int outlawExpected, int deputyExpected)
+        public void CreateRoles_Creates_ProperlyRoles(int playersAmount, int outlawExpected, int deputyExpected)
         {
             var gameSet = GameInitializer.CreateGameSet(playersAmount);
             Assert.Equal(outlawExpected, gameSet.Roles.Where(x => x.GetType() == typeof(Outlaw)).Count());
