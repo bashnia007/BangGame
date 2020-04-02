@@ -126,7 +126,7 @@ namespace Domain.Game
             return characters;
         }
 
-        private static Queue<IShuffledCard> ShuffleCards(List<IShuffledCard> cardsToShuffle)
+        public static Queue<IShuffledCard> ShuffleCards(List<IShuffledCard> cardsToShuffle)
         {
             Queue<IShuffledCard> shuffledCards = new Queue<IShuffledCard>();
             var cards = new List<IShuffledCard>(cardsToShuffle);
