@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true"></xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Bang" xml:space="preserve">
+    <value>Bang</value>
+  </data>
+  <data name="Missed" xml:space="preserve">
+    <value>Missed</value>
+  </data>
+  <data name="Beer" xml:space="preserve">
+    <value>Beer</value>
+  </data>
+  <data name="Panic" xml:space="preserve">
+    <value>Panic</value>
+  </data>
+  <data name="CatBalou" xml:space="preserve">
+    <value>Cat Balou</value>
+  </data>
+  <data name="Duel" xml:space="preserve">
+    <value>Duel</value>
+  </data>
+  <data name="GeneralStore" xml:space="preserve">
+    <value>General store</value>
+  </data>
+  <data name="Stagecoach" xml:space="preserve">
+    <value>Stagecoach</value>
+  </data>
+  <data name="Indians" xml:space="preserve">
+    <value>Indians</value>
+  </data>
+  <data name="Gatling" xml:space="preserve">
+    <value>Gatling</value>
+  </data>
+  <data name="Saloon" xml:space="preserve">
+    <value>Saloon</value>
+  </data>
+  <data name="WellsFargo" xml:space="preserve">
+    <value>Wells Fargo</value>
+  </data>
+  <data name="Volcanic" xml:space="preserve">
+    <value>Volcanic</value>
+  </data>
+  <data name="Schofield" xml:space="preserve">
+    <value>Schofield</value>
+  </data>
+  <data name="Remington" xml:space="preserve">
+    <value>Remington</value>
+  </data>
+  <data name="Carabine" xml:space="preserve">
+    <value>Carabine</value>
+  </data>
+  <data name="Winchester" xml:space="preserve">
+    <value>Winchester</value>
+  </data>
+  <data name="Jail" xml:space="preserve">
+    <value>Jail</value>
+  </data>
+  <data name="Mustang" xml:space="preserve">
+    <value>Mustang</value>
+  </data>
+  <data name="Barrel" xml:space="preserve">
+    <value>Barrel</value>
+  </data>
+  <data name="Dynamite" xml:space="preserve">
+    <value>Dynamite</value>
+  </data>
+  <data name="Scope" xml:space="preserve">
+    <value>Scope</value>
+  </data>
+  <data name="Deputy" xml:space="preserve">
+    <value>Deputy</value>
+  </data>
+  <data name="Sheriff" xml:space="preserve">
+    <value>Sheriff</value>
+  </data>
+  <data name="Outlaw" xml:space="preserve">
+    <value>Outlaw</value>
+  </data>
+  <data name="Renegade" xml:space="preserve">
+    <value>Renegade</value>
+  </data>
+  <data name="LuckyDuke" xml:space="preserve">
+    <value>Lucky Duke</value>
+  </data>
+  <data name="BartCassidy" xml:space="preserve">
+    <value>Bart Cassidy</value>
+  </data>
+  <data name="BlackJack" xml:space="preserve">
+    <value>Black Jack</value>
+  </data>
+  <data name="CalamityJanet" xml:space="preserve">
+    <value>Calamity Janet</value>
+  </data>
+  <data name="ElGringo" xml:space="preserve">
+    <value>El Gringo</value>
+  </data>
+  <data name="JessyJones" xml:space="preserve">
+    <value>Jesse Jones</value>
+  </data>
+  <data name="Jourdonnais" xml:space="preserve">
+    <value>Jourdonnais</value>
+  </data>
+  <data name="KitCarlson" xml:space="preserve">
+    <value>Kit Carlson</value>
+  </data>
+  <data name="PaulRegret" xml:space="preserve">
+    <value>Paul Regret</value>
+  </data>
+  <data name="PedroRamirez" xml:space="preserve">
+    <value>Pedro Ramirez</value>
+  </data>
+  <data name="RoseDoolan" xml:space="preserve">
+    <value>Rose Doolan</value>
+  </data>
+  <data name="SidKetchum" xml:space="preserve">
+    <value>Sid Ketchum</value>
+  </data>
+  <data name="SlabTheKiller" xml:space="preserve">
+    <value>Slab the Killer</value>
+  </data>
+  <data name="SuzyLafayette" xml:space="preserve">
+    <value>Suzy Lafayette</value>
+  </data>
+  <data name="VultureSam" xml:space="preserve">
+    <value>Vulture Sam</value>
+  </data>
+  <data name="WillyTheKid" xml:space="preserve">
+    <value>Willi the Kid</value>
+  </data>
+</root>

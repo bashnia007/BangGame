@@ -2,6 +2,8 @@
 {
     public class DuelCard : PlayAndDiscardCard
     {
+        public override string Description => CardName.Duel;
+        
         protected override bool EqualsCore(PlayingCard other)
         {
             return other is DuelCard;
@@ -9,7 +11,7 @@
 
         protected override int GetHashCodeCore()
         {
-            throw new System.NotImplementedException();
+            return typeof(DuelCard).GetHashCode();
         }
     }
 }

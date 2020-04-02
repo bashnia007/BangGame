@@ -1,17 +1,17 @@
 ﻿namespace Domain.PlayingCards
 {
-    public class MustangCard : LongTermFeatureCard
+    public class WellsFargo : PlayAndDiscardCard
     {
-        public override string Description => CardName.Mustang;
+        public override string Description => CardName.WellsFargo;
         
         protected override bool EqualsCore(PlayingCard other)
         {
-            return other is MustangCard;
+            return other is WellsFargo;
         }
 
         protected override int GetHashCodeCore()
         {
-            return typeof(MustangCard).GetHashCode();
+            return typeof(WellsFargo).GetHashCode();
         }
     }
 }

@@ -2,6 +2,8 @@
 {
     public class ScopeCard : LongTermFeatureCard
     {
+        public override string Description => CardName.Scope;
+        
         protected override bool EqualsCore(PlayingCard other)
         {
             return other is ScopeCard;

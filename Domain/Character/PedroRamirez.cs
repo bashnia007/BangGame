@@ -7,6 +7,7 @@
     /// </summary>
     public class PedroRamirez : Character
     {
+        public override string Name => CardName.PedroRamirez;
         public override int LifePoints => 3;
         protected override bool EqualsCore(Character other)
         {

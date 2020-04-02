@@ -2,6 +2,8 @@
 {
     public class BarrelCard : LongTermFeatureCard
     {
+        public override string Description => CardName.Barrel;
+        
         protected override bool EqualsCore(PlayingCard other)
         {
             return other is BarrelCard;

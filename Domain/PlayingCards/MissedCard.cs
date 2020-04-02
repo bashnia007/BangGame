@@ -2,6 +2,7 @@
 {
     public class MissedCard : PlayAndDiscardCard
     {
+        public override string Description => CardName.Missed;
         protected override bool EqualsCore(PlayingCard other)
         {
             return other is MissedCard;
