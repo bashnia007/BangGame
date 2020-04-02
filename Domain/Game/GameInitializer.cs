@@ -129,15 +129,16 @@ namespace Domain.Game
         private static Queue<IShuffledCard> ShuffleCards(List<IShuffledCard> cardsToShuffle)
         {
             Queue<IShuffledCard> shuffledCards = new Queue<IShuffledCard>();
-            int cardsAmount = cardsToShuffle.Count;
+            var cards = new List<IShuffledCard>(cardsToShuffle);
+            int cardsAmount = cards.Count;
             var rnd = new Random();
 
             while (cardsAmount > 0)
             {
                 int number = rnd.Next(cardsAmount);
-                var cardByNumber = cardsToShuffle[number];
+                var cardByNumber = cards[number];
                 shuffledCards.Enqueue(cardByNumber);
-                cardsToShuffle.RemoveAt(number);
+                cards.RemoveAt(number);
                 cardsAmount--;
             }
             return shuffledCards;
