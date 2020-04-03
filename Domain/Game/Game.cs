@@ -10,25 +10,26 @@ namespace Domain.Game
     {
         public string Id { get; }
         public List<Player> Players { get; }
-        public Queue<PlayingCard> Deck { get; set; }
-        public Stack<IShuffledCard> DiscardedCards { get; set; }
+        public Deck<PlayingCard> Deck { get; set; }
+        public Stack<PlayingCard> DiscardedCards { get; set; }
 
         public Game(List<Player> players)
         {
             Id = Guid.NewGuid().ToString();
             Players = players;
-            DiscardedCards = new Stack<IShuffledCard>();
-            Deck = new Queue<PlayingCard>();
+            DiscardedCards = new Stack<PlayingCard>();
+            Deck = new Deck<PlayingCard>();
         }
 
         public void Initialize()
         {
-            var gameSet = GameInitializer.CreateGameSet(Players.Count);
-            Deck = gameSet.Deck;
+            Deck = new Deck<PlayingCard>(GameInitializer.PlayingCards.Cast<PlayingCard>());
+            var roles = new Deck<Role.Role>(GameInitializer.CreateRolesForGame(Players.Count).Cast<Role.Role>());
+            var characters = new Deck<Character.Character>(GameInitializer.Characters.Cast<Character.Character>());
 
             foreach (var player in Players)
             {
-                player.SetInfo(gameSet.Roles.Dequeue(), gameSet.Characters.Dequeue());
+                player.SetInfo(roles.Dequeue(), characters.Dequeue());
                 FillPlayerHand(player);
             }
         }
@@ -47,7 +48,8 @@ namespace Domain.Game
 
         private void ResetDeck()
         {
-            DiscardedCards = new Stack<IShuffledCard>();
+            Deck = new Deck<PlayingCard>(DiscardedCards);
+            DiscardedCards = new Stack<PlayingCard>();
         }
     }
 }

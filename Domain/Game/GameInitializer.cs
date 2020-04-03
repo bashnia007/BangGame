@@ -8,25 +8,16 @@ namespace Domain.Game
 {
     public static class GameInitializer
     {
-        private static List<IShuffledCard> playingCards { get; }
-        private static List<IShuffledCard> characters { get; }
+        public static List<IShuffledCard> PlayingCards { get; }
+        public static List<IShuffledCard> Characters { get; }
 
         static GameInitializer()
         {
-            playingCards = InitializePlayingCards();
-            characters = InitializeCharacters();
+            PlayingCards = InitializePlayingCards();
+            Characters = InitializeCharacters();
         }
-
-        public static GameSet CreateGameSet(int playersAmount)
-        {
-            GameSet gameSet = new GameSet(ShuffleCards(playingCards),
-                ShuffleCards(CreateRolesForGame(playersAmount)),
-                ShuffleCards(characters));
-
-            return gameSet;
-        }
-
-        private static List<IShuffledCard> CreateRolesForGame(int playersAmount)
+        
+        public static List<IShuffledCard> CreateRolesForGame(int playersAmount)
         {
             List<IShuffledCard> roles = new List<IShuffledCard>
             {
@@ -124,24 +115,6 @@ namespace Domain.Game
             }
 
             return characters;
-        }
-
-        public static Queue<IShuffledCard> ShuffleCards(List<IShuffledCard> cardsToShuffle)
-        {
-            Queue<IShuffledCard> shuffledCards = new Queue<IShuffledCard>();
-            var cards = new List<IShuffledCard>(cardsToShuffle);
-            int cardsAmount = cards.Count;
-            var rnd = new Random();
-
-            while (cardsAmount > 0)
-            {
-                int number = rnd.Next(cardsAmount);
-                var cardByNumber = cards[number];
-                shuffledCards.Enqueue(cardByNumber);
-                cards.RemoveAt(number);
-                cardsAmount--;
-            }
-            return shuffledCards;
         }
     }
 }
