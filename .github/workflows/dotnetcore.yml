@@ -23,4 +23,4 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
-      run: dotnet test Server.Tests/Server.Tests.csproj --no-restore --verbosity normal
+      run: dotnet test Bang.Tests/Bang.Tests.csproj --no-restore --verbosity normal
