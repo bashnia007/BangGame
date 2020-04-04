@@ -1,11 +1,7 @@
 ﻿using Domain.Game;
 using Domain.Players;
-using Domain.Role;
-using Moq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace Bang.Tests.DomainUnitTests
@@ -13,11 +9,16 @@ namespace Bang.Tests.DomainUnitTests
     public class GameTests
     {
         [Fact]
-        public void GameInitialize_ForSheriff_ProvidesAdditionalLife()
+        public void Sheriff_has_additional_life()
         {
+            // Arrange
             var game = new Game(CreatePlayers(4));
             game.Initialize();
+            
+            // Act
             var sheriffPlayer = game.Players.First(p => p.PlayerTablet.IsSheriff);
+            
+            // Assert
             Assert.Equal(sheriffPlayer.PlayerTablet.Character.LifePoints + 1, sheriffPlayer.PlayerTablet.Health);
         }
 

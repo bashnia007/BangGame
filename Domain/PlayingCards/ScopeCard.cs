@@ -1,4 +1,6 @@
-﻿namespace Domain.PlayingCards
+﻿using Domain.Players;
+
+namespace Domain.PlayingCards
 {
     public class ScopeCard : LongTermFeatureCard
     {
@@ -11,5 +13,7 @@
         {
             return typeof(ScopeCard).GetHashCode();
         }
+        
+        public override T Accept<T>(ICardVisitor<T> visitor) => visitor.Visit(this);
     }
 }

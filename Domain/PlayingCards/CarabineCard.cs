@@ -1,12 +1,12 @@
-﻿namespace Domain.PlayingCards
+﻿using Domain.Players;
+
+namespace Domain.PlayingCards
 {
     public class CarabineCard : WeaponCard
     {
-        public override int Distance => 4;
-        public override bool MultipleBang => false;
-        protected override bool EqualsCore(PlayingCard other)
-        {
-            return other is CarabineCard;
-        }
+        protected override bool EqualsCore(PlayingCard other) => other is CarabineCard;
+
+        protected override int GetHashCodeCore() => typeof(CarabineCard).GetHashCode();
+        public override T Accept<T>(ICardVisitor<T> visitor) => visitor.Visit(this);
     }
 }

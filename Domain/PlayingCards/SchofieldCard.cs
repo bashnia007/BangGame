@@ -1,12 +1,19 @@
-﻿namespace Domain.PlayingCards
+﻿using Domain.Players;
+
+namespace Domain.PlayingCards
 {
     public class SchofieldCard : WeaponCard
     {
-        public override int Distance => 2;
-        public override bool MultipleBang => false;
         protected override bool EqualsCore(PlayingCard other)
         {
             return other is SchofieldCard;
         }
+
+        protected override int GetHashCodeCore()
+        {
+            return typeof(SchofieldCard).GetHashCode();
+        }
+
+        public override T Accept<T>(ICardVisitor<T> visitor) => visitor.Visit(this);
     }
 }
