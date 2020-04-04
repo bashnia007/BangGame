@@ -1,6 +1,6 @@
 ﻿namespace Domain.PlayingCards
 {
-    public abstract class PlayingCard : ValueObject<PlayingCard>
+    public abstract class PlayingCard : ValueObject<PlayingCard>, IShuffledCard
     {
         public abstract string Description { get; } 
         public Suite Suite { get; set; } 

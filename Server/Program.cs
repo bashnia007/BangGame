@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Game;
+using System;
 using System.Threading;
 
 namespace Server
@@ -7,7 +8,7 @@ namespace Server
     {
         private static Server _server;
         private static Thread _listenThread;
-
+        
         static void Main(string[] args)
         {
             try
