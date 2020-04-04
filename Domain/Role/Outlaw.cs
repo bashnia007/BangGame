@@ -2,6 +2,8 @@
 {
     public class Outlaw : Role
     {
+        public override string Description => CardName.Outlaw;
+        
         protected override bool EqualsCore(Role other)
         {
             return other is Outlaw;
