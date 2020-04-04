@@ -7,6 +7,7 @@
     /// </summary>
     public class ElGringo : Character
     {
+        public override string Name => CardName.ElGringo;
         public override int LifePoints => 3;
         protected override bool EqualsCore(Character other)
         {

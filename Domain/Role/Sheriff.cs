@@ -2,6 +2,8 @@
 {
     public class Sheriff : Role
     {
+        public override string Description => CardName.Sheriff;
+        
         protected override bool EqualsCore(Role other)
         {
             return other is Sheriff;

@@ -4,6 +4,7 @@ namespace Domain.PlayingCards
 {
     public class SchofieldCard : WeaponCard
     {
+        public override string Description => CardName.Schofield;
         protected override bool EqualsCore(PlayingCard other)
         {
             return other is SchofieldCard;
@@ -15,5 +16,6 @@ namespace Domain.PlayingCards
         }
 
         public override T Accept<T>(ICardVisitor<T> visitor) => visitor.Visit(this);
+        
     }
 }

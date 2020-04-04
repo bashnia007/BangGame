@@ -85,7 +85,7 @@ namespace Domain.Players
         public static Weapon Create(LongTermFeatureCard card)
         {
             if (card == null)
-                throw new ArgumentNullException(card);
+                throw new ArgumentNullException(nameof(card));
             
             var visitor = new CardToWeaponMatcher();
             var weapon = card.Accept(visitor);
