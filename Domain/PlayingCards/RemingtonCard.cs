@@ -1,4 +1,4 @@
-﻿using Domain.Players;
+﻿using Domain.PlayingCards.Visitors;
 
 namespace Domain.PlayingCards
 {
@@ -7,8 +7,8 @@ namespace Domain.PlayingCards
         public override string Description => CardName.Remington;
         protected override bool EqualsCore(PlayingCard other) => other is RemingtonCard;
 
-        protected override int GetHashCodeCore() => typeof(Remington).GetHashCode();
-        public override T Accept<T>(ICardVisitor<T> visitor) => visitor.Visit(this);
+        protected override int GetHashCodeCore() => typeof(RemingtonCard).GetHashCode();
+        public override T Accept<T>(ILongTermCardVisitor<T> visitor) => visitor.Visit(this);
         
     }
 }

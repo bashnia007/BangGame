@@ -1,4 +1,4 @@
-﻿using Domain.Players;
+﻿using Domain.PlayingCards.Visitors;
 
 namespace Domain.PlayingCards
 {
@@ -10,6 +10,6 @@ namespace Domain.PlayingCards
     {
         public override bool PlayAndDiscard => false;
         
-        public abstract T Accept<T>(ICardVisitor<T> visitor);
+        public abstract T Accept<T>(ILongTermCardVisitor<T> visitor);
     }
 }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using Domain.Players;
 using Domain.PlayingCards;
+using Domain.Weapons;
 using Xunit;
 
 namespace Bang.Tests.DomainUnitTests

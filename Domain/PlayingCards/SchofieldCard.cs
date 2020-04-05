@@ -1,4 +1,4 @@
-﻿using Domain.Players;
+﻿using Domain.PlayingCards.Visitors;
 
 namespace Domain.PlayingCards
 {
@@ -15,7 +15,6 @@ namespace Domain.PlayingCards
             return typeof(SchofieldCard).GetHashCode();
         }
 
-        public override T Accept<T>(ICardVisitor<T> visitor) => visitor.Visit(this);
-        
+        public override T Accept<T>(ILongTermCardVisitor<T> visitor) => visitor.Visit(this);
     }
 }

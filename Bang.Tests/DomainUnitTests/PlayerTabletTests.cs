@@ -3,6 +3,7 @@ using System.Linq;
 using Domain.Character;
 using Domain.Players;
 using Domain.PlayingCards;
+using Domain.Weapons;
 using Xunit;
 
 namespace Bang.Tests.DomainUnitTests
