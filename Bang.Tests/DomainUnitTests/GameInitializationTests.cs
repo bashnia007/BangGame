@@ -37,9 +37,9 @@ namespace Bang.Tests.DomainUnitTests
         [InlineData(5)]
         [InlineData(6)]
         [InlineData(7)]
-        public void There_is_always_a_sheriff_in_the_game(int playersAmout)
+        public void There_is_always_a_sheriff_in_the_game(int playersAmount)
         {
-            var roles = GameInitializer.CreateRolesForGame(playersAmout);
+            var roles = GameInitializer.CreateRolesForGame(playersAmount);
 
             Assert.Single(roles.OfType<Sheriff>());
         }
