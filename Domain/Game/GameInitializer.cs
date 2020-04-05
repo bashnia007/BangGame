@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Domain.Exceptions;
 
 namespace Domain.Game
 {
@@ -44,7 +45,7 @@ namespace Domain.Game
                     roles.Add(new Role.Deputy());
                     break;
                 default:
-                    throw new ArgumentException("Players amount should be fron 4 to 7. Actual value is " + playersAmount);
+                    throw new AmountPlayersException(playersAmount);
             }
 
             return roles;

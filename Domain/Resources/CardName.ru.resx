@@ -141,4 +141,10 @@
   <data name="WillyTheKid" xml:space="preserve">
     <value>Малыш Билли</value>
   </data>
+  <data name="DuplicatedCardExceptionMessageFormat" xml:space="preserve">
+    <value>У вас уже сыграна карта {0}</value>
+  </data>
+  <data name="AmountPlayersExceptionMessageFormat" xml:space="preserve">
+    <value>Количество игроков должно быть от 4 до 7. Введено {0}</value>
+  </data>
 </root>

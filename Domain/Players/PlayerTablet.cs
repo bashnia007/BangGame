@@ -20,15 +20,21 @@ namespace Domain.Players
         public ReadOnlyCollection<LongTermFeatureCard> LongTermFeatureCards => _cards.AsReadOnly();
         public bool IsSheriff { get; }
 
+        public event EventHandler<LongTermFeatureCard> CardDropped;
+
         public PlayerTablet(Character.Character character, bool isSheriff)
         {
             Character = character;
             IsSheriff = isSheriff;
             Health = isSheriff ? Character.LifePoints + 1 : Character.LifePoints;
+            Weapon = WeaponFactory.DefaultWeapon;
         }
         
         /// <summary>
-        /// Checks if player can play card. Player can have only 1 copy of any one card in play;
+        /// Checks if player can add card to playing board
+        /// Player can have:
+        ///     only 1 copy of any one card in play;
+        ///     only 1 weapon in play
         /// </summary>
         /// <param name="card"></param>
         /// <returns></returns>
@@ -38,16 +44,16 @@ namespace Domain.Players
             if (card == null)
                 throw new ArgumentNullException(nameof(card));
 
-            return card is WeaponCard || _cards.Any(c => c != card);
+            if (card is WeaponCard)
+            {
+                return !_cards.OfType<WeaponCard>().Any();
+            }
+            
+            return !_cards.Exists(c => c == card);
         }
         
-        // TODO Ideas for tests:
-        // When player put weapon card, previous weapon card dropped
-        // if player doesn't have a weapon card, his weapon is colt
-        // 
-        
         /// <summary>
-        /// Adds card in play
+        /// Adds card to playing board
         /// </summary>
         /// <param name="card"></param>
         /// <exception cref="ArgumentNullException">generates if card is null</exception>
@@ -59,13 +65,6 @@ namespace Domain.Players
             
             if (card is WeaponCard weaponCard)
             {
-                var previousWeaponCard = _cards.OfType<WeaponCard>().FirstOrDefault();
-                
-                if (previousWeaponCard != null)
-                {
-                    RemoveCard(previousWeaponCard);
-                }
-
                 Weapon = WeaponFactory.Create(weaponCard);
             }
             
@@ -73,7 +72,7 @@ namespace Domain.Players
         }
 
         /// <summary>
-        /// Removes card from tablet
+        /// Removes card from playing board
         /// </summary>
         /// <param name="card"></param>
         public void RemoveCard(LongTermFeatureCard card)
@@ -82,10 +81,15 @@ namespace Domain.Players
             {
                 Weapon = WeaponFactory.DefaultWeapon;
             }
-            
-            // TODO drop card
 
             _cards.Remove(card);
+            
+            OnCardDropped(card);
+        }
+
+        private void OnCardDropped(LongTermFeatureCard card)
+        {
+            CardDropped?.Invoke(this, card);
         }
     }
 }

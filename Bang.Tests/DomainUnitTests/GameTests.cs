@@ -9,7 +9,7 @@ namespace Bang.Tests.DomainUnitTests
     public class GameTests
     {
         [Fact]
-        public void Sheriff_has_additional_life()
+        public void The_sheriff_plays_the_game_with_one_additional_life()
         {
             // Arrange
             var game = new Game(CreatePlayers(4));

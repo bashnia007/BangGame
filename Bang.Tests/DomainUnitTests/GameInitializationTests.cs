@@ -1,7 +1,7 @@
 ﻿using Domain.Game;
 using Domain.Role;
-using System;
 using System.Linq;
+using Domain.Exceptions;
 using Xunit;
 
 namespace Bang.Tests.DomainUnitTests
@@ -9,13 +9,13 @@ namespace Bang.Tests.DomainUnitTests
     public class GameInitializationTests
     {
         [Fact]
-        public void There_Are_Eighty_Cards_In_The_Game()
+        public void There_are_eighty_cards_in_the_game()
         {
             Assert.Equal(80, GameInitializer.PlayingCards.Count);
         }
 
         [Fact]
-        public void There_Are_Sixteen_Characters()
+        public void There_are_sixteen_characters()
         {
             Assert.Equal(16, GameInitializer.Characters.Count);
         }
@@ -24,9 +24,9 @@ namespace Bang.Tests.DomainUnitTests
         [InlineData(2)]
         [InlineData(3)]
         [InlineData(8)]
-        public void CreateRolesForGame_WithIncorrectPlayersAmount_ThrowsException(int playersAmount)
+        public void Four_to_seven_players_can_play_the_game(int playersAmount)
         {
-            Assert.Throws<ArgumentException>(() =>
+            Assert.Throws<AmountPlayersException>(() =>
             {
                 var gameSet = GameInitializer.CreateRolesForGame(playersAmount);
             });
