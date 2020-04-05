@@ -1,9 +1,7 @@
 ﻿using Domain.Game;
 using Domain.Role;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Domain.Exceptions;
 using Xunit;
 
 namespace Bang.Tests.DomainUnitTests
@@ -11,13 +9,13 @@ namespace Bang.Tests.DomainUnitTests
     public class GameInitializationTests
     {
         [Fact]
-        public void InitializePlayingCards_Always_CreatesEightyCards()
+        public void There_are_eighty_cards_in_the_game()
         {
             Assert.Equal(80, GameInitializer.PlayingCards.Count);
         }
 
         [Fact]
-        public void InitializeCharacters_Always_CreatesSixteenCharacters()
+        public void There_are_sixteen_characters()
         {
             Assert.Equal(16, GameInitializer.Characters.Count);
         }
@@ -26,26 +24,59 @@ namespace Bang.Tests.DomainUnitTests
         [InlineData(2)]
         [InlineData(3)]
         [InlineData(8)]
-        public void CreateRolesForGame_WithIncorrectPlayersAmount_ThrowsException(int playersAmount)
+        public void Four_to_seven_players_can_play_the_game(int playersAmount)
         {
-            Assert.Throws<ArgumentException>(() =>
+            Assert.Throws<AmountPlayersException>(() =>
             {
                 var gameSet = GameInitializer.CreateRolesForGame(playersAmount);
             });
         }
 
         [Theory]
-        [InlineData(4, 2, 0)]
-        [InlineData(5, 2, 1)]
-        [InlineData(6, 3, 1)]
-        [InlineData(7, 3, 2)]
-        public void CreateRolesForGame_Creates_ProperlyRoles(int playersAmount, int outlawExpected, int deputyExpected)
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        public void There_is_always_a_sheriff_in_the_game(int playersAmount)
         {
             var roles = GameInitializer.CreateRolesForGame(playersAmount);
-            Assert.Equal(outlawExpected, roles.Where(x => x.GetType() == typeof(Outlaw)).Count());
-            Assert.Equal(deputyExpected, roles.Where(x => x.GetType() == typeof(Deputy)).Count());
-            Assert.Single(roles.Where(x => x.GetType() == typeof(Renegade)));
-            Assert.Single(roles.Where(x => x.GetType() == typeof(Sheriff)));
+
+            Assert.Single(roles.OfType<Sheriff>());
+        }
+        
+        [Theory]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        public void There_is_always_a_renegade_in_the_game(int playersAmount)
+        {
+            var roles = GameInitializer.CreateRolesForGame(playersAmount);
+
+            Assert.Single(roles.OfType<Renegade>());
+        }
+
+        [Theory]
+        [InlineData(4, 0)]
+        [InlineData(5, 1)]
+        [InlineData(6, 1)]
+        [InlineData(7, 2)]
+        public void Amount_of_deputies_depends_on_the_players_amount(int playersAmount, int deputyExpected)
+        {
+            var roles = GameInitializer.CreateRolesForGame(playersAmount);
+
+            Assert.Equal(deputyExpected, roles.OfType<Deputy>().Count());
+        }
+        
+        [Theory]
+        [InlineData(4, 2)]
+        [InlineData(5, 2)]
+        [InlineData(6, 3)]
+        [InlineData(7, 3)]
+        public void Amount_of_outlaws_depends_on_the_players_amount(int playersAmount, int outlawExpected)
+        {
+            var roles = GameInitializer.CreateRolesForGame(playersAmount);
+            Assert.Equal(outlawExpected, roles.OfType<Outlaw>().Count());
         }
     }
 }

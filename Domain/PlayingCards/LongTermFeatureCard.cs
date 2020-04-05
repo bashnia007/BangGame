@@ -1,4 +1,6 @@
-﻿namespace Domain.PlayingCards
+﻿using Domain.PlayingCards.Visitors;
+
+namespace Domain.PlayingCards
 {
     /// Cards are played face up in front of player (exception: Jail).
     /// Blue cards in front of player are hence defined to be “in play”.
@@ -7,5 +9,7 @@
     public abstract class LongTermFeatureCard : PlayingCard
     {
         public override bool PlayAndDiscard => false;
+        
+        public abstract T Accept<T>(ILongTermCardVisitor<T> visitor);
     }
 }

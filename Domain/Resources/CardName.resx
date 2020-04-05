@@ -141,4 +141,10 @@
   <data name="WillyTheKid" xml:space="preserve">
     <value>Willi the Kid</value>
   </data>
+  <data name="DuplicatedCardExceptionMessageFormat" xml:space="preserve">
+    <value>You already have {0} in play, you can not play another one</value>
+  </data>
+  <data name="AmountPlayersExceptionMessageFormat" xml:space="preserve">
+    <value>Players amount should be from 4 to 7. Actual value is {0}</value>
+  </data>
 </root>

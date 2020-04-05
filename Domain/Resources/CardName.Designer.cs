@@ -61,6 +61,15 @@ namespace Domain {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Players amount should be from 4 to 7. Actual value is {0}.
+        /// </summary>
+        public static string AmountPlayersExceptionMessageFormat {
+            get {
+                return ResourceManager.GetString("AmountPlayersExceptionMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bang.
         /// </summary>
         public static string Bang {
@@ -147,6 +156,15 @@ namespace Domain {
         public static string Duel {
             get {
                 return ResourceManager.GetString("Duel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You already have {0} in play, you can not play another one.
+        /// </summary>
+        public static string DuplicatedCardExceptionMessageFormat {
+            get {
+                return ResourceManager.GetString("DuplicatedCardExceptionMessageFormat", resourceCulture);
             }
         }
         
