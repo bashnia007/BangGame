@@ -17,11 +17,14 @@ namespace Server
         public string Id { get; }
         private NetworkStream _stream { get; set; }
         public TcpClient TcpClient;
+        private ServerMessageProcessor messageProcessor;
 
         public Client(TcpClient tcpClient)
         {
             Id = Guid.NewGuid().ToString();
             TcpClient = tcpClient;
+            messageProcessor = new ServerMessageProcessor();
+            Lobby.AddPlayer(Id);
         }
 
         public void Process()
@@ -53,7 +56,7 @@ namespace Server
             IFormatter formatter = new BinaryFormatter();
             Message message = (Message)formatter.Deserialize(_stream);
 
-            message.Accept(new ServerMessageProcessor());
+            message.Accept(messageProcessor);
 
             return message;
         }

@@ -1,19 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using Domain.Game;
+﻿using Domain.Game;
 using Domain.Messages;
-using Domain.Players;
+using System;
+using System.Collections.Generic;
 
 namespace Server.Processors
 {
     public class ServerMessageProcessor : IMessageProcessor
     {
+        public List<Message> ProcessConnectedMessage(Message message)
+        {
+            var result = new List<Message>();
+
+            var connectionMessage = (ConnectionMessage)message;
+            Lobby.SetPlayerName(connectionMessage.PlayerId, connectionMessage.Name);
+
+            return result;
+        }
+
         public List<Message> ProcessCreateGameMessage(Message message)
         {
             var result = new List<Message>();
-            var getGamesMessage = (GetGamesMessage)message;
-            getGamesMessage.Games = GamesCollection.GetGames();
-            result.Add(getGamesMessage);
+
+            var player = Lobby.GetPlayer(message.PlayerId);
+            Lobby.AddGame(new Game(player));
 
             return result;
         }
@@ -21,8 +30,9 @@ namespace Server.Processors
         public List<Message> ProcessGetGamesMessage(Message message)
         {
             var result = new List<Message>();
-            var player = new PlayerOnline();
-            GamesCollection.AddGame(new Game(player));
+            var getGamesMessage = (GetGamesMessage)message;
+            getGamesMessage.Games = Lobby.GetGames();
+            result.Add(getGamesMessage);
 
             return result;
         }
@@ -32,8 +42,9 @@ namespace Server.Processors
             var result = new List<Message>();
 
             var joinGameMessage = (JoinGameMessage)message;
-            var player = new PlayerOnline();
-            GamesCollection.JoinPlayerToGame(player, joinGameMessage.GameId);
+            var player = Lobby.GetPlayer(joinGameMessage.PlayerId);
+            var game = Lobby.GetGame(joinGameMessage.GameId);
+            game.JoinPlayer(player);
 
             return result;
         }
@@ -44,15 +55,20 @@ namespace Server.Processors
 
             var readyToPlayMessage = (ReadyToPlayMessage)message;
 
-            var game = GamesCollection.GetGame(readyToPlayMessage.GameId);
+            var game = Lobby.GetGame(readyToPlayMessage.GameId);
             game.SetPlayerReadyStatus(readyToPlayMessage.PlayerId, readyToPlayMessage.IsReady);
 
             if (game.AllPlayersAreReady())
             {
-                GamesCollection.CloseGame(readyToPlayMessage.GameId);
-                var startGameMessage = new StartGameMessage();
+                Lobby.CloseGame(readyToPlayMessage.GameId);
                 game.Initialize();
-                result.Add(startGameMessage);
+                foreach (var player in game.Players)
+                {
+                    var startGameMessage = new StartGameMessage(player.Role, player.PlayerTablet.Character, 
+                        player.PlayerHand, game.Id, player.Id);
+
+                    result.Add(startGameMessage);
+                }
             }
 
             return result;

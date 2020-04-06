@@ -8,5 +8,9 @@ namespace Domain.Players
     /// </summary>
     public class PlayerOnline : Player
     {
+        public PlayerOnline(string id) : base()
+        {
+            Id = id;
+        }
     }
 }

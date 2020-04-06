@@ -14,22 +14,27 @@ namespace Domain.Game
         public Deck<PlayingCard> Deck { get; set; }
         public Stack<PlayingCard> DiscardedCards { get; set; }
 
-        public Game(Player player)
+        #region Constructors
+
+        private Game()
         {
             Id = Guid.NewGuid().ToString();
             DiscardedCards = new Stack<PlayingCard>();
             Deck = new Deck<PlayingCard>();
             Players = new List<Player>();
+        }
+
+        public Game(Player player) : this()
+        {
             Players.Add(player);
         }
 
-        public Game(List<Player> players) : base()
+        public Game(List<Player> players) : this()
         {
-            Id = Guid.NewGuid().ToString();
-            DiscardedCards = new Stack<PlayingCard>();
-            Deck = new Deck<PlayingCard>();
-            Players = players;
+            Players.AddRange(players);
         }
+
+        #endregion
 
         public void JoinPlayer(Player player)
         {

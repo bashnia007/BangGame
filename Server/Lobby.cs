@@ -1,16 +1,15 @@
 ﻿using Domain.Game;
 using Domain.Players;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Server
 {
-    static class GamesCollection
+    static class Lobby
     {
         private static BlockingCollection<Game> games = new BlockingCollection<Game>();
+        private static BlockingCollection<Player> players = new BlockingCollection<Player>();
 
         public static List<Game> GetGames()
         {
@@ -22,15 +21,6 @@ namespace Server
             games.TryAdd(game);
         }
 
-        public static void JoinPlayerToGame(Player player, string gameId)
-        {
-            var game = GetGame(gameId);
-
-            if (game == null) throw new ArgumentNullException(gameId);
-
-            game.JoinPlayer(player);
-        }
-
         public static Game GetGame(string gameId)
         {
             return games.FirstOrDefault(g => g.Id == gameId);
@@ -40,6 +30,21 @@ namespace Server
         {
             var game = GetGame(gameId);
             games.TryTake(out game);
+        }
+
+        public static void AddPlayer(string playerId)
+        {
+            players.TryAdd(new PlayerOnline(playerId));
+        }
+
+        public static void SetPlayerName(string playerId, string name)
+        {
+            GetPlayer(playerId).Name = name;
+        }
+
+        public static Player GetPlayer(string playerId)
+        {
+            return players.First(p => p.Id == playerId);
         }
     }
 }
