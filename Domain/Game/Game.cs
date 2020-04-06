@@ -14,12 +14,37 @@ namespace Domain.Game
         public Deck<PlayingCard> Deck { get; set; }
         public Stack<PlayingCard> DiscardedCards { get; set; }
 
-        public Game(List<Player> players)
+        public Game(Player player)
         {
             Id = Guid.NewGuid().ToString();
-            Players = players;
             DiscardedCards = new Stack<PlayingCard>();
             Deck = new Deck<PlayingCard>();
+            Players = new List<Player>();
+            Players.Add(player);
+        }
+
+        public Game(List<Player> players) : base()
+        {
+            Id = Guid.NewGuid().ToString();
+            DiscardedCards = new Stack<PlayingCard>();
+            Deck = new Deck<PlayingCard>();
+            Players = players;
+        }
+
+        public void JoinPlayer(Player player)
+        {
+            Players.Add(player);
+        }
+
+        public void SetPlayerReadyStatus(string playerId, bool readyStatus)
+        {
+            var player = Players.First(p => p.Id == playerId);
+            player.IsReadyToPlay = readyStatus;
+        }
+
+        public bool AllPlayersAreReady()
+        {
+            return Players.All(p => p.IsReadyToPlay);
         }
 
         public void Initialize()

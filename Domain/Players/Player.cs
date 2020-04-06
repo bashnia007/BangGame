@@ -12,6 +12,7 @@ namespace Domain.Players
         public Role.Role Role { get; private set; }
         public PlayerTablet PlayerTablet { get; private set; }
         public List<PlayingCard> PlayerHand { get; private set; }
+        public virtual bool IsReadyToPlay { get; set; }
 
         public Player()
         {

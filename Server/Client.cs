@@ -1,4 +1,5 @@
 ﻿using Domain.Messages;
+using Server.Processors;
 using System;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
@@ -51,6 +52,8 @@ namespace Server
         {
             IFormatter formatter = new BinaryFormatter();
             Message message = (Message)formatter.Deserialize(_stream);
+
+            message.Accept(new ServerMessageProcessor());
 
             return message;
         }

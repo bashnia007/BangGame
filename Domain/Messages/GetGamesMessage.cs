@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.Messages
 {
@@ -8,5 +7,10 @@ namespace Domain.Messages
     public class GetGamesMessage : Message
     {
         public List<Game.Game> Games;
+
+        public override void Accept(IMessageProcessor visitor)
+        {
+            visitor.ProcessGetGamesMessage(this);
+        }
     }
 }
