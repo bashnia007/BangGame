@@ -1,5 +1,8 @@
-﻿namespace Domain.Character
+﻿using System;
+
+namespace Domain.Character
 {
+    [Serializable]
     /// <summary>
     /// Paul Regret (3 life points):
     /// he is considered to have a Mustang in play at all times;

@@ -1,5 +1,8 @@
+using System;
+
 namespace Domain.Weapons
 {
+    [Serializable]
     public class Winchester : Weapon
     {
         protected override bool EqualsCore(Weapon other)

@@ -1,5 +1,8 @@
-﻿namespace Domain.PlayingCards
+﻿using System;
+
+namespace Domain.PlayingCards
 {
+    [Serializable]
     public abstract class PlayingCard : ValueObject<PlayingCard>, IShuffledCard
     {
         public abstract string Description { get; } 

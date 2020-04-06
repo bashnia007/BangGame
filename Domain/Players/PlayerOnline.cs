@@ -1,5 +1,8 @@
-﻿namespace Domain.Players
+﻿using System;
+
+namespace Domain.Players
 {
+    [Serializable]
     /// <summary>
     /// Real online player
     /// </summary>

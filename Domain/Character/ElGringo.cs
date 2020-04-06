@@ -1,5 +1,8 @@
-﻿namespace Domain.Character
+﻿using System;
+
+namespace Domain.Character
 {
+    [Serializable]
     /// <summary>
     /// El Gringo (3 life points):
     /// each time he loses a life point due to a card played by another player, he draws a random card from the hands of that player (one card for each life point). 

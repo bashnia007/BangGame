@@ -1,5 +1,8 @@
-﻿namespace Domain.PlayingCards
+﻿using System;
+
+namespace Domain.PlayingCards
 {
+    [Serializable]
     public class BangCard : PlayAndDiscardCard
     {
         public override string Description => CardName.Bang; 

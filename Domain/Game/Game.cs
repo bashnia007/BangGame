@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace Domain.Game
 {
+    [Serializable]
     public class Game
     {
         public string Id { get; }

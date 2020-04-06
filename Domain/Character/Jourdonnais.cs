@@ -1,5 +1,8 @@
-﻿namespace Domain.Character
+﻿using System;
+
+namespace Domain.Character
 {
+    [Serializable]
     /// <summary>
     /// Jourdonnais (4 life points):
     /// he is considered to have a Barrel in play at all times;

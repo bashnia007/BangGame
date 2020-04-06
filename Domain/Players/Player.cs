@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace Domain.Players
 {
+    [Serializable]
     public abstract class Player
     {
         public string Id { get; }

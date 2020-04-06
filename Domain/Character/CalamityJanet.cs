@@ -1,5 +1,8 @@
-﻿namespace Domain.Character
+﻿using System;
+
+namespace Domain.Character
 {
+    [Serializable]
     /// <summary>
     /// Calamity Janet (4 life points):
     /// she can use BANG! cards as Missed! cards and vice versa.

@@ -1,5 +1,8 @@
-﻿namespace Domain.Character
+﻿using System;
+
+namespace Domain.Character
 {
+    [Serializable]
     /// <summary>
     /// Vulture Sam (4 life points):
     /// whenever a character is eliminated from the game,

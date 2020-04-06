@@ -1,5 +1,8 @@
-﻿namespace Domain.Character
+﻿using System;
+
+namespace Domain.Character
 {
+    [Serializable]
     /// <summary>
     /// Rose Doolan (4 life points):
     /// she is considered to have a Scope in play at all times;

@@ -1,5 +1,8 @@
-﻿namespace Domain
+﻿using System;
+
+namespace Domain
 {
+    [Serializable]
     // https://enterprisecraftsmanship.com/posts/entity-base-class/
     public abstract class Entity
     {

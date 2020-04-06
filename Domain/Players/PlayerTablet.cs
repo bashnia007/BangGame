@@ -8,6 +8,7 @@ using Domain.Weapons;
 
 namespace Domain.Players
 {
+    [Serializable]
     /// <summary>
     /// Describes all VISIBLE FOR EVERYONE information about player
     /// </summary>
