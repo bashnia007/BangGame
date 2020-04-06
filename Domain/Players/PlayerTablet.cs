@@ -13,7 +13,15 @@ namespace Domain.Players
     /// </summary>
     public class PlayerTablet
     {
-        public int Health { get; set; }
+        public readonly int MaximumHealth;
+
+        private int _health;
+        public int Health
+        {
+            get => _health;
+            set => _health = Math.Min(value, MaximumHealth);
+        }
+
         public bool IsAlive => Health > 0;
         public Weapon Weapon { get; private set; }
         public Character.Character Character { get; }
@@ -27,7 +35,8 @@ namespace Domain.Players
         {
             Character = character;
             IsSheriff = isSheriff;
-            Health = isSheriff ? Character.LifePoints + 1 : Character.LifePoints;
+            MaximumHealth = isSheriff ? Character.LifePoints + 1 : Character.LifePoints;
+            Health = MaximumHealth;
             Weapon = WeaponFactory.DefaultWeapon;
         }
         

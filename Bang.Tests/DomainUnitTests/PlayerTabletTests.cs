@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Domain.Character;
+﻿using Domain.Character;
 using Domain.Players;
 using Domain.PlayingCards;
 using Domain.Weapons;
@@ -10,60 +8,6 @@ namespace Bang.Tests.DomainUnitTests
 {
     public class PlayerTabletTests
     {
-        public static IEnumerable<object[]> WeaponCards =>
-            new List<object[]>
-            {
-                new []{new VolcanicCard()},
-                new []{new SchofieldCard()},
-                new []{new RemingtonCard()},
-                new []{new CarabineCard()},
-                new []{new WinchesterCard()}
-            };
-
-        public static IEnumerable<object[]> LongTermCardsExceptWeapon
-        {
-            get
-            {
-                return 
-                    new List<object[]>
-                    {
-                        new[] {new ScopeCard()},
-                        new[] {new MustangCard()},
-                        new[] {new BarrelCard()},
-                        new[] {new JailCard()},
-                        new[] {new DynamiteCard()}
-                    };
-            }
-        }
-
-        public static IEnumerable<object[]> LongTermCards => LongTermCardsExceptWeapon.Concat(WeaponCards);
-        
-        public static IEnumerable<object[]> DifferentWeapons
-        {
-            get
-            {
-                var weapons = new List<WeaponCard>
-                {
-                    new VolcanicCard(),
-                    new SchofieldCard(),
-                    new RemingtonCard(),
-                    new CarabineCard(),
-                    new WinchesterCard()
-                };
-                
-                foreach (var firstWeapon in weapons)
-                {
-                    foreach (var secondWeapon in weapons)
-                    {
-                        if (firstWeapon == secondWeapon) continue;
-                        
-                        yield return new object[]{firstWeapon, secondWeapon};
-                    }
-                }
-                yield break;
-            }
-        }
-
         private PlayerTablet CreateTablet()
         {
             return new PlayerTablet(new Jourdonnais(), false);
@@ -78,7 +22,7 @@ namespace Bang.Tests.DomainUnitTests
         }
         
         [Theory]
-        [MemberData(nameof(WeaponCards))]
+        [MemberData(nameof(TestDataGenerator.WeaponCards), MemberType = typeof(TestDataGenerator))]
         public void When_player_doesnt_have_weapon_card_then_his_weapon_is_colt(WeaponCard weaponCard)
         {
             // Arrange 
@@ -93,7 +37,7 @@ namespace Bang.Tests.DomainUnitTests
         }
 
         [Theory]
-        [MemberData(nameof(LongTermCards))]
+        [MemberData(nameof(TestDataGenerator.LongTermCards), MemberType = typeof(TestDataGenerator))]
         public void Player_can_have_only_one_copy_of_card_in_play(LongTermFeatureCard card)
         {
             // Arrange
@@ -107,7 +51,7 @@ namespace Bang.Tests.DomainUnitTests
         }
 
         [Theory]
-        [MemberData(nameof(DifferentWeapons))]
+        [MemberData(nameof(TestDataGenerator.DifferentWeapons), MemberType = typeof(TestDataGenerator))]
         public void Player_can_have_only_one_weapon_in_play(WeaponCard oldWeapon, WeaponCard newWeapon)
         {
             // Arrange
