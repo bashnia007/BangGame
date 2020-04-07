@@ -10,5 +10,6 @@ namespace Domain.Messages
         List<Message> ProcessReadyToPlayMessage(Message message);
         List<Message> ProcessStartGameMessage(Message message);
         List<Message> ProcessConnectedMessage(Message message);
+        List<Message> ProcessLeaveGameMessage(Message message);
     }
 }

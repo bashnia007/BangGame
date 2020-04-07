@@ -1,4 +1,5 @@
-﻿using Domain.Players;
+﻿using Domain.Exceptions;
+using Domain.Players;
 using Domain.PlayingCards;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,8 @@ namespace Domain.Game
         public Deck<PlayingCard> Deck { get; set; }
         public Stack<PlayingCard> DiscardedCards { get; set; }
 
+        private object lockObj;
+
         #region Constructors
 
         private Game()
@@ -22,6 +25,7 @@ namespace Domain.Game
             DiscardedCards = new Stack<PlayingCard>();
             Deck = new Deck<PlayingCard>();
             Players = new List<Player>();
+            lockObj = new object();
         }
 
         public Game(Player player) : this()
@@ -36,9 +40,34 @@ namespace Domain.Game
 
         #endregion
 
-        public void JoinPlayer(Player player)
+        public bool JoinPlayer(Player player)
         {
-            Players.Add(player);
+            lock(lockObj)
+            {
+                if (Players.Count < 7)
+                {
+                    Players.Add(player);
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// removes player from list of players in the game
+        /// </summary>
+        /// <param name="player">player to be removed</param>
+        /// <returns>is players count greater than zero</returns>
+        public bool KickPlayer(Player player)
+        {
+            lock(lockObj)
+            {
+                if (Players.Count > 0)
+                {
+                    Players.Remove(player);
+                }
+                return Players.Count > 0;
+            }
         }
 
         public void SetPlayerReadyStatus(string playerId, bool readyStatus)

@@ -44,7 +44,26 @@ namespace Server.Processors
             var joinGameMessage = (JoinGameMessage)message;
             var player = Lobby.GetPlayer(joinGameMessage.PlayerId);
             var game = Lobby.GetGame(joinGameMessage.GameId);
-            game.JoinPlayer(player);
+
+            joinGameMessage.IsJoined = game.JoinPlayer(player);
+
+            result.Add(joinGameMessage);
+
+            return result;
+        }
+
+        public List<Message> ProcessLeaveGameMessage(Message message)
+        {
+            var result = new List<Message>();
+
+            var leaveGameMessage = (LeaveGameMessage)message;
+            var player = Lobby.GetPlayer(leaveGameMessage.PlayerId);
+            var game = Lobby.GetGame(leaveGameMessage.GameId);
+
+            if (!game.KickPlayer(player))
+            {
+                Lobby.CloseGame(game.Id);
+            }
 
             return result;
         }
