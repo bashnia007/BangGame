@@ -16,30 +16,17 @@ namespace Domain.Game
         public Stack<PlayingCard> DiscardedCards { get; set; }
 
         private object lockObj;
-
-        #region Constructors
-
-        private Game()
+        
+        public Game(Player player)
         {
             Id = Guid.NewGuid().ToString();
             DiscardedCards = new Stack<PlayingCard>();
             Deck = new Deck<PlayingCard>();
             Players = new List<Player>();
             lockObj = new object();
-        }
-
-        public Game(Player player) : this()
-        {
             Players.Add(player);
         }
-
-        public Game(List<Player> players) : this()
-        {
-            Players.AddRange(players);
-        }
-
-        #endregion
-
+        
         public bool JoinPlayer(Player player)
         {
             lock(lockObj)
@@ -78,7 +65,7 @@ namespace Domain.Game
 
         public bool AllPlayersAreReady()
         {
-            return Players.All(p => p.IsReadyToPlay);
+            return Players.All(p => p.IsReadyToPlay) && Players.Count > 3;
         }
 
         public void Initialize()

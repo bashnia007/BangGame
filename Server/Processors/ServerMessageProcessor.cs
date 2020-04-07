@@ -20,9 +20,14 @@ namespace Server.Processors
         public List<Message> ProcessCreateGameMessage(Message message)
         {
             var result = new List<Message>();
+            var createGameMessage = (CreateGameMessage)message;
 
             var player = Lobby.GetPlayer(message.PlayerId);
-            Lobby.AddGame(new Game(player));
+            var game = new Game(player);
+            Lobby.AddGame(game);
+
+            createGameMessage.GameId = game.Id;
+            result.Add(createGameMessage);
 
             return result;
         }

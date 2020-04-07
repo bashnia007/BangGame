@@ -6,10 +6,11 @@ using System.Linq;
 
 namespace Server
 {
-    static class Lobby
+    public static class Lobby
     {
-        private static BlockingCollection<Game> games = new BlockingCollection<Game>();
+        private static List<Game> games = new List<Game>();
         private static BlockingCollection<Player> players = new BlockingCollection<Player>();
+        private static object lockObject = new object();
 
         public static List<Game> GetGames()
         {
@@ -18,7 +19,10 @@ namespace Server
 
         public static void AddGame(Game game)
         {
-            games.TryAdd(game);
+            lock(lockObject)
+            {
+                games.Add(game);
+            }
         }
 
         public static Game GetGame(string gameId)
@@ -28,8 +32,11 @@ namespace Server
 
         public static void CloseGame(string gameId)
         {
-            var game = GetGame(gameId);
-            games.TryTake(out game);
+            lock(lockObject)
+            {
+                var game = GetGame(gameId);
+                games.Remove(game);
+            }
         }
 
         public static void AddPlayer(string playerId)
