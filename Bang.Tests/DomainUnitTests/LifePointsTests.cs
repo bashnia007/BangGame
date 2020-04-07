@@ -1,4 +1,4 @@
-using Domain.Character;
+using Domain.Characters;
 using Domain.Players;
 using Xunit;
 

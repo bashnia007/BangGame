@@ -1,4 +1,4 @@
-﻿namespace Domain.Character
+﻿namespace Domain.Characters
 {
     /// <summary>
     /// Sid Ketchum (4 life points): at any time, he may discard 2 cards from his hand to regain one life point.

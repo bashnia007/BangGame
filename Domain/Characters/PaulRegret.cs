@@ -1,4 +1,4 @@
-﻿namespace Domain.Character
+﻿namespace Domain.Characters
 {
     /// <summary>
     /// Paul Regret (3 life points):

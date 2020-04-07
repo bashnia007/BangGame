@@ -1,4 +1,4 @@
-﻿namespace Domain.Role
+﻿namespace Domain.Roles
 {
     public class Renegade : Role
     {

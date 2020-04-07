@@ -1,4 +1,4 @@
-﻿namespace Domain.Character
+﻿namespace Domain.Characters
 {
     /// <summary>
     /// Calamity Janet (4 life points):

@@ -1,4 +1,4 @@
-﻿namespace Domain.Character
+﻿namespace Domain.Characters
 {
     /// <summary>
     /// Rose Doolan (4 life points):

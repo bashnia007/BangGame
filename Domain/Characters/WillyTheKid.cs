@@ -1,4 +1,4 @@
-﻿namespace Domain.Character
+﻿namespace Domain.Characters
 {
     /// <summary>
     /// Willy the Kid (4 life points): he can play any number of BANG! cards during his turn

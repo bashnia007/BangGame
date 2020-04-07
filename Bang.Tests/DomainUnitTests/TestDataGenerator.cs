@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Character;
+using Domain.Characters;
 using Domain.PlayingCards;
 
 namespace Bang.Tests.DomainUnitTests

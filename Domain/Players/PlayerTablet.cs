@@ -3,6 +3,7 @@ using Domain.PlayingCards;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Domain.Characters;
 using Domain.Exceptions;
 using Domain.Weapons;
 
@@ -24,14 +25,14 @@ namespace Domain.Players
 
         public bool IsAlive => Health > 0;
         public Weapon Weapon { get; private set; }
-        public Character.Character Character { get; }
+        public Character Character { get; }
         private readonly List<LongTermFeatureCard> _cards = new List<LongTermFeatureCard>();
         public ReadOnlyCollection<LongTermFeatureCard> LongTermFeatureCards => _cards.AsReadOnly();
         public bool IsSheriff { get; }
 
         public event EventHandler<LongTermFeatureCard> CardDropped;
 
-        public PlayerTablet(Character.Character character, bool isSheriff)
+        public PlayerTablet(Character character, bool isSheriff)
         {
             Character = character;
             IsSheriff = isSheriff;

@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Domain.Characters;
 using Domain.Exceptions;
+using Domain.Roles;
 
 namespace Domain.Game
 {
@@ -22,10 +24,10 @@ namespace Domain.Game
         {
             List<IShuffledCard> roles = new List<IShuffledCard>
             {
-                new Role.Sheriff(),
-                new Role.Renegade(),
-                new Role.Outlaw(),
-                new Role.Outlaw()
+                new Sheriff(),
+                new Renegade(),
+                new Outlaw(),
+                new Outlaw()
             };
 
             switch (playersAmount)
@@ -33,16 +35,16 @@ namespace Domain.Game
                 case 4:
                     break;
                 case 5:
-                    roles.Add(new Role.Deputy());
+                    roles.Add(new Deputy());
                     break;
                 case 6:
-                    roles.Add(new Role.Outlaw());
-                    roles.Add(new Role.Deputy());
+                    roles.Add(new Outlaw());
+                    roles.Add(new Deputy());
                     break;
                 case 7:
-                    roles.Add(new Role.Outlaw());
-                    roles.Add(new Role.Deputy());
-                    roles.Add(new Role.Deputy());
+                    roles.Add(new Outlaw());
+                    roles.Add(new Deputy());
+                    roles.Add(new Deputy());
                     break;
                 default:
                     throw new AmountPlayersException(playersAmount);
@@ -104,15 +106,15 @@ namespace Domain.Game
             List<IShuffledCard> characters = new List<IShuffledCard>();
 
             var charactersTypes = Assembly
-                .GetAssembly(typeof(Character.Character))
+                .GetAssembly(typeof(Character))
                 .GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(Character.Character)));
+                .Where(t => t.IsSubclassOf(typeof(Character)));
 
 
             foreach (var character in charactersTypes)
             {
                 var newCharacter = Activator.CreateInstance(character);
-                characters.Add(newCharacter as Character.Character);
+                characters.Add(newCharacter as Character);
             }
 
             return characters;

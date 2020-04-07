@@ -1,4 +1,4 @@
-﻿namespace Domain.Character
+﻿namespace Domain.Characters
 {
     public abstract class Character : ValueObject<Character>, IShuffledCard
     {

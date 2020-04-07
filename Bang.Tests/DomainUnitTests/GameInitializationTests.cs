@@ -1,7 +1,7 @@
 ﻿using Domain.Game;
-using Domain.Role;
 using System.Linq;
 using Domain.Exceptions;
+using Domain.Roles;
 using Xunit;
 
 namespace Bang.Tests.DomainUnitTests

@@ -1,6 +1,8 @@
 ﻿using Domain.PlayingCards;
 using System;
 using System.Collections.Generic;
+using Domain.Characters;
+using Domain.Roles;
 
 namespace Domain.Players
 {
@@ -8,7 +10,7 @@ namespace Domain.Players
     {
         public string Id { get; }
         public string Name { get; set; }
-        public Role.Role Role { get; private set; }
+        public Role Role { get; private set; }
         public PlayerTablet PlayerTablet { get; private set; }
         public List<PlayingCard> PlayerHand { get; private set; }
 
@@ -18,10 +20,10 @@ namespace Domain.Players
             PlayerHand = new List<PlayingCard>();
         }
 
-        public void SetInfo(Role.Role role, Character.Character character)
+        public void SetInfo(Role role, Character character)
         {
             Role = role;
-            PlayerTablet = new PlayerTablet(character, role is Role.Sheriff);
+            PlayerTablet = new PlayerTablet(character, role is Sheriff);
         }
     }
 }
