@@ -1,12 +1,13 @@
-﻿using System;
+﻿﻿using System;
 
-namespace Domain.Character
+namespace Domain.Characters
 {
-    [Serializable]
+    
     /// <summary>
     /// Lucky Duke (4 life points):
     /// each time he is required to “draw!”, he flips the top two cards from the deck, and chooses the result he prefers. Discard both cards afterwards.
     /// </summary>
+    [Serializable]
     public class LuckyDuke : Character
     {
         public override string Name => CardName.LuckyDuke;

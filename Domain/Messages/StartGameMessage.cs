@@ -1,15 +1,17 @@
 ﻿using Domain.PlayingCards;
 using System.Collections.Generic;
+using Domain.Characters;
+using Domain.Roles;
 
 namespace Domain.Messages
 {
     public class StartGameMessage : Message
     {
-        public Role.Role Role { get; }
-        public Character.Character Character { get; }
+        public Role Role { get; }
+        public Character Character { get; }
         public List<PlayingCard> Hand { get; }
 
-        public StartGameMessage(Role.Role role, Character.Character character, List<PlayingCard> hand, string gameId, string playerId)
+        public StartGameMessage(Role role, Character character, List<PlayingCard> hand, string gameId, string playerId)
         {
             Role = role;
             Character = character;

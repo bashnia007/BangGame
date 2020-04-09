@@ -1,20 +1,20 @@
 ﻿using System;
 
-namespace Domain.Role
+namespace Domain.Roles
 {
     [Serializable]
-    public class Outlaw : Role
+    public class Deputy : Role
     {
-        public override string Description => CardName.Outlaw;
+        public override string Description => CardName.Deputy;
         
         protected override bool EqualsCore(Role other)
         {
-            return other is Outlaw;
+            return other is Deputy;
         }
 
         protected override int GetHashCodeCore()
         {
-            return (typeof(Outlaw)).GetHashCode();
+            return (typeof(Deputy)).GetHashCode();
         }
     }
 }

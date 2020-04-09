@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Domain.Role
+namespace Domain.Roles
 {
     [Serializable]
     public class Sheriff : Role

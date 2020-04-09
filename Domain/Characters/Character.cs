@@ -1,6 +1,6 @@
-﻿using System;
+﻿﻿using System;
 
-namespace Domain.Character
+namespace Domain.Characters
 {
     [Serializable]
     public abstract class Character : ValueObject<Character>, IShuffledCard

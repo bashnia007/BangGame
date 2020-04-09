@@ -2,10 +2,11 @@
 
 namespace Domain.Players
 {
-    [Serializable]
+    
     /// <summary>
     /// Real online player
     /// </summary>
+    [Serializable]
     public class PlayerOnline : Player
     {
         public PlayerOnline(string id) : base()

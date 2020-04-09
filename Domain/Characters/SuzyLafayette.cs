@@ -1,12 +1,13 @@
-﻿using System;
-
-namespace Domain.Character
+﻿﻿using System;
+ 
+ namespace Domain.Characters
 {
-    [Serializable]
+    
     /// <summary>
     /// Suzy Lafayette (4 life points):
     /// as soon as she has no cards in her hand, she draws a card from the draw pile.
     /// </summary>
+    [Serializable]
     public class SuzyLafayette : Character
     {
         public override string Name => CardName.SuzyLafayette;

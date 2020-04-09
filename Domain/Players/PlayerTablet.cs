@@ -1,34 +1,47 @@
-﻿using Domain.Exceptions;
+﻿using Domain.Characters;
+using Domain.Exceptions;
 using Domain.PlayingCards;
 using Domain.Weapons;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
+
 namespace Domain.Players
 {
-    [Serializable]
+    
     /// <summary>
     /// Describes all VISIBLE FOR EVERYONE information about player
     /// </summary>
+    [Serializable]
     public class PlayerTablet
     {
-        public int Health { get; set; }
+        public readonly int MaximumHealth;
+
+        private int _health;
+        public int Health
+        {
+            get => _health;
+            set => _health = Math.Min(value, MaximumHealth);
+        }
+
         public bool IsAlive => Health > 0;
         public Weapon Weapon { get; private set; }
-        public Character.Character Character { get; }
+        public Character Character { get; }
         private readonly List<LongTermFeatureCard> _cards = new List<LongTermFeatureCard>();
         public ReadOnlyCollection<LongTermFeatureCard> LongTermFeatureCards => _cards.AsReadOnly();
         public bool IsSheriff { get; }
 
         public event EventHandler<LongTermFeatureCard> CardDropped;
 
-        public PlayerTablet(Character.Character character, bool isSheriff)
+        public PlayerTablet(Character character, bool isSheriff)
         {
             Character = character;
             IsSheriff = isSheriff;
-            Health = isSheriff ? Character.LifePoints + 1 : Character.LifePoints;
+            MaximumHealth = isSheriff ? Character.LifePoints + 1 : Character.LifePoints;
+            Health = MaximumHealth;
             Weapon = WeaponFactory.DefaultWeapon;
         }
         
