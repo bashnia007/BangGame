@@ -11,9 +11,11 @@ using System.Linq;
 
 namespace Domain.Players
 {
+    
     /// <summary>
     /// Describes all VISIBLE FOR EVERYONE information about player
     /// </summary>
+    [Serializable]
     public class PlayerTablet
     {
         public readonly int MaximumHealth;

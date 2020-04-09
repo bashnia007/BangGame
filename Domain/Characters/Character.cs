@@ -1,5 +1,8 @@
-﻿namespace Domain.Characters
+﻿﻿using System;
+
+namespace Domain.Characters
 {
+    [Serializable]
     public abstract class Character : ValueObject<Character>, IShuffledCard
     {
         public abstract string Name { get; } 

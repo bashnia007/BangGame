@@ -1,6 +1,28 @@
-﻿namespace Domain.Messages
+﻿using Domain.PlayingCards;
+using System.Collections.Generic;
+using Domain.Characters;
+using Domain.Roles;
+
+namespace Domain.Messages
 {
     public class StartGameMessage : Message
     {
+        public Role Role { get; }
+        public Character Character { get; }
+        public List<PlayingCard> Hand { get; }
+
+        public StartGameMessage(Role role, Character character, List<PlayingCard> hand, string gameId, string playerId)
+        {
+            Role = role;
+            Character = character;
+            Hand = hand;
+            GameId = gameId;
+            PlayerId = playerId;
+        }
+
+        public override void Accept(IMessageProcessor visitor)
+        {
+            visitor.ProcessStartGameMessage(this);
+        }
     }
 }

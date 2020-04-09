@@ -5,5 +5,6 @@
     /// </summary>
     public class PlayerBot : Player
     {
+        public override bool IsReadyToPlay => true;
     }
 }

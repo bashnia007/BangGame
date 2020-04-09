@@ -1,7 +1,9 @@
 ﻿using Domain.PlayingCards.Visitors;
+using System;
 
 namespace Domain.PlayingCards
 {
+    [Serializable]
     public class CarabineCard : WeaponCard
     {
         public override string Description => CardName.Carabine;

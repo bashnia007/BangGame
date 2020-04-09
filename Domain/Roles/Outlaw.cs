@@ -1,5 +1,8 @@
-﻿namespace Domain.Roles
+﻿using System;
+
+namespace Domain.Roles
 {
+    [Serializable]
     public class Outlaw : Role
     {
         public override string Description => CardName.Outlaw;

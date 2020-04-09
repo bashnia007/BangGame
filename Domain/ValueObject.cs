@@ -1,5 +1,8 @@
-﻿namespace Domain
+﻿using System;
+
+namespace Domain
 {
+    [Serializable]
     // https://enterprisecraftsmanship.com/posts/value-objects-explained/
     public abstract class ValueObject<T> where T : ValueObject<T>
     {

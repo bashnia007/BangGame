@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Domain.Game
 {
+    [Serializable]
     public class Deck<T> : Queue<T>
     {
         #region Constructors

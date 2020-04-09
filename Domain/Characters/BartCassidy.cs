@@ -1,9 +1,12 @@
-﻿namespace Domain.Characters
+﻿using System;
+
+namespace Domain.Characters
 {
     /// <summary>
     ///  Bart Cassidy (4 life points):
     /// each time he loses a life point, he immediately draws a card from the deck.
     /// </summary>
+    [Serializable]
     public class BartCassidy : Character
     {
         public override string Name => CardName.BartCassidy;

@@ -1,5 +1,8 @@
-﻿namespace Domain.Weapons
+﻿using System;
+
+namespace Domain.Weapons
 {
+    [Serializable]
     public abstract class Weapon : ValueObject<Weapon>
     {
         public abstract int Distance { get; }

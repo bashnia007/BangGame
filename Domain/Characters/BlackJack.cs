@@ -1,4 +1,6 @@
-﻿namespace Domain.Characters
+﻿using System;
+
+namespace Domain.Characters
 {
     /// <summary>
     /// Black Jack (4 life points):
@@ -6,6 +8,7 @@
     /// if it’s Heart or Diamonds (just like a “draw!”),
     /// he draws one additional card (without revealing it).
     /// </summary>
+    [Serializable]
     public class BlackJack : Character
     {
         public override string Name => CardName.BlackJack;

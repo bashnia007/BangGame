@@ -1,5 +1,8 @@
-﻿namespace Domain.PlayingCards
+﻿using System;
+
+namespace Domain.PlayingCards
 {
+    [Serializable]
     /// <summary>
     /// Cards played by putting them directly into the discard pile and
     /// applying the effect described with text or with symbols on the cards

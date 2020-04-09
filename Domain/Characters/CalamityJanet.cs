@@ -1,10 +1,14 @@
-﻿namespace Domain.Characters
+﻿﻿using System;
+
+ namespace Domain.Characters
 {
+    
     /// <summary>
     /// Calamity Janet (4 life points):
     /// she can use BANG! cards as Missed! cards and vice versa.
     /// If she plays a Missed! as a BANG!, she cannot play another BANG! card that turn (unless she has a Volcanic in play).
     /// </summary>
+    [Serializable]
     public class CalamityJanet : Character
     {
         public override string Name => CardName.CalamityJanet;
