@@ -21,7 +21,7 @@ namespace Bang.Tests.DomainUnitTests
                 game.JoinPlayer(players[i]);
             }
 
-            game.Initialize();
+            game.Start();
             
             // Act
             var sheriffPlayer = game.Players.First(p => p.PlayerTablet.IsSheriff);

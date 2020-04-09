@@ -7,65 +7,63 @@ namespace Server.Processors
 {
     public class ServerMessageProcessor : IMessageProcessor
     {
-        public List<Message> ProcessConnectedMessage(Message message)
+        public List<Message> ProcessConnectedMessage(ConnectionMessage message)
         {
             var result = new List<Message>();
-
-            var connectionMessage = (ConnectionMessage)message;
-            Lobby.SetPlayerName(connectionMessage.PlayerId, connectionMessage.Name);
+            
+            Lobby.SetPlayerName(message.PlayerId, message.Name);
 
             return result;
         }
 
-        public List<Message> ProcessCreateGameMessage(Message message)
+        public List<Message> ProcessCreateGameMessage(CreateGameMessage message)
         {
             var result = new List<Message>();
-            var createGameMessage = (CreateGameMessage)message;
 
             var player = Lobby.GetPlayer(message.PlayerId);
             var game = new Game(player);
             Lobby.AddGame(game);
 
-            createGameMessage.GameId = game.Id;
-            result.Add(createGameMessage);
+            message.GameId = game.Id;
+            result.Add(message);
 
             return result;
         }
 
-        public List<Message> ProcessGetGamesMessage(Message message)
+        public List<Message> ProcessGetGamesMessage(GetGamesMessage message)
         {
             var result = new List<Message>();
-            var getGamesMessage = (GetGamesMessage)message;
-            getGamesMessage.Games = Lobby.GetGames();
-            result.Add(getGamesMessage);
+            message.Games = Lobby.GetGames();
+            result.Add(message);
 
             return result;
         }
 
-        public List<Message> ProcessJoinGameMessage(Message message)
+        public List<Message> ProcessJoinGameMessage(JoinGameMessage message)
         {
             var result = new List<Message>();
 
-            var joinGameMessage = (JoinGameMessage)message;
-            var player = Lobby.GetPlayer(joinGameMessage.PlayerId);
-            var game = Lobby.GetGame(joinGameMessage.GameId);
+            var player = Lobby.GetPlayer(message.PlayerId);
+            var game = Lobby.GetGame(message.GameId);
 
-            joinGameMessage.IsJoined = game.JoinPlayer(player);
+            message.IsJoined = game.JoinPlayer(player);
 
-            result.Add(joinGameMessage);
+            result.Add(message);
 
             return result;
         }
 
-        public List<Message> ProcessLeaveGameMessage(Message message)
+        public List<Message> ProcessLeaveGameMessage(LeaveGameMessage message)
         {
             var result = new List<Message>();
+            
+            var player = Lobby.GetPlayer(message.PlayerId);
+            var game = Lobby.GetGame(message.GameId);
 
-            var leaveGameMessage = (LeaveGameMessage)message;
-            var player = Lobby.GetPlayer(leaveGameMessage.PlayerId);
-            var game = Lobby.GetGame(leaveGameMessage.GameId);
+            message.IsSuccess = game.KickPlayer(player);
+            result.Add(message);
 
-            if (!game.KickPlayer(player))
+            if (game.GetPlayersAmount() == 0)
             {
                 Lobby.CloseGame(game.Id);
             }
@@ -73,19 +71,17 @@ namespace Server.Processors
             return result;
         }
 
-        public List<Message> ProcessReadyToPlayMessage(Message message)
+        public List<Message> ProcessReadyToPlayMessage(ReadyToPlayMessage message)
         {
             var result = new List<Message>();
 
-            var readyToPlayMessage = (ReadyToPlayMessage)message;
-
-            var game = Lobby.GetGame(readyToPlayMessage.GameId);
-            game.SetPlayerReadyStatus(readyToPlayMessage.PlayerId, readyToPlayMessage.IsReady);
+            var game = Lobby.GetGame(message.GameId);
+            game.SetPlayerReadyStatus(message.PlayerId, message.IsReady);
 
             if (game.AllPlayersAreReady())
             {
-                Lobby.CloseGame(readyToPlayMessage.GameId);
-                game.Initialize();
+                Lobby.CloseGame(message.GameId);
+                game.Start();
                 foreach (var player in game.Players)
                 {
                     var startGameMessage = new StartGameMessage(player.Role, player.PlayerTablet.Character, 
@@ -98,7 +94,7 @@ namespace Server.Processors
             return result;
         }
 
-        public List<Message> ProcessStartGameMessage(Message message)
+        public List<Message> ProcessStartGameMessage(StartGameMessage message)
         {
             throw new NotImplementedException();
         }

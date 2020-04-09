@@ -4,7 +4,6 @@ using Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace Bang.Tests.DomainUnitTests
@@ -32,6 +31,8 @@ namespace Bang.Tests.DomainUnitTests
             const int gamesAmount = 3;
             List<string> gameIds = new List<string>();
 
+            CleanLobby();
+
             for (int i = 0; i < gamesAmount; i++)
             {
                 var game = new Game(player);
@@ -39,10 +40,7 @@ namespace Bang.Tests.DomainUnitTests
                 Lobby.AddGame(game);
             }
 
-            foreach(var id in gameIds)
-            {
-                Assert.Contains(id, Lobby.GetGames().Select(g => g.Id));
-            }
+            Assert.Equal(gameIds, Lobby.GetGames().Select(g => g.Id));
         }
         
         [Fact]
@@ -64,7 +62,7 @@ namespace Bang.Tests.DomainUnitTests
             Lobby.AddPlayer(player.Id);
             Lobby.SetPlayerName(player.Id, playerName);
 
-            Assert.Equal(Lobby.GetPlayer(player.Id).Name, playerName);
+            Assert.Equal(playerName, Lobby.GetPlayer(player.Id).Name);
         }
 
         [Fact]
@@ -85,6 +83,14 @@ namespace Bang.Tests.DomainUnitTests
         {
             var playerId = Guid.NewGuid().ToString();
             return new PlayerOnline(playerId);
+        }
+
+        private void CleanLobby()
+        {
+            foreach (var game in Lobby.GetGames())
+            {
+                Lobby.CloseGame(game.Id);
+            }
         }
     }
 }

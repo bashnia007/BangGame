@@ -44,6 +44,7 @@ namespace Bang.Tests.DomainUnitTests
         [Fact]
         public void Get_games_message_returns_list_of_games()
         {
+            CleanLobby();
             var player = CreatePlayer();
             var getGamesMessage = new GetGamesMessage();
             getGamesMessage.PlayerId = player.Id;
@@ -54,10 +55,7 @@ namespace Bang.Tests.DomainUnitTests
             var response = serverProcessor.ProcessGetGamesMessage(getGamesMessage);
             var responseGetGamesMessage = response.First() as GetGamesMessage;
 
-            foreach(var game in games)
-            {
-                Assert.Contains(game, responseGetGamesMessage.Games);
-            }
+            Assert.Equal(games.Select(g => g.Id), responseGetGamesMessage.Games.Select(g => g.Id));
         }
 
         [Fact]
@@ -74,7 +72,7 @@ namespace Bang.Tests.DomainUnitTests
             var response = serverProcessor.ProcessJoinGameMessage(joinGameMessage);
             var responseJoinGameMessage = response.First() as JoinGameMessage;
 
-            Assert.Equal(2, Lobby.GetGame(game.Id).Players.Count);
+            Assert.Equal(2, Lobby.GetGame(game.Id).GetPlayersAmount());
             Assert.True(responseJoinGameMessage.IsJoined);
         }
 
@@ -85,7 +83,7 @@ namespace Bang.Tests.DomainUnitTests
             var game = CreateGame(player);
             for (int i = 0; i < 6; i++)
             {
-                game.Players.Add(player);
+                game.JoinPlayer(player);
             }
 
             var joinGameMessage = new JoinGameMessage();
@@ -155,7 +153,7 @@ namespace Bang.Tests.DomainUnitTests
         }
 
         [Fact]
-        public void When_all_players_are_ready_initialize_game()
+        public void When_all_players_are_ready_players_receive_cards()
         {
             var player = CreatePlayer();
             var game = CreateGame(player);
@@ -180,18 +178,73 @@ namespace Bang.Tests.DomainUnitTests
 
             var serverProcessor = new ServerMessageProcessor();
             var response = serverProcessor.ProcessReadyToPlayMessage(readyToPlayMessage);
-            Assert.True(game.Players.First(p => p.Id == player.Id).IsReadyToPlay);
-
-            Assert.DoesNotContain(game, Lobby.GetGames());
-
-            Assert.Equal(game.Players.Count, response.Count);
-
-            foreach(StartGameMessage message in response)
+            
+            foreach (StartGameMessage message in response)
             {
                 Assert.NotNull(message.Role);
                 Assert.NotNull(message.Character);
                 Assert.NotNull(message.Hand);
             }
+        }
+
+        [Fact]
+        public void When_all_players_are_ready_each_player_receives_message()
+        {
+            var player = CreatePlayer();
+            var game = CreateGame(player);
+
+            for (int i = 0; i < 3; i++)
+            {
+                game.JoinPlayer(CreatePlayer());
+            }
+
+            foreach (var gamePlayer in game.Players)
+            {
+                gamePlayer.IsReadyToPlay = true;
+            }
+
+            var newPlayer = CreatePlayer();
+            game.JoinPlayer(newPlayer);
+
+            var readyToPlayMessage = new ReadyToPlayMessage();
+            readyToPlayMessage.GameId = game.Id;
+            readyToPlayMessage.PlayerId = newPlayer.Id;
+            readyToPlayMessage.IsReady = true;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessReadyToPlayMessage(readyToPlayMessage);
+
+            Assert.Equal(game.Players.Count, response.Count);
+        }
+
+        [Fact]
+        public void When_all_players_are_ready_close_game()
+        {
+            var player = CreatePlayer();
+            var game = CreateGame(player);
+
+            for (int i = 0; i < 3; i++)
+            {
+                game.JoinPlayer(CreatePlayer());
+            }
+
+            foreach (var gamePlayer in game.Players)
+            {
+                gamePlayer.IsReadyToPlay = true;
+            }
+
+            var newPlayer = CreatePlayer();
+            game.JoinPlayer(newPlayer);
+
+            var readyToPlayMessage = new ReadyToPlayMessage();
+            readyToPlayMessage.GameId = game.Id;
+            readyToPlayMessage.PlayerId = newPlayer.Id;
+            readyToPlayMessage.IsReady = true;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessReadyToPlayMessage(readyToPlayMessage);
+
+            Assert.DoesNotContain(game, Lobby.GetGames());
         }
 
         private Player CreatePlayer()
@@ -219,6 +272,14 @@ namespace Bang.Tests.DomainUnitTests
             var game = new Game(player);
             Lobby.AddGame(game);
             return game;
+        }
+
+        private void CleanLobby()
+        {
+            foreach(var game in Lobby.GetGames())
+            {
+                Lobby.CloseGame(game.Id);
+            }
         }
     }
 }
