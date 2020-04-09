@@ -1,8 +1,10 @@
-﻿using Domain.PlayingCards;
+﻿using Domain.Characters;
+using Domain.PlayingCards;
+using Domain.Roles;
+
 using System;
 using System.Collections.Generic;
-using Domain.Characters;
-using Domain.Roles;
+
 
 namespace Domain.Players
 {

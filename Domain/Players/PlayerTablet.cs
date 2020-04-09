@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Domain.Characters;
+using Domain.Exceptions;
 using Domain.PlayingCards;
+using Domain.Weapons;
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Domain.Characters;
-using Domain.Exceptions;
-using Domain.Weapons;
+
 
 namespace Domain.Players
 {

@@ -1,11 +1,13 @@
-﻿using Domain.PlayingCards;
+﻿using Domain.Characters;
+using Domain.Exceptions;
+using Domain.PlayingCards;
+using Domain.Roles;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Domain.Characters;
-using Domain.Exceptions;
-using Domain.Roles;
+
 
 namespace Domain.Game
 {
