@@ -1,7 +1,9 @@
 ﻿using Domain.PlayingCards.Visitors;
+using System;
 
 namespace Domain.PlayingCards
 {
+    [Serializable]
     public class MustangCard : LongTermFeatureCard
     {
         public override string Description => CardName.Mustang;

@@ -4,17 +4,18 @@ using System.Collections.Generic;
 
 namespace Domain.Players
 {
+    [Serializable]
     public abstract class Player
     {
-        public string Id { get; }
+        public string Id { get; protected set; }
         public string Name { get; set; }
         public Role.Role Role { get; private set; }
         public PlayerTablet PlayerTablet { get; private set; }
         public List<PlayingCard> PlayerHand { get; private set; }
+        public virtual bool IsReadyToPlay { get; set; }
 
         public Player()
         {
-            Id = Guid.NewGuid().ToString();
             PlayerHand = new List<PlayingCard>();
         }
 

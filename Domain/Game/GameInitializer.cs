@@ -1,9 +1,9 @@
-﻿using Domain.PlayingCards;
+﻿using Domain.Exceptions;
+using Domain.PlayingCards;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Domain.Exceptions;
 
 namespace Domain.Game
 {

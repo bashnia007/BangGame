@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Domain.Exceptions;
 using Domain.PlayingCards;
+using Domain.Weapons;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Domain.Exceptions;
-using Domain.Weapons;
 
 namespace Domain.Players
 {
+    [Serializable]
     /// <summary>
     /// Describes all VISIBLE FOR EVERYONE information about player
     /// </summary>

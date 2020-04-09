@@ -1,55 +1,73 @@
 ﻿using Domain.Players;
-using Domain.PlayingCards;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Domain.Game
 {
+    [Serializable]
     public class Game
     {
         public string Id { get; }
         public List<Player> Players { get; }
-        public Deck<PlayingCard> Deck { get; set; }
-        public Stack<PlayingCard> DiscardedCards { get; set; }
+        public Gameplay Gameplay;
 
-        public Game(List<Player> players)
+        private readonly object lockObj;
+        
+        public Game(Player player)
         {
             Id = Guid.NewGuid().ToString();
-            Players = players;
-            DiscardedCards = new Stack<PlayingCard>();
-            Deck = new Deck<PlayingCard>();
+            Players = new List<Player>();
+            lockObj = new object();
+            Players.Add(player);
         }
-
-        public void Initialize()
+        
+        public bool JoinPlayer(Player player)
         {
-            Deck = new Deck<PlayingCard>(GameInitializer.PlayingCards.Cast<PlayingCard>());
-            var roles = new Deck<Role.Role>(GameInitializer.CreateRolesForGame(Players.Count).Cast<Role.Role>());
-            var characters = new Deck<Character.Character>(GameInitializer.Characters.Cast<Character.Character>());
-
-            foreach (var player in Players)
+            lock(lockObj)
             {
-                player.SetInfo(roles.Dequeue(), characters.Dequeue());
-                FillPlayerHand(player);
-            }
-        }
-
-        private void FillPlayerHand(Player player)
-        {
-            while(player.PlayerTablet.Health > player.PlayerHand.Count)
-            {
-                if (Deck.Count == 0)
+                if (Players.Count < 7)
                 {
-                    ResetDeck();
+                    Players.Add(player);
+                    return true;
                 }
-                player.PlayerHand.Add(Deck.Dequeue());
+                return false;
+            }
+        }
+        
+        public bool KickPlayer(Player player)
+        {
+            lock(lockObj)
+            {
+                if (Players.Count > 0)
+                {
+                    Players.Remove(player);
+                    return true;
+                }
+                return false;
             }
         }
 
-        private void ResetDeck()
+        public int GetPlayersAmount()
         {
-            Deck = new Deck<PlayingCard>(DiscardedCards);
-            DiscardedCards = new Stack<PlayingCard>();
+            return Players.Count;
+        }
+
+        public void SetPlayerReadyStatus(string playerId, bool readyStatus)
+        {
+            var player = Players.First(p => p.Id == playerId);
+            player.IsReadyToPlay = readyStatus;
+        }
+
+        public bool AllPlayersAreReady()
+        {
+            return Players.All(p => p.IsReadyToPlay) && Players.Count > 3;
+        }
+
+        public void Start()
+        {
+            Gameplay = new Gameplay();
+            Gameplay.Initialize(Players);
         }
     }
 }

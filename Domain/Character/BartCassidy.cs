@@ -1,5 +1,8 @@
-﻿namespace Domain.Character
+﻿using System;
+
+namespace Domain.Character
 {
+    [Serializable]
     /// <summary>
     ///  Bart Cassidy (4 life points):
     /// each time he loses a life point, he immediately draws a card from the deck.

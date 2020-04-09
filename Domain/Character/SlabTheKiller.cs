@@ -1,5 +1,8 @@
-﻿namespace Domain.Character
+﻿using System;
+
+namespace Domain.Character
 {
+    [Serializable]
     /// <summary>
     /// Slab the Killer (4 life points):
     /// players trying to cancel his BANG! cards need to play 2 Missed!.

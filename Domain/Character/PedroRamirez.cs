@@ -1,5 +1,8 @@
-﻿namespace Domain.Character
+﻿using System;
+
+namespace Domain.Character
 {
+    [Serializable]
     /// <summary>
     /// Pedro Ramirez (4 life points):
     /// during phase 1 of his turn, he may choose to draw the first card from the top of the discard pile or from the deck.

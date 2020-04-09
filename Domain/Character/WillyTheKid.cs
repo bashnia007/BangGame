@@ -1,5 +1,8 @@
-﻿namespace Domain.Character
+﻿using System;
+
+namespace Domain.Character
 {
+    [Serializable]
     /// <summary>
     /// Willy the Kid (4 life points): he can play any number of BANG! cards during his turn
     /// </summary>

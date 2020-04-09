@@ -1,5 +1,8 @@
-﻿namespace Domain.Character
+﻿using System;
+
+namespace Domain.Character
 {
+    [Serializable]
     /// <summary>
     /// Suzy Lafayette (4 life points):
     /// as soon as she has no cards in her hand, she draws a card from the draw pile.

@@ -1,7 +1,8 @@
-﻿using Domain.Players;
+﻿using System;
 
 namespace Domain.PlayingCards
 {
+    [Serializable]
     public abstract class WeaponCard : LongTermFeatureCard
     {
         

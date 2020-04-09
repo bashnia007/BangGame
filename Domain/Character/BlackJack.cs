@@ -1,5 +1,8 @@
-﻿namespace Domain.Character
+﻿using System;
+
+namespace Domain.Character
 {
+    [Serializable]
     /// <summary>
     /// Black Jack (4 life points):
     /// during phase 1 of his turn, he must show the second card he draws:
