@@ -1,5 +1,8 @@
-﻿using Domain.Players;
+﻿using Domain.Characters;
+using Domain.Players;
 using Domain.PlayingCards;
+using Domain.Roles;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +27,8 @@ namespace Domain.Game
 
         private void ProvideCardsForPlayers()
         {
-            var roles = new Deck<Role.Role>(GameInitializer.CreateRolesForGame(players.Count).Cast<Role.Role>());
-            var characters = new Deck<Character.Character>(GameInitializer.Characters.Cast<Character.Character>());
+            var roles = new Deck<Role>(GameInitializer.CreateRolesForGame(players.Count).Cast<Role>());
+            var characters = new Deck<Character>(GameInitializer.Characters.Cast<Character>());
 
             foreach (var player in players)
             {
