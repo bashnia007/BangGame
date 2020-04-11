@@ -44,7 +44,7 @@ namespace Domain.Game
         {
             lock(lockObj)
             {
-                if (Players.Count > 0)
+                if (Players.Count>0)
                 {
                     Players.Remove(player);
                     return true;
