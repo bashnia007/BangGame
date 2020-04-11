@@ -1,4 +1,5 @@
 ﻿using Domain.Messages;
+using NLog;
 using Server.Processors;
 using System;
 using System.Net.Sockets;
@@ -19,12 +20,15 @@ namespace Server
         public TcpClient TcpClient;
         private ServerMessageProcessor messageProcessor;
 
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public Client(TcpClient tcpClient)
         {
             Id = Guid.NewGuid().ToString();
             TcpClient = tcpClient;
             messageProcessor = new ServerMessageProcessor();
             Lobby.AddPlayer(Id);
+            Logger.Debug("Client was created");
         }
 
         public void Process()
@@ -34,6 +38,7 @@ namespace Server
             {
                 _stream = TcpClient.GetStream();
 
+                Logger.Debug("Start receiveing messages");
                 // receiving messages from client
                 while (true)
                 {
@@ -42,6 +47,7 @@ namespace Server
             }
             catch (Exception exception)
             {
+                Logger.Error("Receieving messages was stopped due to exception: " + exception.Message);
                 Console.WriteLine(exception.Message);
             }
             finally
@@ -56,7 +62,11 @@ namespace Server
             IFormatter formatter = new BinaryFormatter();
             Message message = (Message)formatter.Deserialize(_stream);
 
+            Logger.Debug("Start processing message");
+
             message.Accept(messageProcessor);
+
+            Logger.Debug("Message was processed");
 
             return message;
         }

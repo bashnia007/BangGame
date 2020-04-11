@@ -2,7 +2,7 @@
 using Domain.Players;
 using Domain.PlayingCards;
 using Domain.Roles;
-
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,8 @@ namespace Domain.Game
         public Gameplay Gameplay;
 
         private readonly object lockObj;
-        
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public Game(Player player)
         {
             Id = Guid.NewGuid().ToString();
@@ -33,9 +34,11 @@ namespace Domain.Game
             {
                 if (Players.Count < 7)
                 {
+                    Logger.Debug($"Player {player.Id} was joined");
                     Players.Add(player);
                     return true;
                 }
+                Logger.Debug($"Can't join player. Game already has maximum amount of players");
                 return false;
             }
         }
@@ -46,9 +49,11 @@ namespace Domain.Game
             {
                 if (Players.Count > 0)
                 {
+                    Logger.Debug($"Player {player.Id} was kicked");
                     Players.Remove(player);
                     return true;
                 }
+                Logger.Warn($"Player {player.Id} wasn't kicked. Amount of players = {Players.Count}");
                 return false;
             }
         }

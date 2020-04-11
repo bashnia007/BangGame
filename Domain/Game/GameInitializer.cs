@@ -2,7 +2,7 @@
 using Domain.Exceptions;
 using Domain.PlayingCards;
 using Domain.Roles;
-
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +15,8 @@ namespace Domain.Game
     {
         public static List<IShuffledCard> PlayingCards { get; }
         public static List<IShuffledCard> Characters { get; }
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         static GameInitializer()
         {
@@ -49,6 +51,7 @@ namespace Domain.Game
                     roles.Add(new Deputy());
                     break;
                 default:
+                    Logger.Error("Roles were not created. More than 7 players!");
                     throw new AmountPlayersException(playersAmount);
             }
 
