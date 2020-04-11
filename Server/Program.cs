@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Threading;
 
 namespace Server
@@ -7,21 +8,22 @@ namespace Server
     {
         private static Server _server;
         private static Thread _listenThread;
-        
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         static void Main(string[] args)
         {
             try
             {
+                Logger.Debug("Server started");
                 _server = new Server();
                 _listenThread = new Thread(_server.Listen);
                 _listenThread.Start(); 
             }
             catch (Exception ex)
             {
+                Logger.Fatal("Server stopped due to exception: " + ex.Message);
                 Console.WriteLine(ex.Message);
-            }
-            finally
-            {
                 if (_server != null)
                 {
                     _server.StopServer();

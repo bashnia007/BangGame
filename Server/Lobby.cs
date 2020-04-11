@@ -1,5 +1,6 @@
 ﻿using Domain.Game;
 using Domain.Players;
+using NLog;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace Server
         private static List<Game> games = new List<Game>();
         private static BlockingCollection<Player> players = new BlockingCollection<Player>();
         private static object lockObject = new object();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public static List<Game> GetGames()
         {
@@ -21,7 +23,9 @@ namespace Server
         {
             lock(lockObject)
             {
+                Logger.Debug("Adding new game with id=" + game.Id);
                 games.Add(game);
+                Logger.Debug("Game was added");
             }
         }
 
@@ -34,8 +38,10 @@ namespace Server
         {
             lock(lockObject)
             {
+                Logger.Debug("Closing game with id=" + gameId);
                 var game = GetGame(gameId);
                 games.Remove(game);
+                Logger.Debug("Game was removed");
             }
         }
 

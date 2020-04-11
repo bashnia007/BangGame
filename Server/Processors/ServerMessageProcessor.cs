@@ -1,5 +1,6 @@
 ﻿using Domain.Game;
 using Domain.Messages;
+using NLog;
 using System;
 using System.Collections.Generic;
 
@@ -7,8 +8,12 @@ namespace Server.Processors
 {
     public class ServerMessageProcessor : IMessageProcessor
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public List<Message> ProcessConnectedMessage(ConnectionMessage message)
         {
+            Logger.Debug("Received Connection Message");
+
             var result = new List<Message>();
             
             Lobby.SetPlayerName(message.PlayerId, message.Name);
@@ -18,6 +23,8 @@ namespace Server.Processors
 
         public List<Message> ProcessCreateGameMessage(CreateGameMessage message)
         {
+            Logger.Debug("Received Create Game Message");
+
             var result = new List<Message>();
 
             var player = Lobby.GetPlayer(message.PlayerId);
@@ -32,6 +39,8 @@ namespace Server.Processors
 
         public List<Message> ProcessGetGamesMessage(GetGamesMessage message)
         {
+            Logger.Debug("Received Get Games Message");
+
             var result = new List<Message>();
             message.Games = Lobby.GetGames();
             result.Add(message);
@@ -41,12 +50,15 @@ namespace Server.Processors
 
         public List<Message> ProcessJoinGameMessage(JoinGameMessage message)
         {
+            Logger.Debug("Received Join Game Message");
+
             var result = new List<Message>();
 
             var player = Lobby.GetPlayer(message.PlayerId);
             var game = Lobby.GetGame(message.GameId);
 
             message.IsJoined = game.JoinPlayer(player);
+            Logger.Debug("Player joined: " + message.IsJoined);
 
             result.Add(message);
 
@@ -55,6 +67,7 @@ namespace Server.Processors
 
         public List<Message> ProcessLeaveGameMessage(LeaveGameMessage message)
         {
+            Logger.Debug("Received Leave Game Message");
             var result = new List<Message>();
             
             var player = Lobby.GetPlayer(message.PlayerId);
@@ -65,6 +78,7 @@ namespace Server.Processors
 
             if (game.GetPlayersAmount() == 0)
             {
+                Logger.Debug($"Closing game with id={game.Id} due to empty list of players");
                 Lobby.CloseGame(game.Id);
             }
 
@@ -73,6 +87,8 @@ namespace Server.Processors
 
         public List<Message> ProcessReadyToPlayMessage(ReadyToPlayMessage message)
         {
+            Logger.Debug("Received Ready to Play Message");
+
             var result = new List<Message>();
 
             var game = Lobby.GetGame(message.GameId);
@@ -80,14 +96,19 @@ namespace Server.Processors
 
             if (game.AllPlayersAreReady())
             {
+                Logger.Debug("All players are ready. Let's start!");
+
                 Lobby.CloseGame(message.GameId);
                 game.Start();
+
                 foreach (var player in game.Players)
                 {
                     var startGameMessage = new StartGameMessage(player.Role, player.PlayerTablet.Character, 
                         player.PlayerHand, game.Id, player.Id);
 
                     result.Add(startGameMessage);
+                    Logger.Debug($"Player with id={player.Id} received: {player.Role.Description} role " +
+                        $"and {player.PlayerTablet.Character} character");
                 }
             }
 
