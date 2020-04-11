@@ -1,4 +1,6 @@
-﻿﻿using System;
+﻿using Domain.Characters.Visitors;
+using System;
+
 
 namespace Domain.Characters
 {
@@ -7,5 +9,6 @@ namespace Domain.Characters
     {
         public abstract string Name { get; } 
         public abstract int LifePoints { get; }
+        internal abstract T Accept<T>(ICharacterVisitor<T> visitor);
     }
 }

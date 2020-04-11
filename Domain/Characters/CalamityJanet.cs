@@ -1,4 +1,5 @@
 ﻿﻿using System;
+ using Domain.Characters.Visitors;
 
  namespace Domain.Characters
 {
@@ -13,14 +14,11 @@
     {
         public override string Name => CardName.CalamityJanet;
         public override int LifePoints => 4;
-        protected override bool EqualsCore(Character other)
-        {
-            return other is CalamityJanet;
-        }
+        internal override T Accept<T>(ICharacterVisitor<T> visitor) => visitor.Visit(this);
+        
 
-        protected override int GetHashCodeCore()
-        {
-            return typeof(CalamityJanet).GetHashCode();
-        }
+        protected override bool EqualsCore(Character other) => other is CalamityJanet;
+
+        protected override int GetHashCodeCore() => typeof(CalamityJanet).GetHashCode();
     }
 }
