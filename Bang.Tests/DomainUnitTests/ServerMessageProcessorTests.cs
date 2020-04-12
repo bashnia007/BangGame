@@ -12,6 +12,8 @@ namespace Bang.Tests.DomainUnitTests
 {
     public class ServerMessageProcessorTests
     {
+        #region Tests
+
         [Fact]
         public void Connected_player_sets_his_name()
         {
@@ -218,7 +220,7 @@ namespace Bang.Tests.DomainUnitTests
         }
 
         [Fact]
-        public void When_all_players_are_ready_close_game()
+        public void When_all_players_are_ready_and_game_started_it_is_not_visible_in_lobby()
         {
             var player = CreatePlayer();
             var game = CreateGame(player);
@@ -246,6 +248,10 @@ namespace Bang.Tests.DomainUnitTests
 
             Assert.DoesNotContain(game, Lobby.GetGames());
         }
+        
+        #endregion
+
+        #region Private methods
 
         private Player CreatePlayer()
         {
@@ -281,5 +287,7 @@ namespace Bang.Tests.DomainUnitTests
                 Lobby.CloseGame(game.Id);
             }
         }
+
+        #endregion
     }
 }

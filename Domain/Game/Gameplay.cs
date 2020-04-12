@@ -25,6 +25,35 @@ namespace Domain.Game
             ProvideCardsForPlayers();
         }
 
+        public void DropCardsFromHand(List<PlayingCard> cardsToDrop, string playerId)
+        {
+            var player = players.First(p => p.Id == playerId);
+            foreach (var card in cardsToDrop)
+            {
+                discardedCards.Push(card);
+                player.PlayerHand.Remove(card);
+            }
+        }
+
+        public List<PlayingCard> TakeCardsOnHand(short amount, string playerId)
+        {
+            List<PlayingCard> result = new List<PlayingCard>();
+            var player = players.First(p => p.Id == playerId);
+
+            for (short i = 0; i < amount; i++)
+            {
+                if (deck.Count == 0)
+                {
+                    ResetDeck();
+                }
+                var card = deck.Dequeue();
+                result.Add(card);
+                player.PlayerHand.Add(card);
+            }
+
+            return result;
+        }
+
         private void ProvideCardsForPlayers()
         {
             var roles = new Deck<Role>(GameInitializer.CreateRolesForGame(players.Count).Cast<Role>());

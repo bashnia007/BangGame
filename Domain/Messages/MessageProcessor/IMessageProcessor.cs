@@ -11,5 +11,8 @@ namespace Domain.Messages
         List<Message> ProcessStartGameMessage(StartGameMessage message);
         List<Message> ProcessConnectedMessage(ConnectionMessage message);
         List<Message> ProcessLeaveGameMessage(LeaveGameMessage message);
+
+        List<Message> ProcessTakeCardsMessage(TakeCardsMessage message);
+        List<Message> ProcessDropCardsMessage(DropCardsMessage message);
     }
 }

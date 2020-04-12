@@ -98,7 +98,6 @@ namespace Server.Processors
             {
                 Logger.Debug("All players are ready. Let's start!");
 
-                Lobby.CloseGame(message.GameId);
                 game.Start();
 
                 foreach (var player in game.Players)
@@ -118,6 +117,28 @@ namespace Server.Processors
         public List<Message> ProcessStartGameMessage(StartGameMessage message)
         {
             throw new NotImplementedException();
+        }
+
+        public List<Message> ProcessTakeCardsMessage(TakeCardsMessage message)
+        {
+            var result = new List<Message>();
+
+            var game = Lobby.GetGame(message.GameId);
+
+            message = new TakeCardsMessage(game.Gameplay.TakeCardsOnHand(message.CardsToTakeAmount, message.PlayerId));
+            result.Add(message);
+
+            return result;
+        }
+
+        public List<Message> ProcessDropCardsMessage(DropCardsMessage message)
+        {
+            var result = new List<Message>();
+
+            var game = Lobby.GetGame(message.GameId);
+            game.Gameplay.DropCardsFromHand(message.CardsToDrop, message.PlayerId);
+
+            return result;
         }
     }
 }
