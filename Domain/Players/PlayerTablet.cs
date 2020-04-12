@@ -31,7 +31,7 @@ namespace Domain.Players
         public Weapon Weapon { get; private set; }
         public Character Character { get; }
         private readonly List<LongTermFeatureCard> _cards = new List<LongTermFeatureCard>();
-        public ReadOnlyCollection<LongTermFeatureCard> LongTermFeatureCards => _cards.AsReadOnly();
+        public IReadOnlyList<LongTermFeatureCard> LongTermFeatureCards => _cards;
         public bool IsSheriff { get; }
 
         public event EventHandler<LongTermFeatureCard> CardDropped;
