@@ -259,10 +259,12 @@ namespace Bang.Tests.DomainUnitTests
             message.GameId = game.Id;
             message.PlayerId = player.Id;
 
+            int cardsBeforeDrop = player.PlayerHand.Count;
+
             var serverProcessor = new ServerMessageProcessor();
             var response = serverProcessor.ProcessDropCardsMessage(message);
 
-            Assert.DoesNotContain(cardsToDrop.First(), player.PlayerHand);
+            Assert.Equal(cardsBeforeDrop - 1, player.PlayerHand.Count);
         }
 
         [Fact]
@@ -280,23 +282,7 @@ namespace Bang.Tests.DomainUnitTests
 
             Assert.Equal(cardsToDrop.First(), game.Gameplay.GetTopCardFromDiscarded());
         }
-
-        [Fact]
-        public void Drop_cards_message_removes_card_from_hand()
-        {
-            var game = CreateAndStartGame();
-            var player = game.Players.First();
-            var cardsToDrop = player.PlayerHand.Take(1).ToList();
-            var message = new DropCardsMessage(cardsToDrop);
-            message.GameId = game.Id;
-            message.PlayerId = player.Id;
-
-            var serverProcessor = new ServerMessageProcessor();
-            var response = serverProcessor.ProcessDropCardsMessage(message);
-
-            Assert.DoesNotContain(cardsToDrop.First(), player.PlayerHand);
-        }
-
+        
         [Fact]
         public void Take_cards_message_adds_cards_to_hand()
         {
