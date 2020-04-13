@@ -10,34 +10,6 @@ namespace Bang.Tests.DomainUnitTests
 {
     public class GameTests
     {
-        [Fact]
-        public void Drop_cards_removes_cards_from_hand()
-        {
-            var game = CreateAndStartGame();
-            var player = game.Players.First();
-            var cardsToDrop = player.PlayerHand.Take(2).ToList();
-            game.Gameplay.DropCardsFromHand(cardsToDrop, player.Id);
-
-            foreach(var card in cardsToDrop)
-            {
-                Assert.DoesNotContain(card, player.PlayerHand);
-            }
-        }
-
-        [Fact]
-        public void Take_cards_adds_cards_on_hand()
-        {
-            const int cardsToTake = 3;
-
-            var game = CreateAndStartGame();
-            var player = game.Players.First();
-            int cardsOnHandBeforeTake = player.PlayerHand.Count;
-
-            game.Gameplay.TakeCardsOnHand(cardsToTake, player.Id);
-
-            Assert.Equal(cardsOnHandBeforeTake + cardsToTake, player.PlayerHand.Count);
-        }
-
         #region Private methods
 
         private Player CreatePlayer()

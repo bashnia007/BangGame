@@ -3,6 +3,7 @@ using Domain.Messages;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Processors
 {
@@ -124,8 +125,8 @@ namespace Server.Processors
             var result = new List<Message>();
 
             var game = Lobby.GetGame(message.GameId);
-
-            message = new TakeCardsMessage(game.Gameplay.TakeCardsOnHand(message.CardsToTakeAmount, message.PlayerId));
+            var player = game.Players.First(p => p.Id == message.PlayerId);
+            message = new TakeCardsMessage(player.TakeCards(message.CardsToTakeAmount));
             result.Add(message);
 
             return result;
@@ -136,7 +137,8 @@ namespace Server.Processors
             var result = new List<Message>();
 
             var game = Lobby.GetGame(message.GameId);
-            game.Gameplay.DropCardsFromHand(message.CardsToDrop, message.PlayerId);
+            var player = game.Players.First(p => p.Id == message.PlayerId);
+            player.DropCards(message.CardsToDrop);
 
             return result;
         }
