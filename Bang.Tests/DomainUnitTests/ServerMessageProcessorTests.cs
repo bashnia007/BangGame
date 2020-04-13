@@ -12,6 +12,8 @@ namespace Bang.Tests.DomainUnitTests
 {
     public class ServerMessageProcessorTests
     {
+        #region Tests
+
         [Fact]
         public void Connected_player_sets_his_name()
         {
@@ -218,7 +220,7 @@ namespace Bang.Tests.DomainUnitTests
         }
 
         [Fact]
-        public void When_all_players_are_ready_close_game()
+        public void When_all_players_are_ready_and_game_started_it_is_not_visible_in_lobby()
         {
             var player = CreatePlayer();
             var game = CreateGame(player);
@@ -246,6 +248,63 @@ namespace Bang.Tests.DomainUnitTests
 
             Assert.DoesNotContain(game, Lobby.GetGames());
         }
+
+        [Fact]
+        public void Drop_cards_message_drops_cards_from_hand()
+        {
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            var cardsToDrop = player.PlayerHand.Take(1).ToList();
+            var message = new DropCardsMessage(cardsToDrop);
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+
+            int cardsBeforeDrop = player.PlayerHand.Count;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessDropCardsMessage(message);
+
+            Assert.Equal(cardsBeforeDrop - 1, player.PlayerHand.Count);
+        }
+
+        [Fact]
+        public void Drop_cards_message_adds_card_into_discarded()
+        {
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            var cardsToDrop = player.PlayerHand.Take(1).ToList();
+            var message = new DropCardsMessage(cardsToDrop);
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessDropCardsMessage(message);
+
+            Assert.Equal(cardsToDrop.First(), game.Gameplay.GetTopCardFromDiscarded());
+        }
+        
+        [Fact]
+        public void Take_cards_message_adds_cards_to_hand()
+        {
+            const int cardsToTake = 3;
+
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            var message = new TakeCardsMessage(cardsToTake);
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+
+            var cardsAmountBeforeMessage = player.PlayerHand.Count;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessTakeCardsMessage(message);
+
+            Assert.Equal(cardsAmountBeforeMessage + cardsToTake, player.PlayerHand.Count);
+        }
+        
+        #endregion
+
+        #region Private methods
 
         private Player CreatePlayer()
         {
@@ -281,5 +340,22 @@ namespace Bang.Tests.DomainUnitTests
                 Lobby.CloseGame(game.Id);
             }
         }
+
+        private Game CreateAndStartGame()
+        {
+            var player = CreatePlayer();
+            var game = CreateGame(player);
+
+            for (int i = 0; i < 3; i++)
+            {
+                game.JoinPlayer(CreatePlayer());
+            }
+
+            game.Start();
+
+            return game;
+        }
+
+        #endregion
     }
 }

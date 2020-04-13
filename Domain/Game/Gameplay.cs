@@ -21,8 +21,44 @@ namespace Domain.Game
             discardedCards = new Stack<PlayingCard>();
             this.players = players;
             deck = new Deck<PlayingCard>(GameInitializer.PlayingCards.Cast<PlayingCard>());
+            deck.Shuffle();
+
+            foreach (var player in this.players)
+            {
+                player.CardsDropped += DropCardsFromHand;
+                player.CardsTaken += TakeCardsOnHand;
+            }
 
             ProvideCardsForPlayers();
+        }
+
+        public PlayingCard GetTopCardFromDiscarded()
+        {
+            return discardedCards.Peek();
+        }
+
+        private void DropCardsFromHand(List<PlayingCard> cardsToDrop, string playerId)
+        {
+            foreach (var card in cardsToDrop)
+            {
+                discardedCards.Push(card);
+            }
+        }
+
+        private List<PlayingCard> TakeCardsOnHand(short amount, string playerId)
+        {
+            var result = new List<PlayingCard>();
+
+            for (short i = 0; i < amount; i++)
+            {
+                if (deck.Count == 0)
+                {
+                    ResetDeck();
+                }
+                result.Add(deck.Dequeue());
+            }
+
+            return result;
         }
 
         private void ProvideCardsForPlayers()

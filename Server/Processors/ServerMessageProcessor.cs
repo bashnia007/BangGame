@@ -3,6 +3,7 @@ using Domain.Messages;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Processors
 {
@@ -98,7 +99,6 @@ namespace Server.Processors
             {
                 Logger.Debug("All players are ready. Let's start!");
 
-                Lobby.CloseGame(message.GameId);
                 game.Start();
 
                 foreach (var player in game.Players)
@@ -118,6 +118,29 @@ namespace Server.Processors
         public List<Message> ProcessStartGameMessage(StartGameMessage message)
         {
             throw new NotImplementedException();
+        }
+
+        public List<Message> ProcessTakeCardsMessage(TakeCardsMessage message)
+        {
+            var result = new List<Message>();
+
+            var game = Lobby.GetGame(message.GameId);
+            var player = game.Players.First(p => p.Id == message.PlayerId);
+            message = new TakeCardsMessage(player.TakeCards(message.CardsToTakeAmount));
+            result.Add(message);
+
+            return result;
+        }
+
+        public List<Message> ProcessDropCardsMessage(DropCardsMessage message)
+        {
+            var result = new List<Message>();
+
+            var game = Lobby.GetGame(message.GameId);
+            var player = game.Players.First(p => p.Id == message.PlayerId);
+            player.DropCards(message.CardsToDrop);
+
+            return result;
         }
     }
 }

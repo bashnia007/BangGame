@@ -14,9 +14,13 @@ namespace Server
         private static object lockObject = new object();
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        /// <summary>
+        /// Returns list of not started games
+        /// </summary>
+        /// <returns></returns>
         public static List<Game> GetGames()
         {
-            return games.ToList();
+            return games.Where(g => !g.IsStarted).ToList();
         }
 
         public static void AddGame(Game game)
@@ -29,11 +33,20 @@ namespace Server
             }
         }
 
+        /// <summary>
+        /// Returns specific game, even started, by id
+        /// </summary>
+        /// <param name="gameId"></param>
+        /// <returns></returns>
         public static Game GetGame(string gameId)
         {
             return games.FirstOrDefault(g => g.Id == gameId);
         }
 
+        /// <summary>
+        /// Removes game from lobby
+        /// </summary>
+        /// <param name="gameId"></param>
         public static void CloseGame(string gameId)
         {
             lock(lockObject)

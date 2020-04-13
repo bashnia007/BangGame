@@ -18,6 +18,11 @@ namespace Domain.Players
         public List<PlayingCard> PlayerHand { get; private set; }
         public virtual bool IsReadyToPlay { get; set; }
 
+        public delegate void DropCardsHandler(List<PlayingCard> cardsToDrop, string playerId);
+        public delegate List<PlayingCard> TakeCardsHandler(short amount, string playerId);
+        public event DropCardsHandler CardsDropped;
+        public event TakeCardsHandler CardsTaken;
+
         public Player()
         {
             PlayerHand = new List<PlayingCard>();
@@ -27,6 +32,24 @@ namespace Domain.Players
         {
             Role = role;
             PlayerTablet = new PlayerTablet(character, role is Sheriff);
+        }
+
+        public void DropCards(List<PlayingCard> cardsToDrop)
+        {
+            CardsDropped?.Invoke(cardsToDrop, Id);
+
+            foreach (var card in cardsToDrop)
+            {
+                PlayerHand.Remove(card);
+            }
+        }
+
+        public List<PlayingCard> TakeCards(short amount)
+        {
+            var newCards = CardsTaken?.Invoke(amount, Id);
+            PlayerHand.AddRange(newCards);
+
+            return newCards;
         }
     }
 }

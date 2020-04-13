@@ -1,7 +1,4 @@
-﻿using Domain.Characters;
-using Domain.Players;
-using Domain.PlayingCards;
-using Domain.Roles;
+﻿using Domain.Players;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -16,6 +13,7 @@ namespace Domain.Game
         public string Id { get; }
         public List<Player> Players { get; }
         public Gameplay Gameplay;
+        public bool IsStarted { get; private set; }
 
         private readonly object lockObj;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -26,6 +24,7 @@ namespace Domain.Game
             Players = new List<Player>();
             lockObj = new object();
             Players.Add(player);
+            IsStarted = false;
         }
         
         public bool JoinPlayer(Player player)
@@ -78,6 +77,7 @@ namespace Domain.Game
         {
             Gameplay = new Gameplay();
             Gameplay.Initialize(Players);
+            IsStarted = true;
         }
     }
 }
