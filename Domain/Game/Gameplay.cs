@@ -39,18 +39,15 @@ namespace Domain.Game
 
         private void DropCardsFromHand(List<PlayingCard> cardsToDrop, string playerId)
         {
-            var player = players.First(p => p.Id == playerId);
             foreach (var card in cardsToDrop)
             {
                 discardedCards.Push(card);
-                player.PlayerHand.Remove(card);
             }
         }
 
         private List<PlayingCard> TakeCardsOnHand(short amount, string playerId)
         {
             var result = new List<PlayingCard>();
-            var player = players.First(p => p.Id == playerId);
 
             for (short i = 0; i < amount; i++)
             {
@@ -58,9 +55,7 @@ namespace Domain.Game
                 {
                     ResetDeck();
                 }
-                var card = deck.Dequeue();
-                result.Add(card);
-                player.PlayerHand.Add(card);
+                result.Add(deck.Dequeue());
             }
 
             return result;

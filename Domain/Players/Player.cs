@@ -37,11 +37,19 @@ namespace Domain.Players
         public void DropCards(List<PlayingCard> cardsToDrop)
         {
             CardsDropped?.Invoke(cardsToDrop, Id);
+
+            foreach (var card in cardsToDrop)
+            {
+                PlayerHand.Remove(card);
+            }
         }
 
         public List<PlayingCard> TakeCards(short amount)
         {
-            return CardsTaken?.Invoke(amount, Id);
+            var newCards = CardsTaken?.Invoke(amount, Id);
+            PlayerHand.AddRange(newCards);
+
+            return newCards;
         }
     }
 }
