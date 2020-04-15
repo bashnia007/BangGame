@@ -8,6 +8,7 @@ using Xunit;
 
 namespace Bang.Tests.DomainUnitTests
 {
+    [Collection("Lobby affecting collection")]
     public class LobbyTests
     {
         [Fact]
