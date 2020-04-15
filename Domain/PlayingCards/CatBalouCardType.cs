@@ -3,18 +3,18 @@
 namespace Domain.PlayingCards
 {
     [Serializable]
-    public class CatBalouCard : PlayAndDiscardCard
+    public class CatBalouCardType : PlayAndDiscardCardType
     {
         public override string Description => CardName.CatBalou; 
         
-        protected override bool EqualsCore(PlayingCard other)
+        protected override bool EqualsCore(CardType other)
         {
-            return other is CatBalouCard;
+            return other is CatBalouCardType;
         }
 
         protected override int GetHashCodeCore()
         {
-            return typeof(CatBalouCard).GetHashCode();
+            return typeof(CatBalouCardType).GetHashCode();
         }
     }
 }

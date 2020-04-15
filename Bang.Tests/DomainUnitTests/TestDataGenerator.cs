@@ -33,34 +33,34 @@ namespace Bang.Tests.DomainUnitTests
         public static IEnumerable<object[]> WeaponCards =>
             new List<object[]>
             {
-                new []{new VolcanicCard()},
-                new []{new SchofieldCard()},
-                new []{new RemingtonCard()},
-                new []{new CarabineCard()},
-                new []{new WinchesterCard()}
+                new []{new VolcanicCardType()},
+                new []{new SchofieldCardType()},
+                new []{new RemingtonCardType()},
+                new []{new CarabineCardType()},
+                new []{new WinchesterCardType()}
             };
         
         public static IEnumerable<object[]> LongTermCards => 
             new List<object[]>
             {
-                new[] {new ScopeCard()},
-                new[] {new MustangCard()},
-                new[] {new BarrelCard()},
-                new[] {new JailCard()},
-                new[] {new DynamiteCard()}
+                new[] {new ScopeCardType()},
+                new[] {new MustangCardType()},
+                new[] {new BarrelCardType()},
+                new[] {new JailCardType()},
+                new[] {new DynamiteCardType()}
             }.Concat(WeaponCards);
         
         public static IEnumerable<object[]> DifferentWeapons
         {
             get
             {
-                var weapons = new List<WeaponCard>
+                var weapons = new List<WeaponCardType>
                 {
-                    new VolcanicCard(),
-                    new SchofieldCard(),
-                    new RemingtonCard(),
-                    new CarabineCard(),
-                    new WinchesterCard()
+                    new VolcanicCardType(),
+                    new SchofieldCardType(),
+                    new RemingtonCardType(),
+                    new CarabineCardType(),
+                    new WinchesterCardType()
                 };
                 
                 foreach (var firstWeapon in weapons)

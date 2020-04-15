@@ -9,9 +9,9 @@ namespace Domain.Messages
     {
         public Role Role { get; }
         public Character Character { get; }
-        public List<PlayingCard> Hand { get; }
+        public List<BangGameCard> Hand { get; }
 
-        public StartGameMessage(Role role, Character character, List<PlayingCard> hand, string gameId, string playerId)
+        public StartGameMessage(Role role, Character character, List<BangGameCard> hand, string gameId, string playerId)
         {
             Role = role;
             Character = character;
