@@ -14,5 +14,7 @@ namespace Domain.Messages
 
         List<Message> ProcessTakeCardsMessage(TakeCardsMessage message);
         List<Message> ProcessDropCardsMessage(DropCardsMessage message);
+
+        List<Message> ProcessLongTermFeatureCardMessage(LongTermFeatureCardMessage message);
     }
 }

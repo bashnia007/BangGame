@@ -142,5 +142,26 @@ namespace Server.Processors
 
             return result;
         }
+
+        public List<Message> ProcessLongTermFeatureCardMessage(LongTermFeatureCardMessage message)
+        {
+            var result = new List<Message>();
+
+            var game = Lobby.GetGame(message.GameId);
+            var player = game.Players.First(p => p.Id == message.PlayerId);
+            if (player.PlayerTablet.CanPutCard(message.LongTermFeatureCard))
+            {
+                player.PlayerTablet.PutCard(message.LongTermFeatureCard);
+                message.IsSuccess = true;
+            }
+            else
+            {
+                message.IsSuccess = false;
+            }
+
+            result.Add(message);
+
+            return result;
+        }
     }
 }
