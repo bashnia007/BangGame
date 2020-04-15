@@ -15,17 +15,17 @@ namespace Domain.Players
         public string Name { get; set; }
         public Role Role { get; private set; }
         public PlayerTablet PlayerTablet { get; private set; }
-        public List<PlayingCard> PlayerHand { get; private set; }
+        public List<BangGameCard> PlayerHand { get; private set; }
         public virtual bool IsReadyToPlay { get; set; }
 
-        public delegate void DropCardsHandler(List<PlayingCard> cardsToDrop, string playerId);
-        public delegate List<PlayingCard> TakeCardsHandler(short amount, string playerId);
+        public delegate void DropCardsHandler(List<BangGameCard> cardsToDrop);
+        public delegate List<BangGameCard> TakeCardsHandler(short amount, string playerId);
         public event DropCardsHandler CardsDropped;
         public event TakeCardsHandler CardsTaken;
 
         public Player()
         {
-            PlayerHand = new List<PlayingCard>();
+            PlayerHand = new List<BangGameCard>();
         }
 
         public void SetInfo(Role role, Character character)
@@ -34,9 +34,9 @@ namespace Domain.Players
             PlayerTablet = new PlayerTablet(character, role is Sheriff);
         }
 
-        public void DropCards(List<PlayingCard> cardsToDrop)
+        public void DropCards(List<BangGameCard> cardsToDrop)
         {
-            CardsDropped?.Invoke(cardsToDrop, Id);
+            CardsDropped?.Invoke(cardsToDrop);
 
             foreach (var card in cardsToDrop)
             {
@@ -44,7 +44,7 @@ namespace Domain.Players
             }
         }
 
-        public List<PlayingCard> TakeCards(short amount)
+        public List<BangGameCard> TakeCards(short amount)
         {
             var newCards = CardsTaken?.Invoke(amount, Id);
             PlayerHand.AddRange(newCards);

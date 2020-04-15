@@ -3,18 +3,18 @@
 namespace Domain.PlayingCards
 {
     [Serializable]
-    public class DuelCard : PlayAndDiscardCard
+    public class DuelCardType : PlayAndDiscardCardType
     {
         public override string Description => CardName.Duel;
         
-        protected override bool EqualsCore(PlayingCard other)
+        protected override bool EqualsCore(CardType other)
         {
-            return other is DuelCard;
+            return other is DuelCardType;
         }
 
         protected override int GetHashCodeCore()
         {
-            return typeof(DuelCard).GetHashCode();
+            return typeof(DuelCardType).GetHashCode();
         }
     }
 }

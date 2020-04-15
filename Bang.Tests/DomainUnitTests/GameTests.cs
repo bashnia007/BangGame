@@ -30,13 +30,13 @@ namespace Bang.Tests.DomainUnitTests
             return result;
         }
 
-        private List<PlayingCard> CreatePlayingCardsList()
+        private List<CardType> CreatePlayingCardsList()
         {
-            return new List<PlayingCard>
+            return new List<CardType>
             {
-                new BangCard(),
-                new MissedCard(),
-                new DynamiteCard(),
+                new BangCardType(),
+                new MissedCardType(),
+                new DynamiteCardType(),
             };
         }
 
