@@ -62,10 +62,10 @@ namespace Domain.Game
                         Mod(fromIndex - toIndex, alivePlayers.Count)
                 );
 
-            if (from.PlayerTablet.LongTermFeatureCards.Any(c => c == new ScopeCard()))
+            if (from.PlayerTablet.ActiveCards.Any(c => c == new ScopeCardType()))
                 distance--;
 
-            if (to.PlayerTablet.LongTermFeatureCards.Any(c => c == new MustangCard()))
+            if (to.PlayerTablet.ActiveCards.Any(c => c == new MustangCardType()))
                 distance++;
 
             distance +=

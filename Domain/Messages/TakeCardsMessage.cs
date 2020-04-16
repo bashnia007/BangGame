@@ -5,10 +5,10 @@ namespace Domain.Messages
 {
     public class TakeCardsMessage : Message
     {
-        public List<PlayingCard> PlayingCards { get; }
+        public List<BangGameCard> PlayingCards { get; }
         public short CardsToTakeAmount { get; }
 
-        public TakeCardsMessage(List<PlayingCard> playingCards)
+        public TakeCardsMessage(List<BangGameCard> playingCards)
         {
             PlayingCards = playingCards;
         }

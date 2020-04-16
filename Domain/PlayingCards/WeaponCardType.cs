@@ -3,7 +3,7 @@
 namespace Domain.PlayingCards
 {
     [Serializable]
-    public abstract class WeaponCard : LongTermFeatureCard
+    public abstract class WeaponCardType : LongTermFeatureCardType
     {
         
     }

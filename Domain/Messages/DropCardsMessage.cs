@@ -5,9 +5,9 @@ namespace Domain.Messages
 {
     public class DropCardsMessage : Message
     {
-        public List<PlayingCard> CardsToDrop { get; }
+        public List<BangGameCard> CardsToDrop { get; }
 
-        public DropCardsMessage(List<PlayingCard> cardsToDrop)
+        public DropCardsMessage(List<BangGameCard> cardsToDrop)
         {
             CardsToDrop = cardsToDrop;
         }

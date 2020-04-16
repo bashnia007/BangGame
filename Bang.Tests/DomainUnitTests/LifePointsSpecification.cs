@@ -1,10 +1,11 @@
 using Domain.Characters;
 using Domain.Players;
+using FluentAssertions;
 using Xunit;
 
 namespace Bang.Tests.DomainUnitTests
 {
-    public class LifePointsTests
+    public class LifePointsSpecification
     {
         private PlayerTablet CreateTablet(Character character, bool isSheriff = false)
         {
@@ -19,7 +20,7 @@ namespace Bang.Tests.DomainUnitTests
             var sheriffTablet = CreateTablet(character, true);
             
             // Assert
-            Assert.Equal(character.LifePoints + 1, sheriffTablet.Health);
+            sheriffTablet.Health.Should().Be(character.LifePoints + 1);
         }
 
         [Theory]
@@ -27,8 +28,8 @@ namespace Bang.Tests.DomainUnitTests
         public void Each_non_sheriff_player_life_points_are_equal_to_character_life_points(Character character)
         {
             var tablet = CreateTablet(character);
-            
-            Assert.Equal(character.LifePoints, tablet.Health);
+
+            tablet.Health.Should().Be(character.LifePoints);
         }
         
         [Theory]
@@ -36,8 +37,8 @@ namespace Bang.Tests.DomainUnitTests
         public void Player_starts_the_game_with_maximum_life_points(Character character)
         {
             var tablet = CreateTablet(character);
-            
-            Assert.Equal(tablet.MaximumHealth, tablet.Health);
+
+            tablet.Health.Should().Be(tablet.MaximumHealth);
         }
         
         [Theory]
@@ -51,7 +52,7 @@ namespace Bang.Tests.DomainUnitTests
             tablet.Health = tablet.MaximumHealth + 1;
             
             // Assert
-            Assert.Equal(tablet.MaximumHealth, tablet.Health);
+            tablet.Health.Should().Be(tablet.MaximumHealth);
         }
     }
 }
