@@ -67,7 +67,7 @@ namespace Domain.Players
                 return !activeCards.Any(c => c.IsWeaponCard);
             }
             
-            return !activeCards.Exists(c => c == card);
+            return !activeCards.Exists(c => c.Type == card.Type);
         }
         
         /// <summary>
