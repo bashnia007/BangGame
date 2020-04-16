@@ -1,9 +1,8 @@
-﻿using System;
-using Domain.Characters;
-using Domain.Game;
+﻿using Domain.Characters;
 using Domain.Players;
 using Domain.PlayingCards;
 using Domain.Weapons;
+using FluentAssertions;
 using Xunit;
 
 namespace Bang.Tests.DomainUnitTests
@@ -27,12 +26,13 @@ namespace Bang.Tests.DomainUnitTests
         [MemberData(nameof(TestDataGenerator.WeaponCards), MemberType = typeof(TestDataGenerator))]
         public void When_player_doesnt_have_weapon_card_then_his_weapon_is_colt(WeaponCardType weaponCardType)
         {
-            // Arrange 
+            // Arrange
+            var weaponCard = weaponCardType.DiamondsThree();
             var tablet = CreateTablet();
-            tablet.PutCard(CardFactory.Create(weaponCardType));
+            tablet.PutCard(weaponCard);
             
             // Act
-            tablet.RemoveCard(CardFactory.Create(weaponCardType));
+            tablet.RemoveCard(weaponCard);
             
             // Assert
             Assert.Equal(new Colt(), tablet.Weapon);
@@ -44,10 +44,12 @@ namespace Bang.Tests.DomainUnitTests
         {
             // Arrange
             var tablet = CreateTablet();
-            tablet.PutCard(CardFactory.Create(cardType));
+            var card = cardType.ClubsSeven();
+            var otherCardWithSameType = cardType.SpadesQueen();
+            tablet.PutCard(card);
             
             // Act
-            var result = tablet.CanPutCard(CardFactory.Create(cardType));
+            var result = tablet.CanPutCard(otherCardWithSameType);
             
             Assert.False(result);
         }
@@ -57,13 +59,27 @@ namespace Bang.Tests.DomainUnitTests
         public void Player_can_have_only_one_weapon_in_play(WeaponCardType oldWeapon, WeaponCardType newWeapon)
         {
             // Arrange
+            var oldWeaponCard = oldWeapon.DiamondsThree();
+            var newWeaponCard = newWeapon.SpadesQueen();
+         
             var tablet = CreateTablet();
-            tablet.PutCard(CardFactory.Create(oldWeapon));
+            tablet.PutCard(oldWeaponCard);
             
             // Act 
-            var result = tablet.CanPutCard(CardFactory.Create(newWeapon));
+            var result = tablet.CanPutCard(newWeaponCard);
             
             Assert.False(result);
+        }
+
+        [Theory]
+        [MemberData(nameof(TestDataGenerator.PlayAndDiscardCards), MemberType = typeof(TestDataGenerator))]
+        public void Player_can_not_put_one_time_card_on_the_board(CardType cardType)
+        {
+            // Arrange
+            var card = cardType.SpadesQueen();
+            var tablet = CreateTablet();
+
+            tablet.CanPutCard(card).Should().BeFalse();
         }
     }
 }

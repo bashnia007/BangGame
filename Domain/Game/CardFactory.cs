@@ -3,7 +3,7 @@ using Domain.PlayingCards;
 
 namespace Domain.Game
 {
-    public static class CardFactory
+    internal static class CardFactory
     {
         private static readonly Random Random = new Random();
 
