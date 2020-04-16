@@ -149,9 +149,10 @@ namespace Server.Processors
 
             var game = Lobby.GetGame(message.GameId);
             var player = game.Players.First(p => p.Id == message.PlayerId);
-            if (player.PlayerTablet.CanPutCard(message.LongTermFeatureCard))
+            if (player.PlayerTablet.CanPutCard(message.CardForTablet))
             {
-                player.PlayerTablet.PutCard(message.LongTermFeatureCard);
+                player.PlayerTablet.PutCard(message.CardForTablet);
+                player.PlayerHand.Remove(message.CardForTablet);
                 message.IsSuccess = true;
             }
             else

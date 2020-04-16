@@ -309,7 +309,7 @@ namespace Bang.Tests.DomainUnitTests
         {
             var game = CreateAndStartGame();
             var player = game.Players.First();
-            var card = new MustangCard();
+            var card = new BangGameCard(new MustangCardType(), Suite.Clubs, Rank.Ace);
 
             var message = new LongTermFeatureCardMessage(card);
             message.GameId = game.Id;
@@ -318,7 +318,7 @@ namespace Bang.Tests.DomainUnitTests
             var serverProcessor = new ServerMessageProcessor();
             var response = serverProcessor.ProcessLongTermFeatureCardMessage(message);
 
-            Assert.Contains(card, player.PlayerTablet.LongTermFeatureCards);
+            Assert.Contains(card, player.PlayerTablet.ActiveCards);
         }
 
         [Fact]
@@ -326,18 +326,19 @@ namespace Bang.Tests.DomainUnitTests
         {
             var game = CreateAndStartGame();
             var player = game.Players.First();
-            var card = new MustangCard();
+            var card1 = new BangGameCard(new MustangCardType(), Suite.Clubs, Rank.Ace);
+            var card2 = new BangGameCard(new MustangCardType(), Suite.Diamonds, Rank.Eight);
 
-            var message = new LongTermFeatureCardMessage(card);
+            var message = new LongTermFeatureCardMessage(card1);
             message.GameId = game.Id;
             message.PlayerId = player.Id;
-
-            player.PlayerTablet.PutCard(new MustangCard());
+            
+            player.PlayerTablet.PutCard(card2);
 
             var serverProcessor = new ServerMessageProcessor();
             var response = serverProcessor.ProcessLongTermFeatureCardMessage(message);
 
-            Assert.Single(player.PlayerTablet.LongTermFeatureCards);
+            Assert.Single(player.PlayerTablet.ActiveCards);
         }
 
         [Fact]
@@ -345,7 +346,7 @@ namespace Bang.Tests.DomainUnitTests
         {
             var game = CreateAndStartGame();
             var player = game.Players.First();
-            var card = new MustangCard();
+            var card = new BangGameCard(new MustangCardType(), Suite.Clubs, Rank.Ace);
 
             var message = new LongTermFeatureCardMessage(card);
             message.GameId = game.Id;
@@ -367,7 +368,7 @@ namespace Bang.Tests.DomainUnitTests
         {
             var game = CreateAndStartGame();
             var player = game.Players.First();
-            var card = new ScopeCard();
+            var card = new BangGameCard(new MustangCardType(), Suite.Clubs, Rank.Ace);
 
             var message = new LongTermFeatureCardMessage(card);
             message.GameId = game.Id;
@@ -376,7 +377,24 @@ namespace Bang.Tests.DomainUnitTests
             var serverProcessor = new ServerMessageProcessor();
             var response = serverProcessor.ProcessLongTermFeatureCardMessage(message);
 
-            Assert.Contains(card, player.PlayerTablet.LongTermFeatureCards);
+            Assert.Contains(card, player.PlayerTablet.ActiveCards);
+        }
+
+        [Fact]
+        public void Long_term_card_message_removes_card_from_hand()
+        {
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            var card = new BangGameCard(new MustangCardType(), Suite.Clubs, Rank.Ace);
+
+            var message = new LongTermFeatureCardMessage(card);
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessLongTermFeatureCardMessage(message);
+
+            Assert.DoesNotContain(card, player.PlayerHand);
         }
 
         #endregion
