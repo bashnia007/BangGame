@@ -99,7 +99,7 @@ namespace Domain.Game
             {
                 for (int i = 0; i < cardSet.Value; i++)
                 {
-                    var card = CardFactory.Create(cardSet.Key);
+                    var card = CardFactory.Create((CardType)Activator.CreateInstance(cardSet.Key));
                     playingCards.Add(card);;
                 }
             }
