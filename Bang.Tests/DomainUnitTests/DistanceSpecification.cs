@@ -59,7 +59,8 @@ namespace Bang.Tests.DomainUnitTests
             var fromPlayer = CreatePlayer();
             var toPlayer = CreatePlayer();
 
-            fromPlayer.PlayerTablet.PutCard(CardFactory.Create(new ScopeCardType()));
+            var scopeCard = new ScopeCardType().ClubsSeven();
+            fromPlayer.PlayerTablet.PutCard(scopeCard);
             
             var alivePlayers = new[] {toPlayer, fromPlayer};
             
@@ -75,7 +76,8 @@ namespace Bang.Tests.DomainUnitTests
             var playerWithScope = CreatePlayer();
             var toPlayer = CreatePlayer();
             
-            playerWithScope.PlayerTablet.PutCard(CardFactory.Create(new ScopeCardType()));
+            var scopeCard = new ScopeCardType().SpadesQueen();
+            playerWithScope.PlayerTablet.PutCard(scopeCard);
 
             var alivePlayers = new[] {playerWithScope, CreatePlayer(), toPlayer, CreatePlayer()};
             
@@ -90,8 +92,10 @@ namespace Bang.Tests.DomainUnitTests
         {
             var playerWithScope = CreatePlayer();
             var toPlayer = CreatePlayer();
+
+            var scopeCard = new ScopeCardType().HeartsAce();
             
-            playerWithScope.PlayerTablet.PutCard(CardFactory.Create(new ScopeCardType()));
+            playerWithScope.PlayerTablet.PutCard(scopeCard);
 
             var alivePlayers = new[] {playerWithScope, CreatePlayer(), toPlayer, CreatePlayer()};
             
@@ -106,9 +110,10 @@ namespace Bang.Tests.DomainUnitTests
         public void Players_see_a_player_with_a_mustang_in_play_at_a_distance_increased_by_one()
         {
             var fromPlayer = CreatePlayer();
-            var toPlayer = CreatePlayer();
             
-            toPlayer.PlayerTablet.PutCard(CardFactory.Create(new MustangCardType()));
+            var toPlayer = CreatePlayer();
+            var mustangCard = new MustangCardType().SpadesQueen();
+            toPlayer.PlayerTablet.PutCard(mustangCard);
 
             var alivePlayers = new[] {fromPlayer, toPlayer};
             
@@ -122,9 +127,10 @@ namespace Bang.Tests.DomainUnitTests
         public void Player_with_a_mustang_in_play_sees_the_other_players_at_the_normal_distance()
         {
             var fromPlayer = CreatePlayer();
-            var toPlayer = CreatePlayer();
+            var mustangCard = new MustangCardType().DiamondsThree();
+            fromPlayer.PlayerTablet.PutCard(mustangCard);
             
-            fromPlayer.PlayerTablet.PutCard(CardFactory.Create((new MustangCardType())));
+            var toPlayer = CreatePlayer();
 
             var alivePlayers = new[] {fromPlayer, CreatePlayer(), toPlayer, CreatePlayer()};
             
@@ -152,9 +158,10 @@ namespace Bang.Tests.DomainUnitTests
         public void Players_see_Paul_Regret_with_a_mustang_in_play_at_a_distance_increased_by_one()
         {
             var fromPlayer = CreatePlayer();
+
             var paulRegretPlayer = CreatePaulRegretPlayer();
-            
-            paulRegretPlayer.PlayerTablet.PutCard(CardFactory.Create(new MustangCardType()));
+            var mustangCard = new MustangCardType().DiamondsThree();
+            paulRegretPlayer.PlayerTablet.PutCard(mustangCard);
             
             var alivePlayers = new[] {fromPlayer, paulRegretPlayer};
             
@@ -183,7 +190,8 @@ namespace Bang.Tests.DomainUnitTests
         {
             var player = CreatePlayer();
             var rosyPlayer = CreateRoseDoolan();
-            rosyPlayer.PlayerTablet.PutCard(CardFactory.Create(new ScopeCardType()));
+            var scopeCard = new ScopeCardType().ClubsSeven();
+            rosyPlayer.PlayerTablet.PutCard(scopeCard);
             
             var alivePlayers = new[] {rosyPlayer, CreatePlayer(),  CreatePlayer(), player, CreatePlayer(), CreatePlayer()};
             

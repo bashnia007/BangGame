@@ -9,38 +9,38 @@ namespace Bang.Tests.DomainUnitTests
     {
         public static IEnumerable<object[]> AllCharacters()
         {
-            return new []
+            return new[]
             {
-                new object [] {new BartCassidy()},
-                new object [] {new BlackJack()},
-                new object [] {new CalamityJanet(),},
-                new object [] {new ElGringo(),},
-                new object [] {new JessyJones(),},
-                new object [] {new Jourdonnais(),},
-                new object [] {new KitCarlson(),},
-                new object [] {new LuckyDuke(),},
-                new object [] {new PaulRegret(),},
-                new object [] {new PedroRamirez(),},
-                new object [] {new RoseDoolan(),},
-                new object [] {new SidKetchum(),},
-                new object [] {new SlabTheKiller(),},
-                new object [] {new SuzyLafayette(),},
-                new object [] {new VultureSam(),},
-                new object [] {new WillyTheKid(),},
+                new object[] {new BartCassidy()},
+                new object[] {new BlackJack()},
+                new object[] {new CalamityJanet(),},
+                new object[] {new ElGringo(),},
+                new object[] {new JessyJones(),},
+                new object[] {new Jourdonnais(),},
+                new object[] {new KitCarlson(),},
+                new object[] {new LuckyDuke(),},
+                new object[] {new PaulRegret(),},
+                new object[] {new PedroRamirez(),},
+                new object[] {new RoseDoolan(),},
+                new object[] {new SidKetchum(),},
+                new object[] {new SlabTheKiller(),},
+                new object[] {new SuzyLafayette(),},
+                new object[] {new VultureSam(),},
+                new object[] {new WillyTheKid(),},
             };
         }
-        
+
         public static IEnumerable<object[]> WeaponCards =>
             new List<object[]>
             {
-                new []{new VolcanicCardType()},
-                new []{new SchofieldCardType()},
-                new []{new RemingtonCardType()},
-                new []{new CarabineCardType()},
-                new []{new WinchesterCardType()}
+                new[] {new VolcanicCardType()},
+                new[] {new SchofieldCardType()},
+                new[] {new RemingtonCardType()},
+                new[] {new CarabineCardType()},
+                new[] {new WinchesterCardType()}
             };
-        
-        public static IEnumerable<object[]> LongTermCards => 
+
+        public static IEnumerable<object[]> LongTermCards =>
             new List<object[]>
             {
                 new[] {new ScopeCardType()},
@@ -49,8 +49,24 @@ namespace Bang.Tests.DomainUnitTests
                 new[] {new JailCardType()},
                 new[] {new DynamiteCardType()}
             }.Concat(WeaponCards);
-        
-        public static IEnumerable<object[]> DifferentWeapons
+
+        public static IEnumerable<object[]> PlayAndDiscardCards =>
+            new List<object[]>
+            {
+                new[] {new BangCardType()},
+                new[] {new MissedCardType()},
+                new[] {new PanicCardType()},
+                new[] {new CatBalouCardType()},
+                new[] {new StagecoachCardType(),},
+                new[] {new WellsFargoCardType(), },
+                new[] {new IndiansCardType(), },
+                new[] {new BeerCardType(), },
+                new[] {new SaloonCardType(), },
+                new[] {new GatlingCardType(), },
+                new[] {new GeneralStoreCardType(), },
+            };
+
+    public static IEnumerable<object[]> DifferentWeapons
         {
             get
             {
