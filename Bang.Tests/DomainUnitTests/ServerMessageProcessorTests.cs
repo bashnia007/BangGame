@@ -1,6 +1,7 @@
 ﻿using Domain.Game;
 using Domain.Messages;
 using Domain.Players;
+using Domain.PlayingCards;
 using Server;
 using Server.Processors;
 using System;
@@ -302,7 +303,100 @@ namespace Bang.Tests.DomainUnitTests
 
             Assert.Equal(cardsAmountBeforeMessage + cardsToTake, player.PlayerHand.Count);
         }
-        
+
+        [Fact]
+        public void Long_term_card_message_addes_mustang_card_to_tablet()
+        {
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            var card = new BangGameCard(new MustangCardType(), Suite.Clubs, Rank.Ace);
+
+            var message = new LongTermFeatureCardMessage(card);
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessLongTermFeatureCardMessage(message);
+
+            Assert.Contains(card, player.PlayerTablet.ActiveCards);
+        }
+
+        [Fact]
+        public void Long_term_card_message_cannot_add_second_mustang_card_to_tablet()
+        {
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            var card1 = new BangGameCard(new MustangCardType(), Suite.Clubs, Rank.Ace);
+            var card2 = new BangGameCard(new MustangCardType(), Suite.Diamonds, Rank.Eight);
+
+            var message = new LongTermFeatureCardMessage(card1);
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+            
+            player.PlayerTablet.PutCard(card2);
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessLongTermFeatureCardMessage(message);
+
+            Assert.Single(player.PlayerTablet.ActiveCards);
+        }
+
+        [Fact]
+        public void Long_term_card_message_returns_result_of_adding_card_to_tablet()
+        {
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            var card = new BangGameCard(new MustangCardType(), Suite.Clubs, Rank.Ace);
+
+            var message = new LongTermFeatureCardMessage(card);
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+            
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessLongTermFeatureCardMessage(message);
+            var resultMessage = (LongTermFeatureCardMessage)response.First();
+
+            Assert.True(resultMessage.IsSuccess);
+
+            response = serverProcessor.ProcessLongTermFeatureCardMessage(message);
+            resultMessage = (LongTermFeatureCardMessage)response.First();
+            Assert.False(resultMessage.IsSuccess);
+        }
+
+        [Fact]
+        public void Long_term_card_message_addes_scope_card_to_tablet()
+        {
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            var card = new BangGameCard(new MustangCardType(), Suite.Clubs, Rank.Ace);
+
+            var message = new LongTermFeatureCardMessage(card);
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessLongTermFeatureCardMessage(message);
+
+            Assert.Contains(card, player.PlayerTablet.ActiveCards);
+        }
+
+        [Fact]
+        public void Long_term_card_message_removes_card_from_hand()
+        {
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            var card = new BangGameCard(new MustangCardType(), Suite.Clubs, Rank.Ace);
+
+            var message = new LongTermFeatureCardMessage(card);
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessLongTermFeatureCardMessage(message);
+
+            Assert.DoesNotContain(card, player.PlayerHand);
+        }
+
         #endregion
 
         #region Private methods
