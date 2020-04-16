@@ -1,4 +1,6 @@
-﻿using Domain.Characters;
+﻿using System;
+using Domain.Characters;
+using Domain.Game;
 using Domain.Players;
 using Domain.PlayingCards;
 using Domain.Weapons;
@@ -8,11 +10,6 @@ namespace Bang.Tests.DomainUnitTests
 {
     public class PlayerTabletTests
     {
-        public static BangGameCard CreateCard(CardType card)
-        {
-            return new BangGameCard(card, Suite.Spades, Rank.Queen);
-        }
-        
         private PlayerTablet CreateTablet()
         {
             return new PlayerTablet(new Jourdonnais(), false);
@@ -32,10 +29,10 @@ namespace Bang.Tests.DomainUnitTests
         {
             // Arrange 
             var tablet = CreateTablet();
-            tablet.PutCard(CreateCard(weaponCardType));
+            tablet.PutCard(CardFactory.Create(weaponCardType));
             
             // Act
-            tablet.RemoveCard(CreateCard(weaponCardType));
+            tablet.RemoveCard(CardFactory.Create(weaponCardType));
             
             // Assert
             Assert.Equal(new Colt(), tablet.Weapon);
@@ -47,10 +44,10 @@ namespace Bang.Tests.DomainUnitTests
         {
             // Arrange
             var tablet = CreateTablet();
-            tablet.PutCard(CreateCard(cardType));
+            tablet.PutCard(CardFactory.Create(cardType));
             
             // Act
-            var result = tablet.CanPutCard(CreateCard(cardType));
+            var result = tablet.CanPutCard(CardFactory.Create(cardType));
             
             Assert.False(result);
         }
@@ -61,10 +58,10 @@ namespace Bang.Tests.DomainUnitTests
         {
             // Arrange
             var tablet = CreateTablet();
-            tablet.PutCard(CreateCard(oldWeapon));
+            tablet.PutCard(CardFactory.Create(oldWeapon));
             
             // Act 
-            var result = tablet.CanPutCard(CreateCard(newWeapon));
+            var result = tablet.CanPutCard(CardFactory.Create(newWeapon));
             
             Assert.False(result);
         }
