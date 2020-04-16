@@ -19,11 +19,6 @@ namespace Bang.Tests.DomainUnitTests
             return player;
         }
 
-        private BangGameCard CreateCard(CardType cardType)
-        {
-            return new BangGameCard(cardType, Suite.Diamonds, Rank.Eight);
-        }
-
         private Player CreatePaulRegretPlayer() => CreatePlayer(new PaulRegret());
 
         private Player CreateRoseDoolan() => CreatePlayer(new RoseDoolan());
@@ -64,7 +59,7 @@ namespace Bang.Tests.DomainUnitTests
             var fromPlayer = CreatePlayer();
             var toPlayer = CreatePlayer();
 
-            fromPlayer.PlayerTablet.PutCard(CreateCard(new ScopeCardType()));
+            fromPlayer.PlayerTablet.PutCard(CardFactory.Create(new ScopeCardType()));
             
             var alivePlayers = new[] {toPlayer, fromPlayer};
             
@@ -80,7 +75,7 @@ namespace Bang.Tests.DomainUnitTests
             var playerWithScope = CreatePlayer();
             var toPlayer = CreatePlayer();
             
-            playerWithScope.PlayerTablet.PutCard(CreateCard(new ScopeCardType()));
+            playerWithScope.PlayerTablet.PutCard(CardFactory.Create(new ScopeCardType()));
 
             var alivePlayers = new[] {playerWithScope, CreatePlayer(), toPlayer, CreatePlayer()};
             
@@ -96,7 +91,7 @@ namespace Bang.Tests.DomainUnitTests
             var playerWithScope = CreatePlayer();
             var toPlayer = CreatePlayer();
             
-            playerWithScope.PlayerTablet.PutCard(CreateCard(new ScopeCardType()));
+            playerWithScope.PlayerTablet.PutCard(CardFactory.Create(new ScopeCardType()));
 
             var alivePlayers = new[] {playerWithScope, CreatePlayer(), toPlayer, CreatePlayer()};
             
@@ -113,7 +108,7 @@ namespace Bang.Tests.DomainUnitTests
             var fromPlayer = CreatePlayer();
             var toPlayer = CreatePlayer();
             
-            toPlayer.PlayerTablet.PutCard(CreateCard(new MustangCardType()));
+            toPlayer.PlayerTablet.PutCard(CardFactory.Create(new MustangCardType()));
 
             var alivePlayers = new[] {fromPlayer, toPlayer};
             
@@ -129,7 +124,7 @@ namespace Bang.Tests.DomainUnitTests
             var fromPlayer = CreatePlayer();
             var toPlayer = CreatePlayer();
             
-            fromPlayer.PlayerTablet.PutCard(CreateCard(new MustangCardType()));
+            fromPlayer.PlayerTablet.PutCard(CardFactory.Create((new MustangCardType())));
 
             var alivePlayers = new[] {fromPlayer, CreatePlayer(), toPlayer, CreatePlayer()};
             
@@ -159,7 +154,7 @@ namespace Bang.Tests.DomainUnitTests
             var fromPlayer = CreatePlayer();
             var paulRegretPlayer = CreatePaulRegretPlayer();
             
-            paulRegretPlayer.PlayerTablet.PutCard(CreateCard(new MustangCardType()));
+            paulRegretPlayer.PlayerTablet.PutCard(CardFactory.Create(new MustangCardType()));
             
             var alivePlayers = new[] {fromPlayer, paulRegretPlayer};
             
@@ -188,7 +183,7 @@ namespace Bang.Tests.DomainUnitTests
         {
             var player = CreatePlayer();
             var rosyPlayer = CreateRoseDoolan();
-            rosyPlayer.PlayerTablet.PutCard(CreateCard(new ScopeCardType()));
+            rosyPlayer.PlayerTablet.PutCard(CardFactory.Create(new ScopeCardType()));
             
             var alivePlayers = new[] {rosyPlayer, CreatePlayer(),  CreatePlayer(), player, CreatePlayer(), CreatePlayer()};
             
