@@ -12,32 +12,35 @@ namespace Domain.Game
     [Serializable]
     public class Gameplay
     {
-        private Deck<PlayingCard> deck;
-        private Stack<PlayingCard> discardedCards;
+        private Deck<BangGameCard> deck;
+        private Stack<BangGameCard> discardedCards;
         private List<Player> players;
         
         public void Initialize(List<Player> players)
         {
-            discardedCards = new Stack<PlayingCard>();
+            discardedCards = new Stack<BangGameCard>();
             this.players = players;
-            deck = new Deck<PlayingCard>(GameInitializer.PlayingCards.Cast<PlayingCard>());
+            deck = new Deck<BangGameCard>(GameInitializer.PlayingCards);
             deck.Shuffle();
 
+            ProvideCardsForPlayers();
+            
             foreach (var player in this.players)
             {
                 player.CardsDropped += DropCardsFromHand;
                 player.CardsTaken += TakeCardsOnHand;
+                player.PlayerTablet.CardDropped += DropCardsFromHand;
             }
 
-            ProvideCardsForPlayers();
+            
         }
 
-        public PlayingCard GetTopCardFromDiscarded()
+        public CardType GetTopCardFromDiscarded()
         {
             return discardedCards.Peek();
         }
 
-        private void DropCardsFromHand(List<PlayingCard> cardsToDrop, string playerId)
+        private void DropCardsFromHand(List<BangGameCard> cardsToDrop)
         {
             foreach (var card in cardsToDrop)
             {
@@ -45,9 +48,9 @@ namespace Domain.Game
             }
         }
 
-        private List<PlayingCard> TakeCardsOnHand(short amount, string playerId)
+        private List<BangGameCard> TakeCardsOnHand(short amount, string playerId)
         {
-            var result = new List<PlayingCard>();
+            var result = new List<BangGameCard>();
 
             for (short i = 0; i < amount; i++)
             {
@@ -87,8 +90,8 @@ namespace Domain.Game
 
         private void ResetDeck()
         {
-            deck = new Deck<PlayingCard>(discardedCards);
-            discardedCards = new Stack<PlayingCard>();
+            deck = new Deck<BangGameCard>(discardedCards);
+            discardedCards = new Stack<BangGameCard>();
         }
     }
 }

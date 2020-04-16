@@ -13,7 +13,7 @@ namespace Domain.Game
 {
     public static class GameInitializer
     {
-        public static List<IShuffledCard> PlayingCards { get; }
+        public static List<BangGameCard> PlayingCards { get; }
         public static List<IShuffledCard> Characters { get; }
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -62,36 +62,36 @@ namespace Domain.Game
         {
             var playingCards = new Dictionary<Type, int>
             {
-                { typeof(VolcanicCard), 2 },
-                { typeof(SchofieldCard), 3 },
-                { typeof(RemingtonCard), 1 },
-                { typeof(CarabineCard), 1 },
-                { typeof(WinchesterCard), 1 },
-                { typeof(JailCard), 3 },
-                { typeof(MustangCard), 2 },
-                { typeof(BarrelCard), 2 },
-                { typeof(DynamiteCard), 1 },
-                { typeof(ScopeCard), 1 },
-                { typeof(BangCard), 25 },
-                { typeof(MissedCard), 12 },
-                { typeof(BeerCard), 6 },
-                { typeof(PanicCard), 4 },
-                { typeof(CatBalouCard), 4 },
-                { typeof(DuelCard), 3 },
-                { typeof(GeneralStoreCard), 2 },
-                { typeof(StagecoachCard), 2 },
-                { typeof(IndiansCard), 2 },
-                { typeof(GatlingCard), 1 },
-                { typeof(SaloonCard), 1 },
-                { typeof(WellsFargoCard), 1 }
+                { typeof(VolcanicCardType), 2 },
+                { typeof(SchofieldCardType), 3 },
+                { typeof(RemingtonCardType), 1 },
+                { typeof(CarabineCardType), 1 },
+                { typeof(WinchesterCardType), 1 },
+                { typeof(JailCardType), 3 },
+                { typeof(MustangCardType), 2 },
+                { typeof(BarrelCardType), 2 },
+                { typeof(DynamiteCardType), 1 },
+                { typeof(ScopeCardType), 1 },
+                { typeof(BangCardType), 25 },
+                { typeof(MissedCardType), 12 },
+                { typeof(BeerCardType), 6 },
+                { typeof(PanicCardType), 4 },
+                { typeof(CatBalouCardType), 4 },
+                { typeof(DuelCardType), 3 },
+                { typeof(GeneralStoreCardType), 2 },
+                { typeof(StagecoachCardType), 2 },
+                { typeof(IndiansCardType), 2 },
+                { typeof(GatlingCardType), 1 },
+                { typeof(SaloonCardType), 1 },
+                { typeof(WellsFargoCardType), 1 }
             };
 
             return playingCards;
         }
 
-        private static List<IShuffledCard> InitializePlayingCards()
+        private static List<BangGameCard> InitializePlayingCards()
         {
-            List<IShuffledCard> playingCards = new List<IShuffledCard>();
+            List<BangGameCard> playingCards = new List<BangGameCard>();
 
             var playingCardsDictionary = FillPlayingCardDictionary();
 
@@ -99,7 +99,8 @@ namespace Domain.Game
             {
                 for (int i = 0; i < cardSet.Value; i++)
                 {
-                    playingCards.Add((PlayingCard)Activator.CreateInstance(cardSet.Key));
+                    var card = CardFactory.Create(cardSet.Key);
+                    playingCards.Add(card);;
                 }
             }
 

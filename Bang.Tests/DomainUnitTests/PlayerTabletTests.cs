@@ -8,6 +8,11 @@ namespace Bang.Tests.DomainUnitTests
 {
     public class PlayerTabletTests
     {
+        public static BangGameCard CreateCard(CardType card)
+        {
+            return new BangGameCard(card, Suite.Spades, Rank.Queen);
+        }
+        
         private PlayerTablet CreateTablet()
         {
             return new PlayerTablet(new Jourdonnais(), false);
@@ -23,14 +28,14 @@ namespace Bang.Tests.DomainUnitTests
         
         [Theory]
         [MemberData(nameof(TestDataGenerator.WeaponCards), MemberType = typeof(TestDataGenerator))]
-        public void When_player_doesnt_have_weapon_card_then_his_weapon_is_colt(WeaponCard weaponCard)
+        public void When_player_doesnt_have_weapon_card_then_his_weapon_is_colt(WeaponCardType weaponCardType)
         {
             // Arrange 
             var tablet = CreateTablet();
-            tablet.PutCard(weaponCard);
+            tablet.PutCard(CreateCard(weaponCardType));
             
             // Act
-            tablet.RemoveCard(weaponCard);
+            tablet.RemoveCard(CreateCard(weaponCardType));
             
             // Assert
             Assert.Equal(new Colt(), tablet.Weapon);
@@ -38,28 +43,28 @@ namespace Bang.Tests.DomainUnitTests
 
         [Theory]
         [MemberData(nameof(TestDataGenerator.LongTermCards), MemberType = typeof(TestDataGenerator))]
-        public void Player_can_have_only_one_copy_of_card_in_play(LongTermFeatureCard card)
+        public void Player_can_have_only_one_copy_of_card_in_play(LongTermFeatureCardType cardType)
         {
             // Arrange
             var tablet = CreateTablet();
-            tablet.PutCard(card);
+            tablet.PutCard(CreateCard(cardType));
             
             // Act
-            var result = tablet.CanPutCard(card);
+            var result = tablet.CanPutCard(CreateCard(cardType));
             
             Assert.False(result);
         }
 
         [Theory]
         [MemberData(nameof(TestDataGenerator.DifferentWeapons), MemberType = typeof(TestDataGenerator))]
-        public void Player_can_have_only_one_weapon_in_play(WeaponCard oldWeapon, WeaponCard newWeapon)
+        public void Player_can_have_only_one_weapon_in_play(WeaponCardType oldWeapon, WeaponCardType newWeapon)
         {
             // Arrange
             var tablet = CreateTablet();
-            tablet.PutCard(oldWeapon);
+            tablet.PutCard(CreateCard(oldWeapon));
             
             // Act 
-            var result = tablet.CanPutCard(newWeapon);
+            var result = tablet.CanPutCard(CreateCard(newWeapon));
             
             Assert.False(result);
         }

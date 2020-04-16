@@ -13,11 +13,11 @@ namespace Bang.Tests.DomainUnitTests
             {
                 return new[]
                 {
-                    new object[] {new VolcanicCard(), new Volcanic()},
-                    new object[] {new SchofieldCard(), new Schofield(),},
-                    new object[] {new RemingtonCard(), new Remington()},
-                    new object[] {new CarabineCard(), new Carabine(),},
-                    new object[] {new WinchesterCard(), new Winchester(),},
+                    new object[] {new VolcanicCardType(), new Volcanic()},
+                    new object[] {new SchofieldCardType(), new Schofield(),},
+                    new object[] {new RemingtonCardType(), new Remington()},
+                    new object[] {new CarabineCardType(), new Carabine(),},
+                    new object[] {new WinchesterCardType(), new Winchester(),},
                 };
             }
         }
@@ -56,9 +56,9 @@ namespace Bang.Tests.DomainUnitTests
 
         [Theory]
         [MemberData(nameof(CardsToWeaponMapping))]
-        public void Cards_to_weapon_mapping(WeaponCard weaponCard, Weapon weapon)
+        public void Cards_to_weapon_mapping(WeaponCardType weaponCardType, Weapon weapon)
         {
-            Assert.Equal(weapon, WeaponFactory.Create(weaponCard));
+            Assert.Equal(weapon, WeaponFactory.Create(weaponCardType));
         }
 
         [Theory]

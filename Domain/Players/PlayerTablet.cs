@@ -20,21 +20,22 @@ namespace Domain.Players
     {
         public readonly int MaximumHealth;
 
-        private int _health;
+        private int health;
         public int Health
         {
-            get => _health;
-            set => _health = Math.Min(value, MaximumHealth);
+            get => health;
+            set => health = Math.Min(value, MaximumHealth);
         }
 
         public bool IsAlive => Health > 0;
         public Weapon Weapon { get; private set; }
         public Character Character { get; }
-        private readonly List<LongTermFeatureCard> _cards = new List<LongTermFeatureCard>();
-        public IReadOnlyList<LongTermFeatureCard> LongTermFeatureCards => _cards;
+        
+        private readonly List<BangGameCard> activeCards = new List<BangGameCard>();
+        public IReadOnlyList<BangGameCard> ActiveCards => activeCards;
         public bool IsSheriff { get; }
 
-        public event EventHandler<LongTermFeatureCard> CardDropped;
+        public event Player.DropCardsHandler CardDropped;
 
         public PlayerTablet(Character character, bool isSheriff)
         {
@@ -54,17 +55,19 @@ namespace Domain.Players
         /// <param name="card"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">card is null</exception>
-        public bool CanPutCard(LongTermFeatureCard card)
+        public bool CanPutCard(BangGameCard card)
         {
             if (card == null)
                 throw new ArgumentNullException(nameof(card));
 
-            if (card is WeaponCard)
+            if (!card.IsLongTermCard) return false;
+
+            if (card.IsWeaponCard)
             {
-                return !_cards.OfType<WeaponCard>().Any();
+                return !activeCards.Any(c => c.IsWeaponCard);
             }
             
-            return !_cards.Exists(c => c == card);
+            return !activeCards.Exists(c => c == card);
         }
         
         /// <summary>
@@ -73,38 +76,38 @@ namespace Domain.Players
         /// <param name="card"></param>
         /// <exception cref="ArgumentNullException">generates if card is null</exception>
         /// <exception cref="DuplicatedCardException">card is already in play</exception>
-        public void PutCard(LongTermFeatureCard card)
+        public void PutCard(BangGameCard card)
         {
             if (!CanPutCard(card))
                 throw new DuplicatedCardException(card.Description); 
             
-            if (card is WeaponCard weaponCard)
+            if (card.IsWeaponCard)
             {
-                Weapon = WeaponFactory.Create(weaponCard);
+                Weapon = WeaponFactory.Create(card.Type as WeaponCardType);
             }
             
-            _cards.Add(card);
+            activeCards.Add(card);
         }
 
         /// <summary>
         /// Removes card from playing board
         /// </summary>
         /// <param name="card"></param>
-        public void RemoveCard(LongTermFeatureCard card)
+        public void RemoveCard(BangGameCard card)
         {
-            if (card is WeaponCard)
+            if (card.Type is WeaponCardType)
             {
                 Weapon = WeaponFactory.DefaultWeapon;
             }
 
-            _cards.Remove(card);
+            activeCards.Remove(card);
             
             OnCardDropped(card);
         }
 
-        private void OnCardDropped(LongTermFeatureCard card)
+        private void OnCardDropped(BangGameCard card)
         {
-            CardDropped?.Invoke(this, card);
+            CardDropped?.Invoke(new List<BangGameCard>{card});
         }
     }
 }

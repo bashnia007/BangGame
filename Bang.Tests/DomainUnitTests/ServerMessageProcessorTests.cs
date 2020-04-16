@@ -11,6 +11,7 @@ using Xunit;
 
 namespace Bang.Tests.DomainUnitTests
 {
+    [Collection("Lobby affecting collection")]
     public class ServerMessageProcessorTests
     {
         #region Tests
