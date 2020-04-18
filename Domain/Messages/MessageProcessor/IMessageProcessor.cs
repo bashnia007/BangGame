@@ -16,5 +16,6 @@ namespace Domain.Messages
         List<Message> ProcessDropCardsMessage(DropCardsMessage message);
 
         List<Message> ProcessLongTermFeatureCardMessage(LongTermFeatureCardMessage message);
+        List<Message> ProcessChangeWeaponMessage(ChangeWeaponMessage message);
     }
 }

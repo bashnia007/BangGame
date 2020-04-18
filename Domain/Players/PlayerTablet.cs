@@ -105,6 +105,22 @@ namespace Domain.Players
             OnCardDropped(card);
         }
 
+        /// <summary>
+        /// Put weapon on the tablet. If player has already weapon, previous is dropped
+        /// </summary>
+        /// <param name="card"></param>
+        public void ChangeWeapon(BangGameCard card)
+        {
+            var previousWeapon = activeCards.FirstOrDefault(c => c.IsWeaponCard);
+            
+            if (previousWeapon != null)
+            {
+                RemoveCard(previousWeapon);
+            }
+
+            PutCard(card);
+        }
+
         private void OnCardDropped(BangGameCard card)
         {
             CardDropped?.Invoke(new List<BangGameCard>{card});

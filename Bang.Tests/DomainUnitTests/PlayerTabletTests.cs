@@ -81,5 +81,24 @@ namespace Bang.Tests.DomainUnitTests
 
             tablet.CanPutCard(card).Should().BeFalse();
         }
+
+        [Theory]
+        [MemberData(nameof(TestDataGenerator.DifferentWeapons), MemberType = typeof(TestDataGenerator))]
+        public void Player_can_change_weapon(WeaponCardType oldWeapon, WeaponCardType newWeapon)
+        {
+            // Arrange
+            var oldWeaponCard = oldWeapon.DiamondsThree();
+            var newWeaponCard = newWeapon.SpadesQueen();
+
+            var weapon = WeaponFactory.Create(newWeapon);
+
+            var tablet = CreateTablet();
+            tablet.PutCard(oldWeaponCard);
+
+            // Act
+            tablet.ChangeWeapon(newWeaponCard);
+
+            Assert.Equal(weapon, tablet.Weapon);
+        }
     }
 }

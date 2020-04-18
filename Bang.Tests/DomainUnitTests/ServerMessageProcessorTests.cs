@@ -2,6 +2,7 @@
 using Domain.Messages;
 using Domain.Players;
 using Domain.PlayingCards;
+using Domain.Weapons;
 using Server;
 using Server.Processors;
 using System;
@@ -386,6 +387,7 @@ namespace Bang.Tests.DomainUnitTests
             var game = CreateAndStartGame();
             var player = game.Players.First();
             var card = new BangGameCard(new MustangCardType(), Suite.Clubs, Rank.Ace);
+            player.PlayerHand.Add(card);
 
             var message = new LongTermFeatureCardMessage(card);
             message.GameId = game.Id;
@@ -393,6 +395,43 @@ namespace Bang.Tests.DomainUnitTests
 
             var serverProcessor = new ServerMessageProcessor();
             var response = serverProcessor.ProcessLongTermFeatureCardMessage(message);
+
+            Assert.DoesNotContain(card, player.PlayerHand);
+        }
+
+        [Fact]
+        public void Change_weapon_message_changes_weapon()
+        {
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            var card = new BangGameCard(new VolcanicCardType(), Suite.Clubs, Rank.Ace);
+            Weapon weapon = WeaponFactory.Create(card.Type as WeaponCardType);
+            player.PlayerHand.Add(card);
+
+            var message = new ChangeWeaponMessage(card);
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessChangeWeaponMessage(message);
+
+            Assert.Equal(weapon, player.PlayerTablet.Weapon);
+        }
+
+        [Fact]
+        public void Change_weapon_message_removes_card_from_hand()
+        {
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            var card = new BangGameCard(new VolcanicCardType(), Suite.Clubs, Rank.Ace);
+            player.PlayerHand.Add(card);
+
+            var message = new ChangeWeaponMessage(card);
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessChangeWeaponMessage(message);
 
             Assert.DoesNotContain(card, player.PlayerHand);
         }
