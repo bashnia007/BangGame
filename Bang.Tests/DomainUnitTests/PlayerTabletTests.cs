@@ -90,7 +90,7 @@ namespace Bang.Tests.DomainUnitTests
             var oldWeaponCard = oldWeapon.DiamondsThree();
             var newWeaponCard = newWeapon.SpadesQueen();
 
-            var weapon = WeaponFactory.Create(newWeaponCard.Type as WeaponCardType);
+            var weapon = WeaponFactory.Create(newWeapon);
 
             var tablet = CreateTablet();
             tablet.PutCard(oldWeaponCard);
