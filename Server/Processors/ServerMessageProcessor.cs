@@ -1,4 +1,5 @@
-﻿using Domain.Game;
+﻿using Domain.Exceptions;
+using Domain.Game;
 using Domain.Messages;
 using NLog;
 using System;
@@ -149,18 +150,32 @@ namespace Server.Processors
 
             var game = Lobby.GetGame(message.GameId);
             var player = game.Players.First(p => p.Id == message.PlayerId);
-            if (player.PlayerTablet.CanPutCard(message.CardForTablet))
+            try
             {
                 player.PlayerTablet.PutCard(message.CardForTablet);
                 player.PlayerHand.Remove(message.CardForTablet);
                 message.IsSuccess = true;
             }
-            else
+            catch (DuplicatedCardException ex)
             {
+                Logger.Debug(ex.Message);
                 message.IsSuccess = false;
             }
 
             result.Add(message);
+
+            return result;
+        }
+
+        public List<Message> ProcessChangeWeaponMessage(ChangeWeaponMessage message)
+        {
+            var result = new List<Message>();
+
+            var game = Lobby.GetGame(message.GameId);
+            var player = game.Players.First(p => p.Id == message.PlayerId);
+
+            player.PlayerTablet.ChangeWeapon(message.WeaponCard);
+            player.PlayerHand.Remove(message.WeaponCard);
 
             return result;
         }
