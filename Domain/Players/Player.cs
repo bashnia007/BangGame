@@ -44,6 +44,11 @@ namespace Domain.Players
             }
         }
 
+        public void DropCard(BangGameCard cardToDrop)
+        {
+            DropCards(new List<BangGameCard> { cardToDrop });
+        }
+
         public List<BangGameCard> TakeCards(short amount)
         {
             var newCards = CardsTaken?.Invoke(amount, Id);

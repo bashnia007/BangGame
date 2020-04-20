@@ -423,7 +423,7 @@ namespace Bang.Tests.DomainUnitTests
         {
             var game = CreateAndStartGame();
             var player = game.Players.First();
-            var card = new BangGameCard(new VolcanicCardType(), Suite.Clubs, Rank.Ace);
+            var card = new VolcanicCardType().ClubsSeven();
             player.PlayerHand.Add(card);
 
             var message = new ChangeWeaponMessage(card);
@@ -435,6 +435,62 @@ namespace Bang.Tests.DomainUnitTests
 
             Assert.DoesNotContain(card, player.PlayerHand);
         }
+
+        [Theory]
+        [MemberData(nameof(ReplenishCardsToCardsAmountMapping))]
+        public void Replenish_hand_card_message_returns_properly_cards_amount_in_message(ReplenishHandCardMessage message, BangGameCard card, int cardsShouldBeAdded)
+        {
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            player.PlayerHand.Add(card);
+            
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessReplenishHandMessage(message);
+
+            var responseMsg = response.First() as TakeCardsMessage;
+
+            Assert.Equal(cardsShouldBeAdded, responseMsg.PlayingCards.Count);
+        }
+
+        [Theory]
+        [MemberData(nameof(ReplenishCards))]
+        public void Replenish_hand_card_message_removes_used_card_from_hand(ReplenishHandCardMessage message, BangGameCard card)
+        {
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            player.PlayerHand.Add(card);
+            
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessReplenishHandMessage(message);
+
+            var responseMsg = response.First() as ReplenishHandCardMessage;
+
+            Assert.DoesNotContain(card, player.PlayerHand);
+        }
+
+        [Theory]
+        [MemberData(nameof(ReplenishCards))]
+        public void Replenish_hand_card_message_adds_card_into_reset(ReplenishHandCardMessage message, BangGameCard card)
+        {
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            player.PlayerHand.Add(card);
+
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessReplenishHandMessage(message);
+
+            Assert.Equal(card, game.Gameplay.GetTopCardFromDiscarded());
+        }
+
 
         #endregion
 
@@ -488,6 +544,34 @@ namespace Bang.Tests.DomainUnitTests
             game.Start();
 
             return game;
+        }
+        
+        #endregion
+
+        #region Fields
+
+        public static IEnumerable<object[]> ReplenishCardsToCardsAmountMapping
+        {
+            get
+            {
+                return new[]
+                {
+                    new object[] { new StagecoachCardMessage(new StagecoachCardType().ClubsSeven()), new StagecoachCardType().ClubsSeven(), 2},
+                    new object[] { new WellsFargoMessage(new WellsFargoCardType().ClubsSeven()), new WellsFargoCardType().ClubsSeven(), 3,}
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> ReplenishCards
+        {
+            get
+            {
+                return new[]
+                {
+                    new object[] { new StagecoachCardMessage(new StagecoachCardType().ClubsSeven()), new StagecoachCardType().ClubsSeven(), },
+                    new object[] { new WellsFargoMessage(new WellsFargoCardType().ClubsSeven()), new WellsFargoCardType().ClubsSeven(), },
+                };
+            }
         }
 
         #endregion
