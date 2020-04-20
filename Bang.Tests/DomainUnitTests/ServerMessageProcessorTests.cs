@@ -473,9 +473,28 @@ namespace Bang.Tests.DomainUnitTests
 
             var responseMsg = response.First() as ReplenishHandCardMessage;
 
-            Assert.DoesNotContain(card, responseMsg.PlayingCards);
+            Assert.DoesNotContain(card, player.PlayerHand);
         }
-        
+
+        [Theory]
+        [MemberData(nameof(ReplenishCards))]
+        public void Replenish_gand_card_message_adds_card_into_reset(BangGameCard card)
+        {
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            player.PlayerHand.Add(card);
+
+            var message = new ReplenishHandCardMessage(card);
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessReplenishHandMessage(message);
+
+            Assert.Equal(card, game.Gameplay.GetTopCardFromDiscarded());
+        }
+
+
         #endregion
 
         #region Private methods

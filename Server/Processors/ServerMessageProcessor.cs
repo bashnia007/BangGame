@@ -186,7 +186,7 @@ namespace Server.Processors
             var game = Lobby.GetGame(message.GameId);
             var player = game.Players.First(p => p.Id == message.PlayerId);
 
-            player.PlayerHand.Remove(message.ReplenishHandCard);
+            player.DropCard(message.ReplenishHandCard);
             message = new ReplenishHandCardMessage(player.TakeCards(message.CardsToTakeAmount));
 
             result.Add(message);
