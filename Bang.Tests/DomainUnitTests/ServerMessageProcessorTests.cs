@@ -438,33 +438,31 @@ namespace Bang.Tests.DomainUnitTests
 
         [Theory]
         [MemberData(nameof(ReplenishCardsToCardsAmountMapping))]
-        public void Replenish_gand_card_message_returns_properly_cards_amount_in_message(BangGameCard card, int cardsShouldBeAdded)
+        public void Replenish_hand_card_message_returns_properly_cards_amount_in_message(ReplenishHandCardMessage message, BangGameCard card, int cardsShouldBeAdded)
         {
             var game = CreateAndStartGame();
             var player = game.Players.First();
             player.PlayerHand.Add(card);
             
-            var message = new ReplenishHandCardMessage(card);
             message.GameId = game.Id;
             message.PlayerId = player.Id;
 
             var serverProcessor = new ServerMessageProcessor();
             var response = serverProcessor.ProcessReplenishHandMessage(message);
 
-            var responseMsg = response.First() as ReplenishHandCardMessage;
+            var responseMsg = response.First() as TakeCardsMessage;
 
             Assert.Equal(cardsShouldBeAdded, responseMsg.PlayingCards.Count);
         }
 
         [Theory]
         [MemberData(nameof(ReplenishCards))]
-        public void Replenish_gand_card_message_removes_used_card_from_hand(BangGameCard card)
+        public void Replenish_hand_card_message_removes_used_card_from_hand(ReplenishHandCardMessage message, BangGameCard card)
         {
             var game = CreateAndStartGame();
             var player = game.Players.First();
             player.PlayerHand.Add(card);
             
-            var message = new ReplenishHandCardMessage(card);
             message.GameId = game.Id;
             message.PlayerId = player.Id;
 
@@ -478,13 +476,12 @@ namespace Bang.Tests.DomainUnitTests
 
         [Theory]
         [MemberData(nameof(ReplenishCards))]
-        public void Replenish_gand_card_message_adds_card_into_reset(BangGameCard card)
+        public void Replenish_hand_card_message_adds_card_into_reset(ReplenishHandCardMessage message, BangGameCard card)
         {
             var game = CreateAndStartGame();
             var player = game.Players.First();
             player.PlayerHand.Add(card);
 
-            var message = new ReplenishHandCardMessage(card);
             message.GameId = game.Id;
             message.PlayerId = player.Id;
 
@@ -548,7 +545,7 @@ namespace Bang.Tests.DomainUnitTests
 
             return game;
         }
-
+        
         #endregion
 
         #region Fields
@@ -559,8 +556,8 @@ namespace Bang.Tests.DomainUnitTests
             {
                 return new[]
                 {
-                    new object[] {new StagecoachCardType().ClubsSeven(), 2},
-                    new object[] {new WellsFargoCardType().ClubsSeven(), 3,}
+                    new object[] { new StagecoachCardMessage(new StagecoachCardType().ClubsSeven()), new StagecoachCardType().ClubsSeven(), 2},
+                    new object[] { new WellsFargoMessage(new WellsFargoCardType().ClubsSeven()), new WellsFargoCardType().ClubsSeven(), 3,}
                 };
             }
         }
@@ -571,8 +568,8 @@ namespace Bang.Tests.DomainUnitTests
             {
                 return new[]
                 {
-                    new object[] { new StagecoachCardType().ClubsSeven(), },
-                    new object[] { new WellsFargoCardType().ClubsSeven(), },
+                    new object[] { new StagecoachCardMessage(new StagecoachCardType().ClubsSeven()), new StagecoachCardType().ClubsSeven(), },
+                    new object[] { new WellsFargoMessage(new WellsFargoCardType().ClubsSeven()), new WellsFargoCardType().ClubsSeven(), },
                 };
             }
         }

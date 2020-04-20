@@ -46,8 +46,7 @@ namespace Domain.Players
 
         public void DropCard(BangGameCard cardToDrop)
         {
-            CardsDropped?.Invoke(new List<BangGameCard> { cardToDrop });
-            PlayerHand.Remove(cardToDrop);
+            DropCards(new List<BangGameCard> { cardToDrop });
         }
 
         public List<BangGameCard> TakeCards(short amount)

@@ -187,9 +187,9 @@ namespace Server.Processors
             var player = game.Players.First(p => p.Id == message.PlayerId);
 
             player.DropCard(message.ReplenishHandCard);
-            message = new ReplenishHandCardMessage(player.TakeCards(message.CardsToTakeAmount));
+            var responseMsg = new TakeCardsMessage(player.TakeCards(message.CardsToTakeAmount));
 
-            result.Add(message);
+            result.Add(responseMsg);
 
             return result;
         }
