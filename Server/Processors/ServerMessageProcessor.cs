@@ -178,5 +178,20 @@ namespace Server.Processors
 
             return result;
         }
+
+        public List<Message> ProcessReplenishHandMessage(ReplenishHandCardMessage message)
+        {
+            var result = new List<Message>();
+
+            var game = Lobby.GetGame(message.GameId);
+            var player = game.Players.First(p => p.Id == message.PlayerId);
+
+            player.PlayerHand.Remove(message.ReplenishHandCard);
+            message = new ReplenishHandCardMessage(player.TakeCards(message.CardsToTakeAmount));
+
+            result.Add(message);
+
+            return result;
+        }
     }
 }

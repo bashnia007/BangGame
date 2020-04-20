@@ -17,5 +17,6 @@ namespace Domain.Messages
 
         List<Message> ProcessLongTermFeatureCardMessage(LongTermFeatureCardMessage message);
         List<Message> ProcessChangeWeaponMessage(ChangeWeaponMessage message);
+        List<Message> ProcessReplenishHandMessage(ReplenishHandCardMessage message);
     }
 }

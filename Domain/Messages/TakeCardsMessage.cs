@@ -6,7 +6,12 @@ namespace Domain.Messages
     public class TakeCardsMessage : Message
     {
         public List<BangGameCard> PlayingCards { get; }
-        public short CardsToTakeAmount { get; }
+        public short CardsToTakeAmount { get; protected set; }
+
+        public TakeCardsMessage()
+        {
+
+        }
 
         public TakeCardsMessage(List<BangGameCard> playingCards)
         {

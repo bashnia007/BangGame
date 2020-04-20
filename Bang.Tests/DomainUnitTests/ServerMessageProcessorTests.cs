@@ -423,7 +423,7 @@ namespace Bang.Tests.DomainUnitTests
         {
             var game = CreateAndStartGame();
             var player = game.Players.First();
-            var card = new BangGameCard(new VolcanicCardType(), Suite.Clubs, Rank.Ace);
+            var card = new VolcanicCardType().ClubsSeven();
             player.PlayerHand.Add(card);
 
             var message = new ChangeWeaponMessage(card);
@@ -436,6 +436,46 @@ namespace Bang.Tests.DomainUnitTests
             Assert.DoesNotContain(card, player.PlayerHand);
         }
 
+        [Theory]
+        [MemberData(nameof(ReplenishCardsToCardsAmountMapping))]
+        public void Replenish_gand_card_message_returns_properly_cards_amount_in_message(BangGameCard card, int cardsShouldBeAdded)
+        {
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            player.PlayerHand.Add(card);
+            
+            var message = new ReplenishHandCardMessage(card);
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessReplenishHandMessage(message);
+
+            var responseMsg = response.First() as ReplenishHandCardMessage;
+
+            Assert.Equal(cardsShouldBeAdded, responseMsg.PlayingCards.Count);
+        }
+
+        [Theory]
+        [MemberData(nameof(ReplenishCards))]
+        public void Replenish_gand_card_message_removes_used_card_from_hand(BangGameCard card)
+        {
+            var game = CreateAndStartGame();
+            var player = game.Players.First();
+            player.PlayerHand.Add(card);
+            
+            var message = new ReplenishHandCardMessage(card);
+            message.GameId = game.Id;
+            message.PlayerId = player.Id;
+
+            var serverProcessor = new ServerMessageProcessor();
+            var response = serverProcessor.ProcessReplenishHandMessage(message);
+
+            var responseMsg = response.First() as ReplenishHandCardMessage;
+
+            Assert.DoesNotContain(card, responseMsg.PlayingCards);
+        }
+        
         #endregion
 
         #region Private methods
@@ -488,6 +528,34 @@ namespace Bang.Tests.DomainUnitTests
             game.Start();
 
             return game;
+        }
+
+        #endregion
+
+        #region Fields
+
+        public static IEnumerable<object[]> ReplenishCardsToCardsAmountMapping
+        {
+            get
+            {
+                return new[]
+                {
+                    new object[] {new StagecoachCardType().ClubsSeven(), 2},
+                    new object[] {new WellsFargoCardType().ClubsSeven(), 3,}
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> ReplenishCards
+        {
+            get
+            {
+                return new[]
+                {
+                    new object[] { new StagecoachCardType().ClubsSeven(), },
+                    new object[] { new WellsFargoCardType().ClubsSeven(), },
+                };
+            }
         }
 
         #endregion
