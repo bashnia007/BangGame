@@ -78,13 +78,13 @@ namespace Domain.Game
 
         private void FillPlayerHand(Player player)
         {
-            while (player.PlayerTablet.Health > player.PlayerHand.Count)
+            while (player.PlayerTablet.Health > player.Hand.Count)
             {
                 if (deck.Count == 0)
                 {
                     ResetDeck();
                 }
-                player.PlayerHand.Add(deck.Dequeue());
+                player.AddCardToHand(deck.Dequeue());
             }
         }
 

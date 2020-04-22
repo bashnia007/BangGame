@@ -257,17 +257,17 @@ namespace Bang.Tests.DomainUnitTests
         {
             var game = CreateAndStartGame();
             var player = game.Players.First();
-            var cardsToDrop = player.PlayerHand.Take(1).ToList();
+            var cardsToDrop = player.Hand.Take(1).ToList();
             var message = new DropCardsMessage(cardsToDrop);
             message.GameId = game.Id;
             message.PlayerId = player.Id;
 
-            int cardsBeforeDrop = player.PlayerHand.Count;
+            int cardsBeforeDrop = player.Hand.Count;
 
             var serverProcessor = new ServerMessageProcessor();
             var response = serverProcessor.ProcessDropCardsMessage(message);
 
-            Assert.Equal(cardsBeforeDrop - 1, player.PlayerHand.Count);
+            Assert.Equal(cardsBeforeDrop - 1, player.Hand.Count);
         }
 
         [Fact]
@@ -275,7 +275,7 @@ namespace Bang.Tests.DomainUnitTests
         {
             var game = CreateAndStartGame();
             var player = game.Players.First();
-            var cardsToDrop = player.PlayerHand.Take(1).ToList();
+            var cardsToDrop = player.Hand.Take(1).ToList();
             var message = new DropCardsMessage(cardsToDrop);
             message.GameId = game.Id;
             message.PlayerId = player.Id;
@@ -297,12 +297,12 @@ namespace Bang.Tests.DomainUnitTests
             message.GameId = game.Id;
             message.PlayerId = player.Id;
 
-            var cardsAmountBeforeMessage = player.PlayerHand.Count;
+            var cardsAmountBeforeMessage = player.Hand.Count;
 
             var serverProcessor = new ServerMessageProcessor();
             var response = serverProcessor.ProcessTakeCardsMessage(message);
 
-            Assert.Equal(cardsAmountBeforeMessage + cardsToTake, player.PlayerHand.Count);
+            Assert.Equal(cardsAmountBeforeMessage + cardsToTake, player.Hand.Count);
         }
 
         [Fact]
@@ -387,7 +387,7 @@ namespace Bang.Tests.DomainUnitTests
             var game = CreateAndStartGame();
             var player = game.Players.First();
             var card = new BangGameCard(new MustangCardType(), Suite.Clubs, Rank.Ace);
-            player.PlayerHand.Add(card);
+            player.AddCardToHand(card);
 
             var message = new LongTermFeatureCardMessage(card);
             message.GameId = game.Id;
@@ -396,7 +396,7 @@ namespace Bang.Tests.DomainUnitTests
             var serverProcessor = new ServerMessageProcessor();
             var response = serverProcessor.ProcessLongTermFeatureCardMessage(message);
 
-            Assert.DoesNotContain(card, player.PlayerHand);
+            Assert.DoesNotContain(card, player.Hand);
         }
 
         [Fact]
@@ -406,7 +406,7 @@ namespace Bang.Tests.DomainUnitTests
             var player = game.Players.First();
             var card = new BangGameCard(new VolcanicCardType(), Suite.Clubs, Rank.Ace);
             Weapon weapon = WeaponFactory.Create(card.Type as WeaponCardType);
-            player.PlayerHand.Add(card);
+            player.AddCardToHand(card);
 
             var message = new ChangeWeaponMessage(card);
             message.GameId = game.Id;
@@ -424,7 +424,7 @@ namespace Bang.Tests.DomainUnitTests
             var game = CreateAndStartGame();
             var player = game.Players.First();
             var card = new VolcanicCardType().ClubsSeven();
-            player.PlayerHand.Add(card);
+            player.AddCardToHand(card);
 
             var message = new ChangeWeaponMessage(card);
             message.GameId = game.Id;
@@ -433,7 +433,7 @@ namespace Bang.Tests.DomainUnitTests
             var serverProcessor = new ServerMessageProcessor();
             var response = serverProcessor.ProcessChangeWeaponMessage(message);
 
-            Assert.DoesNotContain(card, player.PlayerHand);
+            Assert.DoesNotContain(card, player.Hand);
         }
 
         [Theory]
@@ -442,7 +442,7 @@ namespace Bang.Tests.DomainUnitTests
         {
             var game = CreateAndStartGame();
             var player = game.Players.First();
-            player.PlayerHand.Add(card);
+            player.AddCardToHand(card);
             
             message.GameId = game.Id;
             message.PlayerId = player.Id;
@@ -461,7 +461,7 @@ namespace Bang.Tests.DomainUnitTests
         {
             var game = CreateAndStartGame();
             var player = game.Players.First();
-            player.PlayerHand.Add(card);
+            player.AddCardToHand(card);
             
             message.GameId = game.Id;
             message.PlayerId = player.Id;
@@ -471,7 +471,7 @@ namespace Bang.Tests.DomainUnitTests
 
             var responseMsg = response.First() as ReplenishHandCardMessage;
 
-            Assert.DoesNotContain(card, player.PlayerHand);
+            Assert.DoesNotContain(card, player.Hand);
         }
 
         [Theory]
@@ -480,7 +480,7 @@ namespace Bang.Tests.DomainUnitTests
         {
             var game = CreateAndStartGame();
             var player = game.Players.First();
-            player.PlayerHand.Add(card);
+            player.AddCardToHand(card);
 
             message.GameId = game.Id;
             message.PlayerId = player.Id;

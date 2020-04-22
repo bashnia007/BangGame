@@ -105,7 +105,7 @@ namespace Server.Processors
                 foreach (var player in game.Players)
                 {
                     var startGameMessage = new StartGameMessage(player.Role, player.PlayerTablet.Character, 
-                        player.PlayerHand, game.Id, player.Id);
+                        player.Hand.ToList(), game.Id, player.Id);
 
                     result.Add(startGameMessage);
                     Logger.Debug($"Player with id={player.Id} received: {player.Role.Description} role " +
@@ -153,7 +153,7 @@ namespace Server.Processors
             if (player.PlayerTablet.CanPutCard(message.CardForTablet))
             {
                 player.PlayerTablet.PutCard(message.CardForTablet);
-                player.PlayerHand.Remove(message.CardForTablet);
+                player.DropCard(message.CardForTablet);
                 message.IsSuccess = true;
             }
             else
@@ -174,7 +174,7 @@ namespace Server.Processors
             var player = game.Players.First(p => p.Id == message.PlayerId);
 
             player.PlayerTablet.ChangeWeapon(message.WeaponCard);
-            player.PlayerHand.Remove(message.WeaponCard);
+            player.DropCard(message.WeaponCard);
 
             return result;
         }
