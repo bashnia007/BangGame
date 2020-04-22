@@ -5,50 +5,36 @@ using System.Linq;
 namespace Domain.Game
 {
     [Serializable]
-    public class Deck<T>
+    public class Deck<T> : Queue<T>
     {
-        private Stack<T> cards;
         #region Constructors
 
-        
-        public Deck(IEnumerable<T> data)
-        {
-            cards = new Stack<T>(data);
-        }
-        
-        public Deck() : this(new List<T>()){}
+        public Deck() : base()
+        { }
+
+        public Deck(IEnumerable<T> data) : base(data)
+        { }
 
         #endregion
 
         public Deck<T> Shuffle()
         {
-            var list = cards.ToList();
+            var list = this.ToList();
             int cardsAmount = list.Count;
             var rnd = new Random();
 
-            cards = new Stack<T>();
+            this.Clear();
 
             while (cardsAmount > 0)
             {
                 int number = rnd.Next(cardsAmount);
                 var cardByNumber = list[number];
-                cards.Push(cardByNumber);
+                this.Enqueue(cardByNumber);
                 list.RemoveAt(number);
                 cardsAmount--;
             }
 
             return this;
         }
-
-        public bool IsEmpty() => cards.Count == 0;
-
-        public T Deal()
-        {
-            if (IsEmpty()) throw new InvalidOperationException();
-
-            return cards.Pop();
-        }
-
-        public void Put(T card) => cards.Push(card);
     }
 }

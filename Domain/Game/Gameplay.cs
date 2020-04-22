@@ -13,18 +13,16 @@ namespace Domain.Game
     public class Gameplay
     {
         private Deck<BangGameCard> deck;
-        private Deck<BangGameCard> discardedCards;
+        private Stack<BangGameCard> discardedCards;
         private List<Player> players;
         
         public void Initialize(List<Player> players)
         {
+            discardedCards = new Stack<BangGameCard>();
             this.players = players;
-            
             deck = new Deck<BangGameCard>(GameInitializer.PlayingCards);
             deck.Shuffle();
-            
-            discardedCards = new Deck<BangGameCard>();
-            
+
             ProvideCardsForPlayers();
             
             foreach (var player in this.players)
@@ -33,26 +31,20 @@ namespace Domain.Game
                 player.CardsTaken += TakeCardsOnHand;
                 player.PlayerTablet.CardDropped += DropCardsFromHand;
             }
+
+            
         }
 
-        public BangGameCard GetTopCardFromDiscarded()
+        public CardType GetTopCardFromDiscarded()
         {
-            if (discardedCards.IsEmpty()) return null;
-            return discardedCards.Deal();
-        }
-
-        public BangGameCard DealCard()
-        {
-            if (deck.IsEmpty()) ResetDeck();
-
-            return deck.Deal();
+            return discardedCards.Peek();
         }
 
         private void DropCardsFromHand(List<BangGameCard> cardsToDrop)
         {
             foreach (var card in cardsToDrop)
             {
-                discardedCards.Put(card);
+                discardedCards.Push(card);
             }
         }
 
@@ -62,7 +54,11 @@ namespace Domain.Game
 
             for (short i = 0; i < amount; i++)
             {
-                result.Add(DealCard());
+                if (deck.Count == 0)
+                {
+                    ResetDeck();
+                }
+                result.Add(deck.Dequeue());
             }
 
             return result;
@@ -75,7 +71,7 @@ namespace Domain.Game
 
             foreach (var player in players)
             {
-                player.SetInfo(roles.Deal(), characters.Deal());
+                player.SetInfo(roles.Dequeue(), characters.Dequeue());
                 FillPlayerHand(player);
             }
         }
@@ -84,14 +80,18 @@ namespace Domain.Game
         {
             while (player.PlayerTablet.Health > player.PlayerHand.Count)
             {
-                player.PlayerHand.Add(DealCard());
+                if (deck.Count == 0)
+                {
+                    ResetDeck();
+                }
+                player.PlayerHand.Add(deck.Dequeue());
             }
         }
 
         private void ResetDeck()
         {
-            deck = discardedCards.Shuffle();
-            discardedCards = new Deck<BangGameCard>();
+            deck = new Deck<BangGameCard>(discardedCards);
+            discardedCards = new Stack<BangGameCard>();
         }
     }
 }
