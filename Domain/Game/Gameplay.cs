@@ -84,7 +84,7 @@ namespace Domain.Game
         {
             while (player.PlayerTablet.Health > player.Hand.Count)
             {
-                player.PlayerHand.Add(DealCard());
+                player.AddCardToHand(DealCard());
             }
         }
 
