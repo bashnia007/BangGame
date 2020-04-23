@@ -15,7 +15,8 @@ namespace Domain.Players
         public string Name { get; set; }
         public Role Role { get; private set; }
         public PlayerTablet PlayerTablet { get; private set; }
-        public List<BangGameCard> PlayerHand { get; private set; }
+        private readonly List<BangGameCard> hand;
+        public IReadOnlyList<BangGameCard> Hand => hand;
         public virtual bool IsReadyToPlay { get; set; }
 
         public delegate void DropCardsHandler(List<BangGameCard> cardsToDrop);
@@ -25,7 +26,7 @@ namespace Domain.Players
 
         public Player()
         {
-            PlayerHand = new List<BangGameCard>();
+            hand = new List<BangGameCard>();
         }
 
         public void SetInfo(Role role, Character character)
@@ -34,13 +35,20 @@ namespace Domain.Players
             PlayerTablet = new PlayerTablet(character, role is Sheriff);
         }
 
+        public void AddCardToHand(BangGameCard card)
+        {
+            if (card == null) throw new ArgumentNullException(nameof(card));
+            
+            hand.Add(card);
+        }
+
         public void DropCards(List<BangGameCard> cardsToDrop)
         {
             CardsDropped?.Invoke(cardsToDrop);
 
             foreach (var card in cardsToDrop)
             {
-                PlayerHand.Remove(card);
+                hand.Remove(card);
             }
         }
 
@@ -52,7 +60,7 @@ namespace Domain.Players
         public List<BangGameCard> TakeCards(short amount)
         {
             var newCards = CardsTaken?.Invoke(amount, Id);
-            PlayerHand.AddRange(newCards);
+            hand.AddRange(newCards);
 
             return newCards;
         }

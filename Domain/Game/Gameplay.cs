@@ -82,7 +82,7 @@ namespace Domain.Game
 
         private void FillPlayerHand(Player player)
         {
-            while (player.PlayerTablet.Health > player.PlayerHand.Count)
+            while (player.PlayerTablet.Health > player.Hand.Count)
             {
                 player.PlayerHand.Add(DealCard());
             }
