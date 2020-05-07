@@ -1,9 +1,8 @@
-﻿using Domain.Game;
-using Domain.Players;
-using NLog;
+﻿using NLog;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Bang.Players;
 
 namespace Server
 {

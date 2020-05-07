@@ -1,10 +1,9 @@
-﻿using Domain.Exceptions;
-using Domain.Game;
-using Domain.Messages;
-using NLog;
+﻿using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bang.Messages;
+using Server.Messages;
 
 namespace Server.Processors
 {
@@ -87,6 +86,24 @@ namespace Server.Processors
             return result;
         }
 
+        public List<Message> ProcessGameEventMessage(BangEventMessage message)
+        {
+            var player = Lobby.GetPlayer(message.PlayerId);
+            var game = Lobby.GetGame(message.GameId);
+            
+            var result = game.ProcessEvent(message.BangGameEvent);
+
+            var responseMessage = new BangEventMessage
+            {
+                GameId = message.GameId,
+                PlayerId = result.Player.Id,
+                BangGameEvent = result
+            };
+
+            var responses = new List<Message> {responseMessage};
+            return responses;
+        }
+
         public List<Message> ProcessReadyToPlayMessage(ReadyToPlayMessage message)
         {
             Logger.Debug("Received Ready to Play Message");
@@ -121,77 +138,6 @@ namespace Server.Processors
             throw new NotImplementedException();
         }
 
-        public List<Message> ProcessTakeCardsMessage(TakeCardsMessage message)
-        {
-            var result = new List<Message>();
-
-            var game = Lobby.GetGame(message.GameId);
-            var player = game.Players.First(p => p.Id == message.PlayerId);
-            message = new TakeCardsMessage(player.TakeCards(message.CardsToTakeAmount));
-            result.Add(message);
-
-            return result;
-        }
-
-        public List<Message> ProcessDropCardsMessage(DropCardsMessage message)
-        {
-            var result = new List<Message>();
-
-            var game = Lobby.GetGame(message.GameId);
-            var player = game.Players.First(p => p.Id == message.PlayerId);
-            player.DropCards(message.CardsToDrop);
-
-            return result;
-        }
-
-        public List<Message> ProcessLongTermFeatureCardMessage(LongTermFeatureCardMessage message)
-        {
-            var result = new List<Message>();
-
-            var game = Lobby.GetGame(message.GameId);
-            var player = game.Players.First(p => p.Id == message.PlayerId);
-            if (player.PlayerTablet.CanPutCard(message.CardForTablet))
-            {
-                player.PlayerTablet.PutCard(message.CardForTablet);
-                player.DropCard(message.CardForTablet);
-                message.IsSuccess = true;
-            }
-            else
-            {
-                message.IsSuccess = false;
-            }
-
-            result.Add(message);
-
-            return result;
-        }
-
-        public List<Message> ProcessChangeWeaponMessage(ChangeWeaponMessage message)
-        {
-            var result = new List<Message>();
-
-            var game = Lobby.GetGame(message.GameId);
-            var player = game.Players.First(p => p.Id == message.PlayerId);
-
-            player.PlayerTablet.ChangeWeapon(message.WeaponCard);
-            player.DropCard(message.WeaponCard);
-
-            return result;
-        }
-
-        public List<Message> ProcessReplenishHandMessage(ReplenishHandCardMessage message)
-        {
-            var result = new List<Message>();
-
-            var game = Lobby.GetGame(message.GameId);
-            var player = game.Players.First(p => p.Id == message.PlayerId);
-
-            player.DropCard(message.ReplenishHandCard);
-            var responseMsg = new TakeCardsMessage(player.TakeCards(message.CardsToTakeAmount));
-
-            result.Add(responseMsg);
-
-            return result;
-        }
+        
     }
 }
