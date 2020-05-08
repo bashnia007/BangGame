@@ -4,8 +4,7 @@ using System.Diagnostics;
 using Bang.Characters;
 using Bang.PlayingCards;
 using Bang.Roles;
-using Bang.Game;
-using Bang.GameEvents.CardEffects;
+using Bang.GameEvents;
 
 namespace Bang.Players
 {
@@ -21,6 +20,7 @@ namespace Bang.Players
         public virtual bool IsReadyToPlay { get; set; }
 
         public IReadOnlyList<BangGameCard> ActiveCards => PlayerTablet.ActiveCards;
+        public Character Character => PlayerTablet.Character;
         public int LifePoints => PlayerTablet.Health;
 
         private Game.Gameplay gamePlay;
@@ -33,8 +33,8 @@ namespace Bang.Players
         // TODO it would be much better add constructor with this parameters
         public void SetInfo(Game.Gameplay gamePlay, Role role, Character character)
         {
-            this.gamePlay = gamePlay;
-            Role = role;
+            this.gamePlay = gamePlay?? throw new ArgumentNullException();
+            Role = role?? throw new ArgumentNullException();
             PlayerTablet = new PlayerTablet(character, role is Sheriff);
         }
 
@@ -75,18 +75,21 @@ namespace Bang.Players
             }
         }
 
-        public void Defense(BangGameCard card)
+        public void Defense(BangGameCard firstCard, BangGameCard secondCard = null)
         {
-            if (card == null)
+            if (firstCard == null)
             {
                 NotDefense();
                 return;
             }
             
-            if (!hand.Contains(card))
-                throw new InvalidOperationException($"Player doesn't have card {card.Description}");
+            if (!hand.Contains(firstCard))
+                throw new InvalidOperationException($"Player doesn't have card {firstCard.Description}");
+            
+            if (secondCard != null && !hand.Contains(secondCard))
+                throw new InvalidOperationException($"Player doesn't have card {secondCard.Description}");
 
-            gamePlay.Defense(this, card);
+            gamePlay.Defense(this, firstCard, secondCard);
         }
 
         public void NotDefense()
@@ -94,7 +97,7 @@ namespace Bang.Players
             gamePlay.Defense(this, null);
         }
 
-        public void PlayCard(BangGameCard card, Player playOn = null)
+        public Response PlayCard(BangGameCard card, Player playOn = null)
         {
             if (!hand.Contains(card))
                 throw new InvalidOperationException($"Player doesn't have card {card.Description}");
@@ -102,8 +105,12 @@ namespace Bang.Players
             if (card.CanBePlayedToAnotherPlayer && playOn == null)
                 throw new InvalidOperationException($"Card {card.Description} must be played to another player!");
 
-            bool played = gamePlay.CardPlayed(playOn?? this, card);
-            if (played) DropCard(card);
+            var response = gamePlay.CardPlayed(playOn?? this, card);
+            
+            if (!(response is NotAllowedOperation))
+                DropCard(card);
+
+            return response;
         }
 
         public void ForceToDropCard(BangGameCard card)

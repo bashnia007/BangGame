@@ -86,6 +86,7 @@ namespace Bang.PlayingCards.Visitors
 
         public CardActionHandler Visit(StagecoachCardType card) => new StageCoachCardHandler();
         public CardActionHandler Visit(WellsFargoCardType card) => new WellsFargoCoachCardHandler();
+        public CardActionHandler Visit(BangCardType card) => new BangCardHandler();
 
         public CardActionHandler Visit(VolcanicCardType card) => new ChangeWeaponHandler();
         public CardActionHandler Visit(SchofieldCardType card) => new ChangeWeaponHandler();

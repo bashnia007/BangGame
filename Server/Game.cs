@@ -5,6 +5,8 @@ using Bang.GameEvents;
 using Bang.Players;
 using NLog;
 
+using static Bang.Game.GameInitializer;
+
 namespace Server
 {
     [Serializable]
@@ -75,7 +77,7 @@ namespace Server
 
         public void Start()
         {
-            Gameplay = new Bang.Game.Gameplay();
+            Gameplay = new Bang.Game.Gameplay(CharactersDeck(), BangGameDeck());
             Gameplay.Initialize(Players);
             IsStarted = true;
         }

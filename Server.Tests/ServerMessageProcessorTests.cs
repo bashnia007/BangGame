@@ -6,6 +6,7 @@ using Bang.Players;
 using Bang.PlayingCards;
 using Bang.Messages;
 using FluentAssertions;
+using Server.Messages;
 using Server.Processors;
 using Xunit;
 
@@ -265,9 +266,10 @@ namespace Server.Tests
             var cardsToDrop = player.Hand.Take(1).ToList();
             var message = new DropCardsMessage(cardsToDrop, player);
 
-
+            // Act
             game.ProcessEvent(message);
 
+            // Assert
             Assert.Equal(cardsToDrop.First(), game.Gameplay.GetTopCardFromDiscarded());
         }
         
@@ -328,7 +330,7 @@ namespace Server.Tests
 
             Assert.DoesNotContain(card, player.Hand);
         }
-
+        
         #endregion
 
         #region Private methods

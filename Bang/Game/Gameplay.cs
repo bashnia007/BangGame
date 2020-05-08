@@ -7,7 +7,6 @@ using Bang.GameEvents.CardEffects.States;
 using Bang.Players;
 using Bang.PlayingCards;
 using Bang.Roles;
-using Bang.GameEvents.CardEffects;
 
 namespace Bang.Game
 {
@@ -16,33 +15,35 @@ namespace Bang.Game
     {
         private Deck<BangGameCard> deck;
         private Deck<BangGameCard> discardedCards;
+        private Deck<Character> characters;
         public IReadOnlyList<Player> Players { get; private set; } 
 
         private BangEventsHandler handler;
 
         private HandlerState state = new DoneState();
-        public Queue<Response> innerEvents = new Queue<Response>();
 
         public Player PlayerTurn { get; private set; }
-        
+
+        public Gameplay(Deck<Character> characters, Deck<BangGameCard> gameCards)
+        {
+            deck = gameCards ?? throw new ArgumentNullException(nameof(gameCards));
+            discardedCards = new Deck<BangGameCard>();
+
+            this.characters = characters;
+        }
+
         public void Initialize(List<Player> players)
         {
+            handler = new BangEventsHandler(this);
+            
             Players = players;
-            
-            deck = new Deck<BangGameCard>(GameInitializer.PlayingCards);
-            deck.Shuffle();
-            
-            discardedCards = new Deck<BangGameCard>();
-            
-            ProvideCardsForPlayers();
-            
-            this.handler = new BangEventsHandler(this);
+            ProvideCardsForPlayers(characters);
             PlayerTurn = players.First(p => p.PlayerTablet.IsSheriff);
         }
 
-        public bool Defense(Player player, BangGameCard card)
+        public bool Defense(Player player, BangGameCard card, BangGameCard secondCard = null)
         {
-            state = state.ApplyReplyAction(card);
+            state = state.ApplyReplyAction(card, secondCard);
 
             return true;
         }
@@ -70,11 +71,12 @@ namespace Bang.Game
             }
         }
 
-        private void ProvideCardsForPlayers()
+        private void ProvideCardsForPlayers(Deck<Character> characters)
         {
-            var roles = new Deck<Role>(GameInitializer.CreateRolesForGame(Players.Count).Cast<Role>());
-            var characters = new Deck<Character>(GameInitializer.Characters.Cast<Character>());
+            var roles = new Deck<Role>(GameInitializer.CreateRolesForGame(Players.Count));
+            characters.Shuffle();
 
+            deck.Shuffle();
             foreach (var player in Players)
             {
                 player.SetInfo(this, roles.Deal(), characters.Deal());
@@ -82,20 +84,14 @@ namespace Bang.Game
             }
         }
 
-        internal bool CardPlayed(Player player, BangGameCard card)
+        internal Response CardPlayed(Player player, BangGameCard card)
         {
             var nextState = state.ApplyCardEffect(player, card, this);
-            
+
             if (!nextState.IsError)
-            {
                 state = nextState;
-            }
-            else
-            {
-                // TODO put message for game
-            }
             
-            return !nextState.IsError;
+            return nextState.SideEffect;
         }
 
         public void ForceDropCard(BangGameCard card)

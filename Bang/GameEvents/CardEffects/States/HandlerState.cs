@@ -9,6 +9,8 @@ namespace Bang.GameEvents.CardEffects.States
         public virtual bool IsFinalState => false;
         public virtual bool IsError => false;
 
+        public virtual Response SideEffect { get; set; } = new Done();
+        
         /// <summary>
         /// Handles card played by player on it's turn
         /// </summary>
@@ -25,5 +27,7 @@ namespace Bang.GameEvents.CardEffects.States
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">Generates for the final states</exception>
         public abstract HandlerState ApplyReplyAction(BangGameCard card);
+
+        public abstract HandlerState ApplyReplyAction(BangGameCard firstCard, BangGameCard secondCard);
     }
 }

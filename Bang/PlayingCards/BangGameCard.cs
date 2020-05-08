@@ -37,7 +37,7 @@ namespace Bang.PlayingCards
         
         public static implicit operator CardType(BangGameCard card)
         {
-            return card.Type;
+            return card?.Type;
         }
     }
 }

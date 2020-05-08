@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Bang.Players;
 using Bang.PlayingCards;
 using Bang.PlayingCards.Visitors;
 using Bang.Weapons;
-using Bang.Game;
 using FluentAssertions;
 using Xunit;
+
+using static Bang.Game.GameInitializer;
 
 namespace Bang.Tests
 {
@@ -99,9 +99,10 @@ namespace Bang.Tests
             
             player.PlayCard(firstMustangCard);
             
+            // Act
             player.PlayCard(secondMustangCard);
 
-            Assert.Single(player.PlayerTablet.ActiveCards);
+            Assert.Single(player.ActiveCards);
             player.Hand.Should().Contain(secondMustangCard);
         }
         
@@ -134,7 +135,7 @@ namespace Bang.Tests
                 players.Add(player);
             }
             
-            var gameplay = new Game.Gameplay();
+            var gameplay = new Game.Gameplay(CharactersDeck(), BangGameDeck());
             gameplay.Initialize(players);
             return gameplay;
         }

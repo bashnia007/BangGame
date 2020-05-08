@@ -14,7 +14,7 @@ namespace Bang.GameEvents.CardEffects
                 return new DoneState();
             }
 
-            return new ErrorState();
+            return new ErrorState{SideEffect = new NotAllowedOperation()};
         }
     }
 }

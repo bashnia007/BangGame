@@ -28,7 +28,11 @@ namespace Bang.Game
             PlayingCards = InitializePlayingCards();
             Characters = InitializeCharacters();
         }
-        
+
+        public static Deck<BangGameCard> BangGameDeck() => new Deck<BangGameCard>(PlayingCards);
+
+        public static Deck<Character> CharactersDeck() => new Deck<Character>(Characters);
+
         public static List<Role> CreateRolesForGame(int playersAmount)
         {
             List<Role> roles = new List<Role>

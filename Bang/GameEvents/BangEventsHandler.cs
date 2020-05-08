@@ -35,8 +35,7 @@ namespace Bang.GameEvents
         {
             var player = message.Player;
             
-            player.PlayCard(message.Card, message.PlayAgainst);
-            return gamePlay.innerEvents.Dequeue();
+            return player.PlayCard(message.Card, message.PlayAgainst);
         }
 
         public Response CheckDrawCard(CheckDrawCardMessage checkDrawCardMessage)
@@ -46,7 +45,13 @@ namespace Bang.GameEvents
 
         public Response ReplyAction(ReplyActionMessage replyActionMessage)
         {
-            throw new NotImplementedException(replyActionMessage.ToString());
+            var player = replyActionMessage.Player;
+            if (replyActionMessage.Response is DefenceAgainstBang d)
+            {
+                player.Defense(d.FirstCard, d.SecondCard);
+            }
+            
+            return new Done();
         }
     }
 }
