@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bang.Game;
 using Bang.GameEvents;
 using Bang.Players;
 using NLog;
-
-using static Bang.Game.GameInitializer;
 
 namespace Server
 {
@@ -77,8 +76,7 @@ namespace Server
 
         public void Start()
         {
-            Gameplay = new Bang.Game.Gameplay(CharactersDeck(), BangGameDeck());
-            Gameplay.Initialize(Players);
+            Gameplay = GamePlayInitializer.Create(Players);
             IsStarted = true;
         }
 

@@ -9,7 +9,7 @@ using Bang.PlayingCards;
 using FluentAssertions;
 using Xunit;
 
-using static Bang.Game.GameInitializer;
+using static Bang.Game.GamePlayInitializer;
 
 namespace Bang.Tests
 {
@@ -163,7 +163,7 @@ namespace Bang.Tests
         private BangGameCard BangCard() => new BangCardType().SpadesQueen();
         private BangGameCard MissedCard() => new MissedCardType().SpadesQueen();
 
-        private Game.Gameplay InitGame() => InitGame(GameInitializer.BangGameDeck());
+        private Game.Gameplay InitGame() => InitGame(GamePlayInitializer.BangGameDeck());
         
         private Game.Gameplay InitGame(Deck<BangGameCard> deck)
         {

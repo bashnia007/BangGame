@@ -11,13 +11,13 @@ namespace Bang.Tests
         [Fact]
         public void There_are_eighty_cards_in_the_game()
         {
-            Assert.Equal(80, GameInitializer.PlayingCards.Count);
+            Assert.Equal(80, GamePlayInitializer.PlayingCards.Count);
         }
 
         [Fact]
         public void There_are_sixteen_characters()
         {
-            Assert.Equal(16, GameInitializer.Characters.Count);
+            Assert.Equal(16, GamePlayInitializer.Characters.Count);
         }
 
         [Theory]
@@ -28,7 +28,7 @@ namespace Bang.Tests
         {
             Assert.Throws<AmountPlayersException>(() =>
             {
-                var gameSet = GameInitializer.CreateRolesForGame(playersAmount);
+                var gameSet = GamePlayInitializer.CreateRolesForGame(playersAmount);
             });
         }
 
@@ -39,7 +39,7 @@ namespace Bang.Tests
         [InlineData(7)]
         public void There_is_always_a_sheriff_in_the_game(int playersAmount)
         {
-            var roles = GameInitializer.CreateRolesForGame(playersAmount);
+            var roles = GamePlayInitializer.CreateRolesForGame(playersAmount);
 
             Assert.Single(roles.OfType<Sheriff>());
         }
@@ -51,7 +51,7 @@ namespace Bang.Tests
         [InlineData(7)]
         public void There_is_always_a_renegade_in_the_game(int playersAmount)
         {
-            var roles = GameInitializer.CreateRolesForGame(playersAmount);
+            var roles = GamePlayInitializer.CreateRolesForGame(playersAmount);
 
             Assert.Single(roles.OfType<Renegade>());
         }
@@ -63,7 +63,7 @@ namespace Bang.Tests
         [InlineData(7, 2)]
         public void Amount_of_deputies_depends_on_the_players_amount(int playersAmount, int deputyExpected)
         {
-            var roles = GameInitializer.CreateRolesForGame(playersAmount);
+            var roles = GamePlayInitializer.CreateRolesForGame(playersAmount);
 
             Assert.Equal(deputyExpected, roles.OfType<Deputy>().Count());
         }
@@ -75,7 +75,7 @@ namespace Bang.Tests
         [InlineData(7, 3)]
         public void Amount_of_outlaws_depends_on_the_players_amount(int playersAmount, int outlawExpected)
         {
-            var roles = GameInitializer.CreateRolesForGame(playersAmount);
+            var roles = GamePlayInitializer.CreateRolesForGame(playersAmount);
             Assert.Equal(outlawExpected, roles.OfType<Outlaw>().Count());
         }
     }

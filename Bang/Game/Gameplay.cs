@@ -41,6 +41,12 @@ namespace Bang.Game
             PlayerTurn = players.First(p => p.PlayerTablet.IsSheriff);
         }
 
+        public void DealFirstCards()
+        {
+            foreach (var player in Players)
+                FillPlayerHand(player);
+        }
+
         public bool Defense(Player player, BangGameCard card, BangGameCard secondCard = null)
         {
             state = state.ApplyReplyAction(card, secondCard);
@@ -73,14 +79,13 @@ namespace Bang.Game
 
         private void ProvideCardsForPlayers(Deck<Character> characters)
         {
-            var roles = new Deck<Role>(GameInitializer.CreateRolesForGame(Players.Count));
+            var roles = new Deck<Role>(GamePlayInitializer.CreateRolesForGame(Players.Count));
             characters.Shuffle();
 
             deck.Shuffle();
             foreach (var player in Players)
             {
                 player.SetInfo(this, roles.Deal(), characters.Deal());
-                FillPlayerHand(player);
             }
         }
 

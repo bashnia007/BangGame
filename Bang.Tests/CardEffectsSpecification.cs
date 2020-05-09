@@ -7,7 +7,7 @@ using Bang.Weapons;
 using FluentAssertions;
 using Xunit;
 
-using static Bang.Game.GameInitializer;
+using static Bang.Game.GamePlayInitializer;
 
 namespace Bang.Tests
 {

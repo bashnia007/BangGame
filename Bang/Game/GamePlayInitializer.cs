@@ -8,6 +8,7 @@ using Bang.Exceptions;
 using Bang.PlayingCards;
 using Bang.Roles;
 using Bang.Game;
+using Bang.Players;
 using Gameplay;
 using Gameplay.Characters;
 using Gameplay.Exceptions;
@@ -16,17 +17,26 @@ using Gameplay.Roles;
 
 namespace Bang.Game
 {
-    public static class GameInitializer
+    public static class GamePlayInitializer
     {
         public static List<BangGameCard> PlayingCards { get; }
         public static List<Character> Characters { get; }
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        static GameInitializer()
+        static GamePlayInitializer()
         {
             PlayingCards = InitializePlayingCards();
             Characters = InitializeCharacters();
+        }
+
+        public static Gameplay Create(List<Player> players)
+        {
+            var gamePlay = new Gameplay(CharactersDeck(), BangGameDeck());
+            gamePlay.Initialize(players);
+            gamePlay.DealFirstCards();
+
+            return gamePlay;
         }
 
         public static Deck<BangGameCard> BangGameDeck() => new Deck<BangGameCard>(PlayingCards);
