@@ -182,9 +182,11 @@ namespace Bang.Tests
         private (Player actor, Player victim) ChoosePlayers(Game.Gameplay gameplay)
         {
             var actor = gameplay.PlayerTurn;
+            actor.SetInfo(gameplay, actor.Role, new KitCarlson());
             actor.AddCardToHand(BangCard());
 
             var victim = gameplay.Players.First(p => p != actor);
+            victim.SetInfo(gameplay, actor.Role, new PedroRamirez());
             victim.AddCardToHand(MissedCard());
             
             return (actor, victim);
