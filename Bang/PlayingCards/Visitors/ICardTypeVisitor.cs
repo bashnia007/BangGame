@@ -1,5 +1,4 @@
 using Bang.GameEvents.CardEffects;
-using Bang.Weapons;
 
 namespace Bang.PlayingCards.Visitors
 {
@@ -28,52 +27,6 @@ namespace Bang.PlayingCards.Visitors
         T Visit(VolcanicCardType card) => DefaultValue;
         T Visit(WellsFargoCardType card) => DefaultValue;
         T Visit(WinchesterCardType card) => DefaultValue;
-    }
-
-    public class IsLongTermCardTypeVisitor : ICardTypeVisitor<bool>
-    {
-        public bool DefaultValue => false;
-        public bool Visit(BarrelCardType card) => true;
-        public bool Visit(CarabineCardType card) => true;
-        public bool Visit(DynamiteCardType card) => true;
-        public bool Visit(JailCardType card) => true;
-        public bool Visit(MustangCardType card) => true;
-        public bool Visit(RemingtonCardType card) => true;
-        public bool Visit(SchofieldCardType card) => true;
-        public bool Visit(ScopeCardType card) => true;
-        public bool Visit(VolcanicCardType card) => true;
-        public bool Visit(WinchesterCardType card) => true;
-    }
-    
-    public class IsWeaponCardVisitor : ICardTypeVisitor<bool>
-    {
-        public bool DefaultValue => false;
-
-        public bool Visit(VolcanicCardType card) => true;
-        public bool Visit(SchofieldCardType card) => true;
-        public bool Visit(CarabineCardType card) => true;
-        public bool Visit(RemingtonCardType card) => true;
-        public bool Visit(WinchesterCardType card) => true;
-    }
-    
-    public class CanBePlayedToAnotherPlayer : ICardTypeVisitor<bool>
-    {
-        public bool DefaultValue => false;
-
-        public bool Visit(CatBalouCardType card) => true;
-        public bool Visit(PanicCardType card) => true;
-        public bool Visit(BangCardType card) => true;
-        public bool Visit(JailCardType card) => true;
-    }
-    
-    public class CardToWeaponVisitor : ICardTypeVisitor<Weapon>
-    {
-        public Weapon DefaultValue => null;
-        public Weapon Visit(VolcanicCardType card) => new Volcanic();
-        public Weapon Visit(SchofieldCardType card) => new Schofield();
-        public Weapon Visit(CarabineCardType card) => new Carabine(); 
-        public Weapon Visit(RemingtonCardType card) => new Remington(); 
-        public Weapon Visit(WinchesterCardType card) => new Winchester();
     }
 
     internal class GetHandlerVisitor : ICardTypeVisitor<CardActionHandler>

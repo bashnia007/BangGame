@@ -4,7 +4,6 @@ using System.Linq;
 using Bang.Players;
 using Bang.PlayingCards;
 using Gameplay.Characters.Visitors;
-using Gameplay.Players;
 using static Bang.MathExtension;
 using static System.Math;
 

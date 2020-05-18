@@ -19,33 +19,13 @@ namespace Bang.Game
             {
                 var secondCard = gameplay.DealCard();
 
-                draw |= ShouldApplyEffect(secondCard);
+                if (!draw)
+                    draw = ShouldApplyEffect(secondCard);
                 
                 gameplay.Discard(secondCard);
             }
 
             return draw;
-        }
-    }
-
-    public class BarrelChecker : DrawChecker
-    {
-        protected override bool ShouldApplyEffect(BangGameCard card) => card.Suite == Suite.Hearts;
-    }
-
-    public class JailChecker : DrawChecker
-    {
-        protected override bool ShouldApplyEffect(BangGameCard card)
-        {
-            throw new System.NotImplementedException();
-        }
-    }
-
-    public class DynamiteChecker : DrawChecker
-    {
-        protected override bool ShouldApplyEffect(BangGameCard card)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using Bang.PlayingCards.Visitors;
-using Bang;
 
 namespace Bang.PlayingCards
 {
@@ -11,6 +10,10 @@ namespace Bang.PlayingCards
         public Rank Rank { get; }
 
         public string Description => Type.Description;
+
+        public bool IsLongTerm => Type.Accept(new IsLongTermCardTypeVisitor());
+        public bool IsWeapon => Type.Accept(new IsWeaponCardVisitor());
+        public bool CanBePlayedToAnotherPlayer => Type.Accept(new CanBePlayedToAnotherPlayer());
         
         public BangGameCard(CardType card, Suite suite, Rank rank)
         {
@@ -18,10 +21,6 @@ namespace Bang.PlayingCards
             Suite = suite;
             Rank = rank;
         }
-
-        public bool IsLongTerm => Type.Accept(new IsLongTermCardTypeVisitor());
-        public bool IsWeapon => Type.Accept(new IsWeaponCardVisitor());
-        public bool CanBePlayedToAnotherPlayer => Type.Accept(new CanBePlayedToAnotherPlayer());
 
         public T Accept<T>(ICardTypeVisitor<T> visitor) => Type.Accept(visitor);
 
@@ -37,7 +36,7 @@ namespace Bang.PlayingCards
         
         public static implicit operator CardType(BangGameCard card)
         {
-            return card?.Type;
+            return card.Type;
         }
     }
 }

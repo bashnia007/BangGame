@@ -7,12 +7,7 @@ using Bang.Characters;
 using Bang.Exceptions;
 using Bang.PlayingCards;
 using Bang.Roles;
-using Bang.Game;
 using Bang.Players;
-using Gameplay;
-using Gameplay.Characters;
-using Gameplay.Exceptions;
-using Gameplay.Roles;
 
 
 namespace Bang.Game
