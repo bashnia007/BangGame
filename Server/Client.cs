@@ -1,10 +1,11 @@
-﻿using Domain.Messages;
-using NLog;
+﻿using NLog;
 using Server.Processors;
 using System;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using Bang.Messages;
+using Server.Messages;
 
 namespace Server
 {
