@@ -5,6 +5,7 @@ using Bang.Characters;
 using Bang.PlayingCards;
 using Bang.Roles;
 using Bang.GameEvents;
+using Bang.GameEvents.CardEffects;
 
 namespace Bang.Players
 {
@@ -45,7 +46,7 @@ namespace Bang.Players
             hand.Add(card);
         }
 
-        public void RemoveActiveCard(BangGameCard card)
+        public void DropActiveCard(BangGameCard card)
         {
             PlayerTablet.RemoveCard(card);
             
@@ -116,6 +117,11 @@ namespace Bang.Players
         public void ForceToDropCard(BangGameCard card)
         {
             gamePlay.ForceDropCard(card);
+        }
+
+        public void ForceToDropCard(ClosedHandCard code)
+        {
+            gamePlay.ForceDropCard(code);
         }
 
         public void LoseLifePoint()

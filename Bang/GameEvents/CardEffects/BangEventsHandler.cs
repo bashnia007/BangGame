@@ -46,9 +46,21 @@ namespace Bang.GameEvents
         public Response ReplyAction(ReplyActionMessage replyActionMessage)
         {
             var player = replyActionMessage.Player;
+
             if (replyActionMessage.Response is DefenceAgainstBang d)
             {
                 player.Defense(d.FirstCard, d.SecondCard);
+            }
+            else if (replyActionMessage.Response is ForceCardToDrop f)
+            {
+                if (f.ActiveCardToDrop != null)
+                    player.ForceToDropCard(f.ActiveCardToDrop);
+                else
+                    player.ForceToDropCard(f.HandCardToDrop);
+            }
+            else
+            {
+                throw new NotImplementedException(replyActionMessage.Response.ToString());
             }
             
             return new Done();

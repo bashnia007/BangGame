@@ -28,6 +28,7 @@ namespace Bang.GameEvents.CardEffects.States
         /// <exception cref="InvalidOperationException">Generates for the final states</exception>
         public abstract HandlerState ApplyReplyAction(BangGameCard card);
 
-        public abstract HandlerState ApplyReplyAction(BangGameCard firstCard, BangGameCard secondCard);
+        public virtual HandlerState ApplyReplyAction(BangGameCard firstCard, BangGameCard secondCard) => throw new InvalidOperationException();
+        public virtual HandlerState ApplyReplyAction(ClosedHandCard cardCode) => throw new InvalidOperationException();
     }
 }

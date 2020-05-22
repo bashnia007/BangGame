@@ -303,6 +303,7 @@ namespace Server.Tests
             Assert.DoesNotContain(card, player.Hand);
         }
 
+        // TODO this test should not live in ServerMessageProcessorTests
         [Theory]
         [MemberData(nameof(ReplenishCardsToCardsAmountMapping))]
         public void Replenish_hand_card_message_returns_properly_cards_amount_in_message(BangGameCard card, int cardsShouldBeAdded)
@@ -318,6 +319,7 @@ namespace Server.Tests
             player.Hand.Count.Should().Be(hand - 1 + cardsShouldBeAdded);
         }
 
+        // TODO this test should not live in ServerMessageProcessorTests
         [Theory]
         [MemberData(nameof(ReplenishCards))]
         public void Replenish_hand_card_message_removes_used_card_from_hand(BangGameCard card)
