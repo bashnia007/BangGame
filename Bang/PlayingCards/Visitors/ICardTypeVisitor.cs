@@ -47,6 +47,8 @@ namespace Bang.PlayingCards.Visitors
         public CardActionHandler Visit(RemingtonCardType card) => new ChangeWeaponHandler();
         public CardActionHandler Visit(WinchesterCardType card) => new ChangeWeaponHandler();
 
+        public CardActionHandler Visit(CatBalouCardType card) => new CatBalouHandler();
+
         public CardActionHandler Visit(GatlingCardType card) => new GatlingActionHandler();
     }
 }
