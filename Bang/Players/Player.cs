@@ -130,5 +130,14 @@ namespace Bang.Players
             
             PlayerTablet.Health--;
         }
+
+        
+        public void LoseCard(BangGameCard card)
+        {
+            hand.Remove(card);
+        }
+
+        public void DrawCardFromPlayer(BangGameCard card) => gamePlay.StealCard(card);
+        public void DrawCardFromPlayer() => gamePlay.StealCard();
     }
 }

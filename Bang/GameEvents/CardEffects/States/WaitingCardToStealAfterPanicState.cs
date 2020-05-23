@@ -4,37 +4,40 @@ using Bang.PlayingCards;
 
 namespace Bang.GameEvents.CardEffects.States
 {
-    internal class WaitingCardToDropAfterCatBalouState : HandlerState
+    internal class WaitingCardToStealAfterPanicState : HandlerState
     {
-        private static Random random = new Random();
-        private Player victim;
-        private Game.Gameplay gamePlay;
+        private static readonly Random random = new Random();
 
-        internal WaitingCardToDropAfterCatBalouState(Player victim, Game.Gameplay gameplay)
+        private Player activePlayer;
+        private Player victim;
+
+        internal WaitingCardToStealAfterPanicState(Player activePlayer, Player victim)
         {
+            this.activePlayer = activePlayer;
             this.victim = victim;
-            this.gamePlay = gameplay;
         }
-            
-        
+
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override HandlerState ApplyReplyAction(BangGameCard card)
         {
-            victim.DropActiveCard(card);
+            victim.PlayerTablet.RemoveCard(card);
+            activePlayer.AddCardToHand(card);
+            
             return new DoneState();
         }
-
+        
         public override HandlerState ApplyReplyAction()
         {
             int number = random.Next(victim.Hand.Count);
             var card = victim.Hand[number];
             
-            victim.DropCard(card);
-            
+            victim.LoseCard(card);
+            activePlayer.AddCardToHand(card);
+
             return new DoneState();
         }
     }
