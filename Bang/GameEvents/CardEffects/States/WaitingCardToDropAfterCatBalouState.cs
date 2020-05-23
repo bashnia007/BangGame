@@ -9,15 +9,14 @@ namespace Bang.GameEvents.CardEffects.States
 {
     internal class WaitingCardToDropAfterCatBalouState : HandlerState
     {
+        private static Random random = new Random();
         private Player victim;
         private Game.Gameplay gamePlay;
-        private Dictionary<ClosedHandCard, BangGameCard> codeToCardMapping;
 
-        internal WaitingCardToDropAfterCatBalouState(Player victim, Game.Gameplay gameplay, Dictionary<ClosedHandCard, BangGameCard> codeToCardMapping)
+        internal WaitingCardToDropAfterCatBalouState(Player victim, Game.Gameplay gameplay)
         {
             this.victim = victim;
             this.gamePlay = gameplay;
-            this.codeToCardMapping = codeToCardMapping;
         }
             
         
@@ -32,9 +31,10 @@ namespace Bang.GameEvents.CardEffects.States
             return new DoneState();
         }
 
-        public override HandlerState ApplyReplyAction(ClosedHandCard cardCode)
+        public override HandlerState ApplyReplyAction()
         {
-            var card = codeToCardMapping[cardCode];
+            int number = random.Next(victim.Hand.Count);
+            var card = victim.Hand[number];
             
             victim.DropCard(card);
             

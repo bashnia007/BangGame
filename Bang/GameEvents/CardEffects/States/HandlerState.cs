@@ -29,6 +29,6 @@ namespace Bang.GameEvents.CardEffects.States
         public abstract HandlerState ApplyReplyAction(BangGameCard card);
 
         public virtual HandlerState ApplyReplyAction(BangGameCard firstCard, BangGameCard secondCard) => throw new InvalidOperationException();
-        public virtual HandlerState ApplyReplyAction(ClosedHandCard cardCode) => throw new InvalidOperationException();
+        public virtual HandlerState ApplyReplyAction() => throw new InvalidOperationException();
     }
 }

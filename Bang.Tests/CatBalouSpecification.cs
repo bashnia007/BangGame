@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Bang.Characters;
 using Bang.Game;
+using Bang.GameEvents;
 using Bang.GameEvents.CardEffects;
 using Bang.Players;
 using Bang.PlayingCards;
@@ -17,6 +18,22 @@ namespace Bang.Tests
     public class CatBalouSpecification
     {
         [Fact]
+        public void Victim_of_Cat_Balou_card_always_have_any_card()
+        {
+            var gameplay = InitGame();
+            (Player actor, Player victim) = ChoosePlayers(gameplay);
+
+            var catBalouCard = new CatBalouCardType().ClubsSeven();
+            actor.AddCardToHand(catBalouCard);
+            
+            // act
+            var response = actor.PlayCard(catBalouCard, victim);
+            
+            // assert
+            response.Should().BeOfType(typeof(NotAllowedOperation));
+        }
+        
+        [Fact]
         public void After_played_Cat_Balou_card_goes_to_discard_pile()
         {
             var gameplay = InitGame();
@@ -24,6 +41,8 @@ namespace Bang.Tests
 
             var catBalouCard = new CatBalouCardType().ClubsSeven();
             actor.AddCardToHand(catBalouCard);
+            
+            victim.AddCardToHand(new BangCardType().DiamondsThree());
 
             // act
             actor.PlayCard(catBalouCard, victim);
@@ -40,6 +59,8 @@ namespace Bang.Tests
 
             var catBalouCard = new CatBalouCardType().ClubsSeven();
             actor.AddCardToHand(catBalouCard);
+            
+            victim.AddCardToHand(new BangCardType().DiamondsThree());
 
             // act
             actor.PlayCard(catBalouCard, victim);
@@ -63,7 +84,7 @@ namespace Bang.Tests
             var availableCards = actor.PlayCard(catBalouCard, victim) as ChooseOneCardResponse;
             
             // Act
-            actor.ForceToDropCard(availableCards.HandCardCodes[0]);
+            actor.ForceToDropRandomCard();
             
             // Assert
             victim.Hand.Should().NotContain(bangCard);
@@ -127,10 +148,8 @@ namespace Bang.Tests
 
             var availableCards = actor.PlayCard(catBalouCard, victim) as ChooseOneCardResponse;
 
-            var cardToDrop = availableCards.HandCardCodes.First();
-            
             // Act
-            actor.ForceToDropCard(cardToDrop);
+            actor.ForceToDropRandomCard();
             
             // Assert
             gameplay.GetTopCardFromDiscarded().Should().Be(mustangCard);

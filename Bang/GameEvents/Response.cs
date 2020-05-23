@@ -26,21 +26,18 @@ namespace Bang.GameEvents
         public byte CardsRequired { get; set; }
     }
 
-    public class ForceCardToDrop : Response
+    public class ForcePlayerToDropCardResponse : Response
     {
         public override bool IsDone => false;
         public BangGameCard ActiveCardToDrop { get; private set; }
-        public ClosedHandCard HandCardToDrop { get; private set; }
+        public bool RandomHandCard => ActiveCardToDrop == null;
 
-        public ForceCardToDrop(BangGameCard card)
+        public ForcePlayerToDropCardResponse(BangGameCard card)
         {
-            ActiveCardToDrop = card ?? throw new ArgumentNullException();
+            ActiveCardToDrop = card;
         }
-
-        public ForceCardToDrop(ClosedHandCard handCard)
-        {
-            HandCardToDrop = handCard ?? throw new ArgumentNullException();
-        }
+        
+        public ForcePlayerToDropCardResponse() : this(null){}
     }
 
     public class NotAllowedOperation : Response

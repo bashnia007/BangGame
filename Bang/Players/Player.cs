@@ -119,9 +119,9 @@ namespace Bang.Players
             gamePlay.ForceDropCard(card);
         }
 
-        public void ForceToDropCard(ClosedHandCard code)
+        public void ForceToDropRandomCard()
         {
-            gamePlay.ForceDropCard(code);
+            gamePlay.ForceDropRandomCard();
         }
 
         public void LoseLifePoint()

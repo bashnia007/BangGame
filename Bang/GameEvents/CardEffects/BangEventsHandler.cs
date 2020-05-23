@@ -51,12 +51,12 @@ namespace Bang.GameEvents
             {
                 player.Defense(d.FirstCard, d.SecondCard);
             }
-            else if (replyActionMessage.Response is ForceCardToDrop f)
+            else if (replyActionMessage.Response is ForcePlayerToDropCardResponse forceToDrop)
             {
-                if (f.ActiveCardToDrop != null)
-                    player.ForceToDropCard(f.ActiveCardToDrop);
+                if (forceToDrop.RandomHandCard)
+                    player.ForceToDropRandomCard();
                 else
-                    player.ForceToDropCard(f.HandCardToDrop);
+                    player.ForceToDropCard(forceToDrop.ActiveCardToDrop);
             }
             else
             {

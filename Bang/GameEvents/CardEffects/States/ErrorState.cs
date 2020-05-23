@@ -8,6 +8,7 @@ namespace Bang.GameEvents.CardEffects.States
     {
         public override bool IsFinalState => true;
         public override bool IsError => true;
+        public override Response SideEffect { get; set; } = new NotAllowedOperation();
 
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay)
         {

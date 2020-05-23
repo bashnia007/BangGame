@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using Bang.GameEvents.CardEffects.States;
 using Bang.Players;
@@ -13,20 +12,14 @@ namespace Bang.GameEvents.CardEffects
             if (victim.Hand.Count + victim.ActiveCards.Count == 0)
                 return new ErrorState();
 
-            var codeToCard = new Dictionary<ClosedHandCard, BangGameCard>();
-            for (int i = 0; i < victim.Hand.Count; i++)
-            {
-                codeToCard[new ClosedHandCard {Code = i}] = victim.Hand[i];
-            }
-            
             var response = new ChooseOneCardResponse
             {
-                HandCardCodes = codeToCard.Keys.ToList(),
+                HasHandCards = victim.Hand.Any(),
                 Player = gameplay.PlayerTurn,
                 ActiveCards = victim.ActiveCards.ToList(),
             };
             
-            return new WaitingCardToDropAfterCatBalouState(victim, gameplay, codeToCard){SideEffect = response}; 
+            return new WaitingCardToDropAfterCatBalouState(victim, gameplay){SideEffect = response}; 
         }
     }
 }

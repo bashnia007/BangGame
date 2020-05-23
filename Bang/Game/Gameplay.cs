@@ -105,9 +105,9 @@ namespace Bang.Game
             state = state.ApplyReplyAction(card);
         }
 
-        public void ForceDropCard(ClosedHandCard code)
+        public void ForceDropRandomCard()
         {
-            state = state.ApplyReplyAction(code);
+            state = state.ApplyReplyAction();
         }
 
         private void FillPlayerHand(Player player)
