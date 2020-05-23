@@ -28,4 +28,11 @@ namespace Bang.GameEvents
     {
         public override bool IsDone => true;
     }
+
+    public class MultiplayerDefenceResponse : Response
+    {
+        public override bool IsDone => false;
+        public BangGameCard CardTypeRequired { get; set; }
+        public List<DefenceAgainstBang> PlayersResponses { get; set; }
+    }
 }
