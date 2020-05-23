@@ -6,7 +6,7 @@ using Bang.Game;
 
 namespace Bang.GameEvents.CardEffects.States
 {
-    internal class DoneState : HandlerState
+    public class DoneState : HandlerState
     {
         public override bool IsFinalState => true;
         public override bool IsError => false;

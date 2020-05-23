@@ -13,14 +13,14 @@ namespace Bang.GameEvents.CardEffects
     {
         public override HandlerState ApplyEffect(Game.Gameplay gameplay, Player attackPlayer, BangGameCard card)
         {
-            var victimStatesList = new List<HandlerState>();
+            var victimStatesList = new Dictionary<Player, HandlerState>();
 
             foreach (var victim in gameplay.Players.Where(p => p.Id != attackPlayer.Id))
             {
-                victimStatesList.Add(TryShootPlayer(victim, gameplay));
+                victimStatesList.Add(victim, TryShootPlayer(victim, gameplay));
             }
 
-            return new WaitingMissedCardsAfterGatlingState(victimStatesList);
+            return new WaitingMissedCardsAfterGatlingState(victimStatesList, gameplay);
         }
 
         private HandlerState TryShootPlayer(Player victim, Game.Gameplay gameplay)

@@ -3,17 +3,21 @@ using Bang.Players;
 using Bang.PlayingCards;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace Bang.GameEvents.CardEffects.States
 {
-    internal class WaitingMissedCardsAfterGatlingState : HandlerState
+    public class WaitingMissedCardsAfterGatlingState : HandlerState
     {
-        private Dictionary<Player, HandlerState> victimStates;
-        private Game.Gameplay gameplay;
-        public WaitingMissedCardsAfterGatlingState(Dictionary<Player, HandlerState> victimStates)
+        private readonly Dictionary<Player, HandlerState> victimStates;
+        private readonly Game.Gameplay gameplay;
+
+        private Player currentVictim;
+
+        public WaitingMissedCardsAfterGatlingState(Dictionary<Player, HandlerState> victimStates, Game.Gameplay gameplay)
         {
             this.victimStates = victimStates;
+            this.gameplay = gameplay;
         }
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay)
         {
@@ -24,14 +28,16 @@ namespace Bang.GameEvents.CardEffects.States
         {
             if (card == null || gameplay.PlayerTurn.Character is SlabTheKiller)
             {
-                //victim.LoseLifePoint();
+                currentVictim.LoseLifePoint();
                 // TODO Future: check if victim alive
-                return new DoneState();
+                victimStates[currentVictim] = new DoneState();
+                return UpdateStatus();
             }
             else if (card == new MissedCardType())
             {
-                //victim.DropCard(card);
-                return new DoneState();
+                currentVictim.DropCard(card);
+                victimStates[currentVictim] = new DoneState();
+                return UpdateStatus();
             }
             else
             {
@@ -39,8 +45,9 @@ namespace Bang.GameEvents.CardEffects.States
             }
         }
 
-        public override HandlerState ApplyReplyAction(BangGameCard firstCard, BangGameCard secondCard)
+        public override HandlerState ApplyReplyAction(Player victim, BangGameCard firstCard, BangGameCard secondCard)
         {
+            currentVictim = victim;
             if (secondCard == null) return ApplyReplyAction(firstCard);
 
             if (!(gameplay.PlayerTurn.Character is SlabTheKiller))
@@ -49,26 +56,24 @@ namespace Bang.GameEvents.CardEffects.States
             var missedCard = new MissedCardType();
             if (firstCard == missedCard && secondCard == missedCard)
             {
-                //victim.DropCard(firstCard);
-                //victim.DropCard(secondCard);
+                victim.DropCard(firstCard);
+                victim.DropCard(secondCard);
 
-                return new DoneState();
+                victimStates[victim] = new DoneState();
+                return UpdateStatus();
             }
             // TODO Check if victim is alive
-            //victim.LoseLifePoint();
+            victim.LoseLifePoint();
 
-            return new DoneState();
-
-            throw new NotImplementedException();
+            victimStates[victim] = new DoneState();
+            return UpdateStatus();
         }
 
-        private HandlerState CheckAll()
+        private HandlerState UpdateStatus()
         {
-            if (victimStates.Count == 0)
-            {
-                return new DoneState();
-            }
-            return this;
+            return victimStates.All(state => state.Value is DoneState) 
+                ? new DoneState() 
+                : (HandlerState)this;
         }
     }
 }

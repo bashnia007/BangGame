@@ -21,9 +21,9 @@ namespace Bang.Game
 
         private BangEventsHandler handler;
 
-        private HandlerState state = new DoneState();
-
         public Player PlayerTurn { get; private set; }
+
+        public HandlerState State { get; private set; } = new DoneState();
 
         public Gameplay(Deck<Character> characters, Deck<BangGameCard> gameCards)
         {
@@ -50,8 +50,11 @@ namespace Bang.Game
 
         public bool Defense(Player player, BangGameCard card, BangGameCard secondCard = null)
         {
-            state = state.ApplyReplyAction(card, secondCard);
-
+            State = State switch
+            {
+                WaitingMissedCardsAfterGatlingState _ => State.ApplyReplyAction(player, card, secondCard),
+                _ => State.ApplyReplyAction(card, secondCard),
+            };
             return true;
         }
 
@@ -92,22 +95,22 @@ namespace Bang.Game
 
         internal Response CardPlayed(Player player, BangGameCard card)
         {
-            var nextState = state.ApplyCardEffect(player, card, this);
+            var nextState = State.ApplyCardEffect(player, card, this);
 
             if (!nextState.IsError)
-                state = nextState;
+                State = nextState;
             
             return nextState.SideEffect;
         }
 
         public void ForceDropCard(BangGameCard card)
         {
-            state = state.ApplyReplyAction(card);
+            State = State.ApplyReplyAction(card);
         }
 
         public void ForceDropRandomCard()
         {
-            state = state.ApplyReplyAction();
+            State = State.ApplyReplyAction();
         }
 
         private void FillPlayerHand(Player player)

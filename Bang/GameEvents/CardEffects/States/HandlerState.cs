@@ -4,7 +4,7 @@ using Bang.PlayingCards;
 
 namespace Bang.GameEvents.CardEffects.States
 {
-    internal abstract class HandlerState
+    public abstract class HandlerState
     {
         public virtual bool IsFinalState => false;
         public virtual bool IsError => false;
@@ -29,6 +29,8 @@ namespace Bang.GameEvents.CardEffects.States
         public abstract HandlerState ApplyReplyAction(BangGameCard card);
 
         public virtual HandlerState ApplyReplyAction(BangGameCard firstCard, BangGameCard secondCard) => throw new InvalidOperationException();
+
+        public virtual HandlerState ApplyReplyAction(Player player, BangGameCard firstCard, BangGameCard secondCard) => throw new InvalidOperationException();
         public virtual HandlerState ApplyReplyAction() => throw new InvalidOperationException();
     }
 }
