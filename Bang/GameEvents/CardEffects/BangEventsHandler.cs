@@ -58,6 +58,13 @@ namespace Bang.GameEvents
                 else
                     player.ForceToDropCard(forceToDrop.ActiveCardToDrop);
             }
+            else if (replyActionMessage.Response is DrawCardFromPlayerResponse stealCardResponse)
+            {
+                if (stealCardResponse.RandomHandCard)
+                    player.DrawCardFromPlayer();
+                else 
+                    player.DrawCardFromPlayer(stealCardResponse.ActiveCardToSteal);
+            }
             else
             {
                 throw new NotImplementedException(replyActionMessage.Response.ToString());

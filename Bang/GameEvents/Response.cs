@@ -40,6 +40,21 @@ namespace Bang.GameEvents
         public ForcePlayerToDropCardResponse() : this(null){}
     }
 
+    public class DrawCardFromPlayerResponse : Response
+    {
+        public override bool IsDone => false;
+        
+        public BangGameCard ActiveCardToSteal { get; }
+        public bool RandomHandCard => ActiveCardToSteal == null;
+
+        public DrawCardFromPlayerResponse(BangGameCard card)
+        {
+            ActiveCardToSteal = card;
+        }
+        
+        public DrawCardFromPlayerResponse() : this(null){}
+    }
+
     public class NotAllowedOperation : Response
     {
         public override bool IsDone => true;
