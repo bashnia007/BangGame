@@ -2,7 +2,6 @@ using System;
 using Bang.Players;
 using Bang.PlayingCards;
 using Bang.PlayingCards.Visitors;
-using Bang.Game;
 
 namespace Bang.GameEvents.CardEffects.States
 {

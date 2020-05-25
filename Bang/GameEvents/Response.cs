@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Bang.GameEvents.CardEffects;
 using Bang.Players;
 using Bang.PlayingCards;
 
@@ -58,5 +56,12 @@ namespace Bang.GameEvents
     public class NotAllowedOperation : Response
     {
         public override bool IsDone => true;
+    }
+
+    public class MultiplayerDefenceResponse : Response
+    {
+        public override bool IsDone => false;
+        public CardType CardTypeRequired { get; set; }
+        public List<Response> PlayersResponses { get; set; }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Bang.Characters;
 using Bang.GameEvents;
-using Bang.GameEvents.CardEffects;
 using Bang.GameEvents.CardEffects.States;
 using Bang.Players;
 using Bang.PlayingCards;
@@ -50,7 +49,7 @@ namespace Bang.Game
 
         public bool Defense(Player player, BangGameCard card, BangGameCard secondCard = null)
         {
-            state = state.ApplyReplyAction(card, secondCard);
+            state = state.ApplyReplyAction(player, card, secondCard);
 
             return true;
         }
