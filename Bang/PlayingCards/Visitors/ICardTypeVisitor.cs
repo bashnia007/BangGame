@@ -50,5 +50,7 @@ namespace Bang.PlayingCards.Visitors
         public CardActionHandler Visit(CatBalouCardType card) => new CatBalouHandler();
 
         public CardActionHandler Visit(GatlingCardType card) => new GatlingActionHandler();
+
+        public CardActionHandler Visit(PanicCardType card) => new PanicHandler();
     }
 }

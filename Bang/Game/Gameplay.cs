@@ -135,5 +135,15 @@ namespace Bang.Game
         {
             discardedCards.Put(card);
         }
+
+        public void StealCard(BangGameCard card)
+        {
+            state = state.ApplyReplyAction(card);
+        }
+
+        public void StealCard()
+        {
+            state = state.ApplyReplyAction();
+        }
     }
 }
