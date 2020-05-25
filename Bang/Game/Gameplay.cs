@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Bang.Characters;
 using Bang.GameEvents;
-using Bang.GameEvents.CardEffects;
 using Bang.GameEvents.CardEffects.States;
 using Bang.Players;
 using Bang.PlayingCards;
@@ -21,9 +20,9 @@ namespace Bang.Game
 
         private BangEventsHandler handler;
 
-        public Player PlayerTurn { get; private set; }
+        private HandlerState state = new DoneState();
 
-        public HandlerState State { get; private set; } = new DoneState();
+        public Player PlayerTurn { get; private set; }
 
         public Gameplay(Deck<Character> characters, Deck<BangGameCard> gameCards)
         {
@@ -50,11 +49,8 @@ namespace Bang.Game
 
         public bool Defense(Player player, BangGameCard card, BangGameCard secondCard = null)
         {
-            State = State switch
-            {
-                WaitingMissedCardsAfterGatlingState _ => State.ApplyReplyAction(player, card, secondCard),
-                _ => State.ApplyReplyAction(card, secondCard),
-            };
+            state = state.ApplyReplyAction(player, card, secondCard);
+
             return true;
         }
 
@@ -95,22 +91,22 @@ namespace Bang.Game
 
         internal Response CardPlayed(Player player, BangGameCard card)
         {
-            var nextState = State.ApplyCardEffect(player, card, this);
+            var nextState = state.ApplyCardEffect(player, card, this);
 
             if (!nextState.IsError)
-                State = nextState;
+                state = nextState;
             
             return nextState.SideEffect;
         }
 
         public void ForceDropCard(BangGameCard card)
         {
-            State = State.ApplyReplyAction(card);
+            state = state.ApplyReplyAction(card);
         }
 
         public void ForceDropRandomCard()
         {
-            State = State.ApplyReplyAction();
+            state = state.ApplyReplyAction();
         }
 
         private void FillPlayerHand(Player player)

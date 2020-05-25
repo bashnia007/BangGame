@@ -1,13 +1,11 @@
 ﻿using Bang.Characters;
 using Bang.Game;
-using Bang.GameEvents.CardEffects.States;
 using Bang.Players;
 using Bang.PlayingCards;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 using static Bang.Game.GamePlayInitializer;
 
@@ -41,49 +39,6 @@ namespace Bang.Tests
 
             // Assert
             actor.Hand.Should().NotContain(GatlingCard());
-        }
-
-        [Fact]
-        public void If_not_all_victims_played_miss_state_still_waiting()
-        {
-            var gameplay = InitGame();
-            (Player actor, Player firstVictim) = ChoosePlayer(gameplay);
-
-            var secondVictim = gameplay.Players[2];
-            secondVictim.AddCardToHand(MissedCard());
-
-            // act
-            actor.PlayCard(GatlingCard());
-            firstVictim.Defense(MissedCard());
-
-            // Assert
-            Assert.True(gameplay.State is WaitingMissedCardsAfterGatlingState);
-
-            // act
-            secondVictim.AddCardToHand(MissedCard());
-            secondVictim.Defense(MissedCard());
-
-            // Assert
-            Assert.True(gameplay.State is WaitingMissedCardsAfterGatlingState);
-        }
-
-        [Fact]
-        public void If_all_victims_played_miss_state_is_done()
-        {
-            var gameplay = InitGame();
-            (Player actor, Player firstVictim) = ChoosePlayer(gameplay);
-
-            // act
-            actor.PlayCard(GatlingCard());
-            foreach (var victim in gameplay.Players.Where(p => p.Id != actor.Id))
-            {
-                var missedCard = new MissedCardType().ClubsSeven();
-                victim.AddCardToHand(missedCard);
-                victim.Defense(missedCard);
-            }
-
-            // Assert
-            Assert.True(gameplay.State is DoneState);
         }
 
         [Fact]

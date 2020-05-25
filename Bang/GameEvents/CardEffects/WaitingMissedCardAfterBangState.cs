@@ -45,7 +45,7 @@ namespace Bang.GameEvents.CardEffects
             
         }
 
-        public override HandlerState ApplyReplyAction(BangGameCard firstCard, BangGameCard secondCard)
+        public override HandlerState ApplyReplyAction(Player player, BangGameCard firstCard, BangGameCard secondCard)
         {
             if (secondCard == null) return ApplyReplyAction(firstCard);
             

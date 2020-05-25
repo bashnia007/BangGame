@@ -2,11 +2,10 @@ using System;
 using Bang.Players;
 using Bang.PlayingCards;
 using Bang.PlayingCards.Visitors;
-using Bang.Game;
 
 namespace Bang.GameEvents.CardEffects.States
 {
-    public class DoneState : HandlerState
+    internal class DoneState : HandlerState
     {
         public override bool IsFinalState => true;
         public override bool IsError => false;
