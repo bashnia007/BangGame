@@ -24,6 +24,12 @@ namespace Bang.GameEvents
         public byte CardsRequired { get; set; }
     }
 
+    public class DefenceAgainstIndians : Response
+    {
+        public override bool IsDone => false;
+        public BangGameCard Card { get; set; }
+    }
+
     public class ForcePlayerToDropCardResponse : Response
     {
         public override bool IsDone => false;
