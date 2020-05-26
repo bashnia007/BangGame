@@ -12,8 +12,6 @@ namespace Bang.GameEvents.CardEffects.States
         private readonly Dictionary<Player, HandlerState> victimStates;
         private readonly Game.Gameplay gameplay;
 
-        private Player currentVictim;
-
         public WaitingMissedCardsAfterGatlingState(Dictionary<Player, HandlerState> victimStates, Game.Gameplay gameplay)
         {
             this.victimStates = victimStates;
@@ -26,14 +24,18 @@ namespace Bang.GameEvents.CardEffects.States
 
         public override HandlerState ApplyReplyAction(BangGameCard card)
         {
-            var bangState = new WaitingMissedCardAfterBangState(currentVictim, gameplay);
-            victimStates[currentVictim] = bangState.ApplyReplyAction(card);
+            throw new NotImplementedException();
+        }
+
+        public override HandlerState ApplyReplyAction(Player victim, BangGameCard card)
+        {
+            var bangState = new WaitingMissedCardAfterBangState(victim, gameplay);
+            victimStates[victim] = bangState.ApplyReplyAction(card);
             return UpdateStatus();
         }
 
         public override HandlerState ApplyReplyAction(Player victim, BangGameCard firstCard, BangGameCard secondCard)
         {
-            currentVictim = victim;
             var bangState = new WaitingMissedCardAfterBangState(victim, gameplay);
             victimStates[victim] = bangState.ApplyReplyAction(victim, firstCard, secondCard);
             return UpdateStatus();

@@ -11,8 +11,6 @@ namespace Bang.GameEvents.CardEffects.States
         private readonly Dictionary<Player, HandlerState> victimStates;
         private readonly Game.Gameplay gameplay;
 
-        private Player currentVictim;
-
         public WaitingBangCardsAfterIndiansState(Dictionary<Player, HandlerState> victimStates, Game.Gameplay gameplay)
         {
             this.victimStates = victimStates;
@@ -26,15 +24,19 @@ namespace Bang.GameEvents.CardEffects.States
 
         public override HandlerState ApplyReplyAction(Player victim, BangGameCard firstCard, BangGameCard secondCard)
         {
-            currentVictim = victim;
-            return ApplyReplyAction(firstCard);
+            return ApplyReplyAction(victim, firstCard);
+        }
+
+        public override HandlerState ApplyReplyAction(Player victim, BangGameCard card)
+        {
+            var bangState = new WaitingBangCardState(victim);
+            victimStates[victim] = bangState.ApplyReplyAction(card);
+            return UpdateStatus();
         }
 
         public override HandlerState ApplyReplyAction(BangGameCard card)
         {
-            var bangState = new WaitingBangCardState(currentVictim);
-            victimStates[currentVictim] = bangState.ApplyReplyAction(card);
-            return UpdateStatus();
+            throw new NotImplementedException();
         }
 
         private HandlerState UpdateStatus()
