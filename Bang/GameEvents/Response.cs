@@ -70,4 +70,12 @@ namespace Bang.GameEvents
         public CardType CardTypeRequired { get; set; }
         public List<Response> PlayersResponses { get; set; }
     }
+
+    public class ChooseCardsResponse : Response
+    {
+        public override bool IsDone => false;
+
+        public List<BangGameCard> CardsToChoose { get; set; }
+        public Player PlayerTurn { get; set; }
+    }
 }

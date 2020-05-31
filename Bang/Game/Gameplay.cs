@@ -145,5 +145,10 @@ namespace Bang.Game
         {
             state = state.ApplyReplyAction();
         }
+
+        public void ChooseCard(BangGameCard card, Player player)
+        {
+            state = state.ApplyReplyAction(player, card);
+        }
     }
 }
