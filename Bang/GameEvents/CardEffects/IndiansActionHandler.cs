@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Bang.GameEvents.CardEffects
 {
-    internal class IndiansHandler : CardActionHandler
+    internal class IndiansActionHandler : CardActionHandler
     {
         public override HandlerState ApplyEffect(Game.Gameplay gameplay, Player attackPlayer, BangGameCard card)
         {

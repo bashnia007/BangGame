@@ -137,6 +137,11 @@ namespace Bang.Players
             hand.Remove(card);
         }
 
+        public void ChooseCard(BangGameCard card)
+        {
+            gamePlay.ChooseCard(card, this);
+        }
+
         public void DrawCardFromPlayer(BangGameCard card) => gamePlay.StealCard(card);
         public void DrawCardFromPlayer() => gamePlay.StealCard();
     }
