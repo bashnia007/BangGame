@@ -102,9 +102,12 @@ namespace Bang.Players
         {
             if (!hand.Contains(card))
                 throw new InvalidOperationException($"Player doesn't have card {card.Description}");
-            
-            if (card.CanBePlayedToAnotherPlayer && playOn == null)
-                throw new InvalidOperationException($"Card {card.Description} must be played to another player!");
+
+            if (card.CanBePlayedToAnotherPlayer)
+            {
+                if (playOn == null || playOn == this)
+                    throw new InvalidOperationException($"Card {card.Description} must be played to another player!");
+            }
 
             var response = gamePlay.CardPlayed(playOn?? this, card);
             
