@@ -8,5 +8,6 @@ namespace Bang.PlayingCards.Visitors
         public bool Visit(PanicCardType card) => true;
         public bool Visit(BangCardType card) => true;
         public bool Visit(JailCardType card) => true;
+        public bool Visit(DuelCardType card) => true;
     }
 }

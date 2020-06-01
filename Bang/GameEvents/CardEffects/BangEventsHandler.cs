@@ -51,6 +51,11 @@ namespace Bang.GameEvents
             {
                 player.Defense(d.FirstCard, d.SecondCard);
             }
+            else if (replyActionMessage.Response is DefenceAgainstDuel duelReply)
+            {
+                if (duelReply.Card == null) player.NotDefense();
+                else player.Defense(duelReply.Card);
+            }
             else if (replyActionMessage.Response is ForcePlayerToDropCardResponse forceToDrop)
             {
                 if (forceToDrop.RandomHandCard)
