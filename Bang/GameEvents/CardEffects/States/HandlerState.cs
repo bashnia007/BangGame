@@ -1,11 +1,14 @@
 using System;
 using Bang.Players;
 using Bang.PlayingCards;
+using NLog;
 
 namespace Bang.GameEvents.CardEffects.States
 {
     internal abstract class HandlerState
     {
+        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        
         public virtual bool IsFinalState => false;
         public virtual bool IsError => false;
 
