@@ -108,6 +108,11 @@ namespace Bang.Players
                 if (playOn == null || playOn == this)
                     throw new InvalidOperationException($"Card {card.Description} must be played to another player!");
             }
+            else
+            {
+                if (playOn != null && playOn != this)
+                    throw new InvalidOperationException($"Card {card.Description} can not be played to another player!");
+            }
 
             var response = gamePlay.CardPlayed(playOn?? this, card);
             
@@ -125,6 +130,11 @@ namespace Bang.Players
         public void ForceToDropRandomCard()
         {
             gamePlay.ForceDropRandomCard();
+        }
+
+        public void RegainLifePoint()
+        {
+            PlayerTablet.Health++;
         }
 
         public void LoseLifePoint()

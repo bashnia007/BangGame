@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Bang.PlayingCards;
 
-namespace Bang.GameEvents.CardEffects
+namespace Bang.GameEvents
 {
     public class ChooseOneCardResponse : Response
     {
