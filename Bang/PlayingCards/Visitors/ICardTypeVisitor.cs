@@ -58,5 +58,6 @@ namespace Bang.PlayingCards.Visitors
         public CardActionHandler Visit(GeneralStoreCardType card) => new GeneralStoreActionHandler();
         public CardActionHandler Visit(DuelCardType card) => new DuelActionHandler();
         public CardActionHandler Visit(BeerCardType card) => new BeerActionHandler();
+        public CardActionHandler Visit(SaloonCardType card) => new SaloonCardHandler();
     }
 }
