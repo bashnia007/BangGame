@@ -38,5 +38,10 @@ namespace Bang.PlayingCards
         {
             return card?.Type;
         }
+
+        public override string ToString()
+        {
+            return $"{Type.Description}, {Rank}, {Suite}";
+        }
     }
 }

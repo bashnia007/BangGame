@@ -63,7 +63,7 @@ namespace Bang.Game
         public BangGameCard DealCard()
         {
             if (deck.IsEmpty()) ResetDeck();
-
+            
             return deck.Deal();
         }
 
@@ -149,6 +149,61 @@ namespace Bang.Game
         public void ChooseCard(BangGameCard card, Player player)
         {
             state = state.ApplyReplyAction(player, card);
+        }
+
+        public void StartNextPlayerTurn()
+        {
+            SetNextPlayer();
+
+            var dynamiteCard = PlayerTurn.PlayerTablet.ActiveCards.FirstOrDefault(c => c == new DynamiteCardType());
+            if (dynamiteCard != null)
+            {
+                var dynamiteChecker = new DynamiteChecker();
+
+                if (dynamiteChecker.Draw(this, PlayerTurn.Character))
+                {
+                    PlayerTurn.LoseLifePoint(3);
+                    if (!PlayerTurn.PlayerTablet.IsAlive)
+                    {
+                        StartNextPlayerTurn();
+                        return;
+                    }
+                }
+                else
+                {
+                    var nextPlayer = GetNextPlayer();
+                    PlayerTurn.PlayerTablet.RemoveCard(dynamiteCard);
+                    nextPlayer.PlayerTablet.PutCard(dynamiteCard);
+                }
+            }
+
+            var jailCard = PlayerTurn.PlayerTablet.ActiveCards.FirstOrDefault(c => c == new JailCardType());
+            if (jailCard != null)
+            {
+                var jailChecker = new JailChecker();
+                PlayerTurn.DropActiveCard(jailCard);
+
+                if (!jailChecker.Draw(this, PlayerTurn.Character))
+                {
+                    StartNextPlayerTurn();
+                    return;
+                }
+            }
+
+            // todo provide 2 new cards 
+        }
+
+        private void SetNextPlayer()
+        {
+            PlayerTurn = GetNextPlayer();
+        }
+
+        private Player GetNextPlayer()
+        {
+            var playersAlive = Players.Where(p => p.PlayerTablet.IsAlive).ToList();
+            int indexOfCurrentPlayer = playersAlive.IndexOf(PlayerTurn);
+
+            return playersAlive[(indexOfCurrentPlayer + 1) % playersAlive.Count];
         }
     }
 }
