@@ -162,6 +162,7 @@ namespace Bang.Game
 
                 if (dynamiteChecker.Draw(this, PlayerTurn.Character))
                 {
+                    PlayerTurn.DropActiveCard(dynamiteCard);
                     PlayerTurn.LoseLifePoint(3);
                     if (!PlayerTurn.PlayerTablet.IsAlive)
                     {
@@ -193,12 +194,12 @@ namespace Bang.Game
             // todo provide 2 new cards 
         }
 
-        private void SetNextPlayer()
+        public void SetNextPlayer()
         {
             PlayerTurn = GetNextPlayer();
         }
 
-        private Player GetNextPlayer()
+        public Player GetNextPlayer()
         {
             var playersAlive = Players.Where(p => p.PlayerTablet.IsAlive).ToList();
             int indexOfCurrentPlayer = playersAlive.IndexOf(PlayerTurn);

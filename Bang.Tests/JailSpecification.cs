@@ -46,14 +46,74 @@ namespace Bang.Tests
         public void Jail_card_cannot_be_played_on_sheriff()
         {
             var gameplay = InitGame();
-            (Player actor, Player victim) = ChoosePlayer(gameplay);
-            victim.AddCardToHand(JailCard());
+            (Player sheriff, Player badGuy) = ChoosePlayer(gameplay);
+            badGuy.AddCardToHand(JailCard());
 
             // act
-            victim.PlayCard(JailCard(), actor);
+            badGuy.PlayCard(JailCard(), sheriff);
 
             // Assert
-            actor.ActiveCards.Should().NotContain(JailCard());
+            sheriff.ActiveCards.Should().NotContain(JailCard());
+        }
+
+        [Fact]
+        public void Player_with_jail_card_drops_it_on_his_turn()
+        {
+            var deck = new Deck<BangGameCard>();
+            deck.Put(NotHeartsCard());
+
+            var gameplay = InitGame(deck);
+            (Player actor, Player victim) = ChoosePlayer(gameplay);
+
+            // act
+            actor.PlayCard(JailCard(), victim);
+            while (gameplay.GetNextPlayer() != victim)
+                gameplay.SetNextPlayer();
+
+            gameplay.StartNextPlayerTurn();
+
+            // Assert
+            victim.ActiveCards.Should().NotContain(JailCard());
+        }
+
+        [Fact]
+        public void After_hearts_card_player_does_not_miss_his_turn()
+        {
+            var deck = new Deck<BangGameCard>();
+            deck.Put(HeartsCard());
+
+            var gameplay = InitGame(deck);
+            (Player actor, Player victim) = ChoosePlayer(gameplay);
+
+            // act
+            actor.PlayCard(JailCard(), victim);
+            while (gameplay.GetNextPlayer() != victim)
+                gameplay.SetNextPlayer();
+
+            gameplay.StartNextPlayerTurn();
+
+            // Assert
+            gameplay.PlayerTurn.Should().Be(victim);
+        }
+
+        [Fact]
+        public void After_not_hearts_card_player_does_not_miss_his_turn()
+        {
+            var deck = new Deck<BangGameCard>();
+            deck.Put(NotHeartsCard());
+
+            var gameplay = InitGame(deck);
+            (Player actor, Player victim) = ChoosePlayer(gameplay);
+
+            // act
+            actor.PlayCard(JailCard(), victim);
+            while (gameplay.GetNextPlayer() != victim)
+                gameplay.SetNextPlayer();
+
+            gameplay.StartNextPlayerTurn();
+
+            // Assert
+            gameplay.PlayerTurn.Should().NotBe(victim);
         }
 
         #endregion
@@ -90,9 +150,9 @@ namespace Bang.Tests
 
         private BangGameCard JailCard() => new JailCardType().SpadesQueen();
 
-        private BangGameCard FreedomCard() => new BangCardType().HeartsAce();
+        private BangGameCard HeartsCard() => new BangCardType().HeartsAce();
 
-        private BangGameCard NotFreedomCard() => new BangCardType().SpadesQueen();
+        private BangGameCard NotHeartsCard() => new BangCardType().SpadesQueen();
 
         #endregion
     }
