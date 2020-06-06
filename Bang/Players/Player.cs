@@ -115,7 +115,13 @@ namespace Bang.Players
             }
 
             var response = gamePlay.CardPlayed(playOn?? this, card);
-            
+
+            if (response is LeaveCardOnTheTableResponse)
+            {
+                hand.Remove(card);
+                return response;
+            }
+
             if (!(response is NotAllowedOperation))
                 DropCard(card);
 

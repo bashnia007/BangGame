@@ -18,7 +18,10 @@ namespace Bang.GameEvents.CardEffects
             Logger.Info($"Player {gameplay.PlayerTurn.Character.Name} player Jail card on {victim.Character.Name}");
             victim.PlayerTablet.PutCard(card);
 
-            return new DoneState();
+            return new DoneState
+            {
+                SideEffect = new LeaveCardOnTheTableResponse()
+            };
         }
     }
 }
