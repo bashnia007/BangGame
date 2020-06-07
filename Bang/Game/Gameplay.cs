@@ -154,8 +154,33 @@ namespace Bang.Game
         public void StartNextPlayerTurn()
         {
             SetNextPlayer();
+            
+            if (@IsPlayerAliveAfterDynamite() || !IsPlayerLeavesJail()) return;
+            
+            // todo provide 2 new cards 
+        }
 
-            var dynamiteCard = PlayerTurn.PlayerTablet.ActiveCards.FirstOrDefault(c => c == new DynamiteCardType());
+        private bool IsPlayerLeavesJail()
+        {
+            var jailCard = PlayerTurn.ActiveCards.FirstOrDefault(c => c == new JailCardType());
+            if (jailCard != null)
+            {
+                var jailChecker = new JailChecker();
+                PlayerTurn.DropActiveCard(jailCard);
+
+                if (!jailChecker.Draw(this, PlayerTurn.Character))
+                {
+                    StartNextPlayerTurn();
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool IsPlayerAliveAfterDynamite()
+        {
+            var dynamiteCard = PlayerTurn.ActiveCards.FirstOrDefault(c => c == new DynamiteCardType());
             if (dynamiteCard != null)
             {
                 var dynamiteChecker = new DynamiteChecker();
@@ -167,7 +192,7 @@ namespace Bang.Game
                     if (!PlayerTurn.PlayerTablet.IsAlive)
                     {
                         StartNextPlayerTurn();
-                        return;
+                        return false;
                     }
                 }
                 else
@@ -178,20 +203,7 @@ namespace Bang.Game
                 }
             }
 
-            var jailCard = PlayerTurn.PlayerTablet.ActiveCards.FirstOrDefault(c => c == new JailCardType());
-            if (jailCard != null)
-            {
-                var jailChecker = new JailChecker();
-                PlayerTurn.DropActiveCard(jailCard);
-
-                if (!jailChecker.Draw(this, PlayerTurn.Character))
-                {
-                    StartNextPlayerTurn();
-                    return;
-                }
-            }
-
-            // todo provide 2 new cards 
+            return true;
         }
 
         public void SetNextPlayer()

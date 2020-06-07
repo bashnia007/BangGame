@@ -145,10 +145,10 @@ namespace Bang.Players
 
         public void LoseLifePoint(int loseLifeAmount = 1)
         {
+            Debug.Assert(PlayerTablet.Health > 0);
+
             for (int i = 0; i < loseLifeAmount; i++)
             {
-                Debug.Assert(PlayerTablet.Health > 0);
-
                 PlayerTablet.Health--;
             }
         }

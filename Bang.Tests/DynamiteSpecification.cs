@@ -41,7 +41,7 @@ namespace Bang.Tests
         }
 
         [Fact]
-        public void Player_with_dynamite_card_lose_3_life_points_if_dynamite_explodes()
+        public void Player_with_dynamite_card_loses_3_life_points_if_dynamite_explodes()
         {
             var deck = new Deck<BangGameCard>();
             deck.Put(ExplodeCard());

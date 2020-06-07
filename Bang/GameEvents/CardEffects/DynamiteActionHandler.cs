@@ -8,7 +8,7 @@ namespace Bang.GameEvents.CardEffects
     {
         public override HandlerState ApplyEffect(Game.Gameplay gameplay, Player victim, BangGameCard card)
         {
-            Logger.Info($"Player {gameplay.PlayerTurn.Character.Name} player dynamite card");
+            Logger.Info($"Player {gameplay.PlayerTurn.Character.Name} played dynamite card");
             gameplay.PlayerTurn.PlayerTablet.PutCard(card);
 
             return new DoneState();
