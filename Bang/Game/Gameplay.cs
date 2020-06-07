@@ -155,7 +155,7 @@ namespace Bang.Game
         {
             SetNextPlayer();
             
-            if (@IsPlayerAliveAfterDynamite() || !IsPlayerLeavesJail()) return;
+            if (!IsPlayerAliveAfterDynamite() || !IsPlayerLeavesJail()) return;
             
             // todo provide 2 new cards 
         }
