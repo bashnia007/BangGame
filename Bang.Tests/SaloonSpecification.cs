@@ -18,62 +18,49 @@ namespace Bang.Tests
         public void After_played_saloon_card_goes_to_discard_pile()
         {
             var gameplay = InitGame();
-            (Player actor, BangGameCard saloonCard) = ChoosePlayer(gameplay);
+            (Player player, BangGameCard saloonCard) = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(saloonCard);
+            player.PlayCard(saloonCard);
             
             // Assert
             gameplay.GetTopCardFromDiscarded().Should().Be(saloonCard);
         }
         
         [Fact]
-        public void Player_discards_gatling_card_after_it_played()
+        public void Player_discards_saloon_card_after_it_played()
         {
             var gameplay = InitGame();
-            (Player actor, BangGameCard saloonCard) = ChoosePlayer(gameplay);
+            (Player player, BangGameCard saloonCard) = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(saloonCard);
+            player.PlayCard(saloonCard);
 
             // Assert
-            actor.Hand.Should().NotContain(saloonCard);
+            player.Hand.Should().NotContain(saloonCard);
         }
 
         [Fact]
-        public void Saloon_regains_one_life_point_to_all_alive_players()
+        public void Saloon_regains_one_life_point_to_all_alive_players_with_no_full_health()
         {
             var gameplay = InitGame();
-            (Player actor, BangGameCard saloonCard) = ChoosePlayer(gameplay);
+            (Player player, BangGameCard saloonCard) = ChoosePlayer(gameplay);
 
-            var otherPlayer = gameplay.Players.First(p => p != actor);
+            var otherPlayer = gameplay.Players.First(p => p != player);
 
-            var health = otherPlayer.LifePoints;
+            var playerHealth = player.LifePoints;
+            player.LoseLifePoint();
+            
+            var otherPlayerHealth = otherPlayer.LifePoints;
             otherPlayer.LoseLifePoint();
 
             // act
-            actor.PlayCard(saloonCard);
+            player.PlayCard(saloonCard);
             
             // assert
-            otherPlayer.LifePoints.Should().Be(health);
+            player.LifePoints.Should().Be(playerHealth);
+            otherPlayer.LifePoints.Should().Be(otherPlayerHealth);
         }
-        
-        [Fact]
-        public void Saloon_regains_one_life_point_to_current_player()
-        {
-            var gameplay = InitGame();
-            (Player actor, BangGameCard saloonCard) = ChoosePlayer(gameplay);
-
-            var health = actor.LifePoints;
-            actor.LoseLifePoint();
-
-            // act
-            actor.PlayCard(saloonCard);
-            
-            // assert
-            actor.LifePoints.Should().Be(health);
-        }
-        
         
         private (Player actor, BangGameCard saloonCard) ChoosePlayer(Game.Gameplay gameplay)
         {
