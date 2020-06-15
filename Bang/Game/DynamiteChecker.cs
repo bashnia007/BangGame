@@ -5,8 +5,6 @@ namespace Bang.Game
     public class DynamiteChecker : DrawChecker
     {
         protected override bool ShouldApplyEffect(BangGameCard card)
-        {
-            throw new System.NotImplementedException();
-        }
+             => card.Suite == Suite.Clubs && card.Rank <= Rank.Nine;
     }
 }
