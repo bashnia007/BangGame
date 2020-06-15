@@ -63,7 +63,7 @@ namespace Bang.Game
         public BangGameCard DealCard()
         {
             if (deck.IsEmpty()) ResetDeck();
-
+            
             return deck.Deal();
         }
 
@@ -149,6 +149,74 @@ namespace Bang.Game
         public void ChooseCard(BangGameCard card, Player player)
         {
             state = state.ApplyReplyAction(player, card);
+        }
+
+        public void StartNextPlayerTurn()
+        {
+            SetNextPlayer();
+            
+            if (!IsPlayerAliveAfterDynamite() || !IsPlayerLeavesJail()) return;
+            
+            // todo provide 2 new cards 
+        }
+
+        private bool IsPlayerLeavesJail()
+        {
+            var jailCard = PlayerTurn.ActiveCards.FirstOrDefault(c => c == new JailCardType());
+            if (jailCard != null)
+            {
+                var jailChecker = new JailChecker();
+                PlayerTurn.DropActiveCard(jailCard);
+
+                if (!jailChecker.Draw(this, PlayerTurn.Character))
+                {
+                    StartNextPlayerTurn();
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool IsPlayerAliveAfterDynamite()
+        {
+            var dynamiteCard = PlayerTurn.ActiveCards.FirstOrDefault(c => c == new DynamiteCardType());
+            if (dynamiteCard != null)
+            {
+                var dynamiteChecker = new DynamiteChecker();
+
+                if (dynamiteChecker.Draw(this, PlayerTurn.Character))
+                {
+                    PlayerTurn.DropActiveCard(dynamiteCard);
+                    PlayerTurn.LoseLifePoint(3);
+                    if (!PlayerTurn.PlayerTablet.IsAlive)
+                    {
+                        StartNextPlayerTurn();
+                        return false;
+                    }
+                }
+                else
+                {
+                    var nextPlayer = GetNextPlayer();
+                    PlayerTurn.PlayerTablet.RemoveCard(dynamiteCard);
+                    nextPlayer.PlayerTablet.PutCard(dynamiteCard);
+                }
+            }
+
+            return true;
+        }
+
+        public void SetNextPlayer()
+        {
+            PlayerTurn = GetNextPlayer();
+        }
+
+        public Player GetNextPlayer()
+        {
+            var playersAlive = Players.Where(p => p.PlayerTablet.IsAlive).ToList();
+            int indexOfCurrentPlayer = playersAlive.IndexOf(PlayerTurn);
+
+            return playersAlive[(indexOfCurrentPlayer + 1) % playersAlive.Count];
         }
     }
 }

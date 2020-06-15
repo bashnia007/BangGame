@@ -115,7 +115,13 @@ namespace Bang.Players
             }
 
             var response = gamePlay.CardPlayed(playOn?? this, card);
-            
+
+            if (response is LeaveCardOnTheTableResponse)
+            {
+                hand.Remove(card);
+                return response;
+            }
+
             if (!(response is NotAllowedOperation))
                 DropCard(card);
 
@@ -137,13 +143,15 @@ namespace Bang.Players
             PlayerTablet.Health++;
         }
 
-        public void LoseLifePoint()
+        public void LoseLifePoint(int loseLifeAmount = 1)
         {
             Debug.Assert(PlayerTablet.Health > 0);
-            
-            PlayerTablet.Health--;
-        }
 
+            for (int i = 0; i < loseLifeAmount; i++)
+            {
+                PlayerTablet.Health--;
+            }
+        }
         
         public void LoseCard(BangGameCard card)
         {

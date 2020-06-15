@@ -70,6 +70,11 @@ namespace Bang.GameEvents
         public override bool IsDone => true;
     }
 
+    public class LeaveCardOnTheTableResponse : Response
+    {
+        public override bool IsDone => true;
+    }
+
     public class MultiplayerDefenceResponse : Response
     {
         public override bool IsDone => false;
