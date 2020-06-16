@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Bang.Characters;
+using Bang.Characters.Visitors;
 using Bang.GameEvents;
 using Bang.GameEvents.CardEffects.States;
 using Bang.Players;
@@ -60,6 +61,13 @@ namespace Bang.Game
             return discardedCards.Peek();
         }
 
+        public BangGameCard GetTopCardFromDeck()
+        {
+            if (deck.IsEmpty()) ResetDeck();
+
+            return deck.Peek();
+        }
+
         public BangGameCard DealCard()
         {
             if (deck.IsEmpty()) ResetDeck();
@@ -107,6 +115,14 @@ namespace Bang.Game
         public void ForceDropRandomCard()
         {
             state = state.ApplyReplyAction();
+        }
+
+        public void GivePhaseOneCards()
+        {
+            PlayerTurn
+                .Character
+                .Accept(new DrawCardsCharacterVisitor())
+                .Invoke(this, PlayerTurn);
         }
 
         private void FillPlayerHand(Player player)

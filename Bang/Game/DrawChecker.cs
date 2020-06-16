@@ -36,5 +36,13 @@ namespace Bang.Game
 
             return draw;
         }
+
+        public bool Peek(Gameplay gameplay)
+        {
+            var card = gameplay.GetTopCardFromDeck();
+            Logger.Info("Top card in the deck is " + card.ToString());
+
+            return ShouldApplyEffect(card);
+        }
     }
 }
