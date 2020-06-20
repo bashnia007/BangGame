@@ -44,6 +44,8 @@ namespace Bang.Game
 
         public void DealFirstCards()
         {
+            deck.Shuffle();
+
             foreach (var player in Players)
                 FillPlayerHand(player);
         }
@@ -85,17 +87,11 @@ namespace Bang.Game
             }
         }
 
-        public void SetDeck(Deck<BangGameCard> deck)
-        {
-            this.deck = deck;
-        }
-
         private void ProvideCardsForPlayers(Deck<Character> characters)
         {
             var roles = new Deck<Role>(GamePlayInitializer.CreateRolesForGame(Players.Count));
             characters.Shuffle();
 
-            deck.Shuffle();
             foreach (var player in Players)
             {
                 player.SetInfo(this, roles.Deal(), characters.Deal());

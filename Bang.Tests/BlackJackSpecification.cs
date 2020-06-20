@@ -30,8 +30,7 @@ namespace Bang.Tests
             deck.Put(new StagecoachCardType().HeartsAce());
             deck.Put(new MissedCardType().ClubsSeven());
 
-            var gamePlay = InitGame();
-            gamePlay.SetDeck(deck);
+            var gamePlay = InitGame(deck);
             var actor = SetCharacter(gamePlay, new BlackJack());
 
             gamePlay.GivePhaseOneCards();
@@ -47,8 +46,7 @@ namespace Bang.Tests
             deck.Put(new StagecoachCardType().DiamondsThree());
             deck.Put(new MissedCardType().ClubsSeven());
 
-            var gamePlay = InitGame();
-            gamePlay.SetDeck(deck);
+            var gamePlay = InitGame(deck);
             var actor = SetCharacter(gamePlay, new BlackJack());
 
             gamePlay.GivePhaseOneCards();
@@ -64,8 +62,7 @@ namespace Bang.Tests
             deck.Put(new StagecoachCardType().ClubsSeven());
             deck.Put(new MissedCardType().DiamondsThree ());
 
-            var gamePlay = InitGame();
-            gamePlay.SetDeck(deck);
+            var gamePlay = InitGame(deck);
             var actor = SetCharacter(gamePlay, new BlackJack());
 
             gamePlay.GivePhaseOneCards();
@@ -81,8 +78,7 @@ namespace Bang.Tests
             deck.Put(new StagecoachCardType().HeartsAce());
             deck.Put(new MissedCardType().ClubsSeven());
 
-            var gamePlay = InitGame();
-            gamePlay.SetDeck(deck);
+            var gamePlay = InitGame(deck);
             var actor = SetCharacter(gamePlay, new SlabTheKiller());
 
             gamePlay.GivePhaseOneCards();
