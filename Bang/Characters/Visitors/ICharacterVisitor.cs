@@ -1,25 +1,23 @@
-using Bang.Characters;
-using Gameplay.Characters;
-
 namespace Bang.Characters.Visitors
 {
     public interface ICharacterVisitor<T>
     {
-        T Visit(BartCassidy character);
-        T Visit(BlackJack character);
-        T Visit(CalamityJanet character);
-        T Visit(ElGringo character);
-        T Visit(JessyJones character);
-        T Visit(Jourdonnais character);
-        T Visit(KitCarlson character);
-        T Visit(LuckyDuke character);
-        T Visit(PaulRegret character);
-        T Visit(PedroRamirez character);
-        T Visit(RoseDoolan character);
-        T Visit(SidKetchum character);
-        T Visit(SlabTheKiller character);
-        T Visit(SuzyLafayette character);
-        T Visit(VultureSam character);
-        T Visit(WillyTheKid character);
+        T DefaultValue { get; }
+        T Visit(BartCassidy character) => DefaultValue;
+        T Visit(BlackJack character) => DefaultValue;
+        T Visit(CalamityJanet character) => DefaultValue;
+        T Visit(ElGringo character) => DefaultValue;
+        T Visit(JessyJones character) => DefaultValue;
+        T Visit(Jourdonnais character) => DefaultValue;
+        T Visit(KitCarlson character) => DefaultValue;
+        T Visit(LuckyDuke character) => DefaultValue;
+        T Visit(PaulRegret character) => DefaultValue;
+        T Visit(PedroRamirez character) => DefaultValue;
+        T Visit(RoseDoolan character) => DefaultValue;
+        T Visit(SidKetchum character) => DefaultValue;
+        T Visit(SlabTheKiller character) => DefaultValue;
+        T Visit(SuzyLafayette character) => DefaultValue;
+        T Visit(VultureSam character) => DefaultValue;
+        T Visit(WillyTheKid character) => DefaultValue;
     }
 }

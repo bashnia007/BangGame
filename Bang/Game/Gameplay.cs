@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Bang.Characters;
+using Bang.Characters.Visitors;
 using Bang.GameEvents;
 using Bang.GameEvents.CardEffects.States;
 using Bang.Players;
@@ -43,6 +44,8 @@ namespace Bang.Game
 
         public void DealFirstCards()
         {
+            deck.Shuffle();
+
             foreach (var player in Players)
                 FillPlayerHand(player);
         }
@@ -58,6 +61,13 @@ namespace Bang.Game
         {
             if (discardedCards.IsEmpty()) return null;
             return discardedCards.Peek();
+        }
+
+        public BangGameCard GetTopCardFromDeck()
+        {
+            if (deck.IsEmpty()) ResetDeck();
+
+            return deck.Peek();
         }
 
         public BangGameCard DealCard()
@@ -82,7 +92,6 @@ namespace Bang.Game
             var roles = new Deck<Role>(GamePlayInitializer.CreateRolesForGame(Players.Count));
             characters.Shuffle();
 
-            deck.Shuffle();
             foreach (var player in Players)
             {
                 player.SetInfo(this, roles.Deal(), characters.Deal());
@@ -107,6 +116,14 @@ namespace Bang.Game
         public void ForceDropRandomCard()
         {
             state = state.ApplyReplyAction();
+        }
+
+        public void GivePhaseOneCards()
+        {
+            PlayerTurn
+                .Character
+                .Accept(new DrawCardsCharacterVisitor())
+                .Invoke(this, PlayerTurn);
         }
 
         private void FillPlayerHand(Player player)
