@@ -85,6 +85,11 @@ namespace Bang.Game
             }
         }
 
+        public void SetDeck(Deck<BangGameCard> deck)
+        {
+            this.deck = deck;
+        }
+
         private void ProvideCardsForPlayers(Deck<Character> characters)
         {
             var roles = new Deck<Role>(GamePlayInitializer.CreateRolesForGame(Players.Count));

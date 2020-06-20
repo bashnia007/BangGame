@@ -6,13 +6,20 @@ using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using Xunit;
-
+using Xunit.Abstractions;
 using static Bang.Game.GamePlayInitializer;
 
 namespace Bang.Tests
 {
     public class BlackJackSpecification
     {
+        private readonly ITestOutputHelper output;
+        
+        public BlackJackSpecification(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
+
         #region Tests
 
         [Fact]
@@ -23,7 +30,8 @@ namespace Bang.Tests
             deck.Put(new StagecoachCardType().HeartsAce());
             deck.Put(new MissedCardType().ClubsSeven());
 
-            var gamePlay = InitGame(deck);
+            var gamePlay = InitGame();
+            gamePlay.SetDeck(deck);
             var actor = SetCharacter(gamePlay, new BlackJack());
 
             gamePlay.GivePhaseOneCards();
@@ -39,7 +47,8 @@ namespace Bang.Tests
             deck.Put(new StagecoachCardType().DiamondsThree());
             deck.Put(new MissedCardType().ClubsSeven());
 
-            var gamePlay = InitGame(deck);
+            var gamePlay = InitGame();
+            gamePlay.SetDeck(deck);
             var actor = SetCharacter(gamePlay, new BlackJack());
 
             gamePlay.GivePhaseOneCards();
@@ -53,14 +62,15 @@ namespace Bang.Tests
             var deck = new Deck<BangGameCard>();
             deck.Put(new BangCardType().HeartsAce());
             deck.Put(new StagecoachCardType().ClubsSeven());
-            deck.Put(new MissedCardType().DiamondsThree());
+            deck.Put(new MissedCardType().DiamondsThree ());
 
-            var gamePlay = InitGame(deck);
+            var gamePlay = InitGame();
+            gamePlay.SetDeck(deck);
             var actor = SetCharacter(gamePlay, new BlackJack());
 
             gamePlay.GivePhaseOneCards();
 
-            actor.Hand.Count.Should().Be(3);
+            actor.Hand.Count.Should().Be(2);
         }
 
         [Fact]
@@ -71,7 +81,8 @@ namespace Bang.Tests
             deck.Put(new StagecoachCardType().HeartsAce());
             deck.Put(new MissedCardType().ClubsSeven());
 
-            var gamePlay = InitGame(deck);
+            var gamePlay = InitGame();
+            gamePlay.SetDeck(deck);
             var actor = SetCharacter(gamePlay, new SlabTheKiller());
 
             gamePlay.GivePhaseOneCards();
@@ -80,6 +91,8 @@ namespace Bang.Tests
         }
 
         #endregion
+
+        private Game.Gameplay InitGame() => InitGame(BangGameDeck());
 
         private Game.Gameplay InitGame(Deck<BangGameCard> deck)
         {
