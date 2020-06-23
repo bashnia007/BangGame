@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Bang.Characters;
+using Bang.Characters.Visitors;
 using Bang.PlayingCards;
 using Bang.Roles;
 using Bang.GameEvents;
@@ -23,6 +24,7 @@ namespace Bang.Players
         public IReadOnlyList<BangGameCard> ActiveCards => PlayerTablet.ActiveCards;
         public Character Character => PlayerTablet.Character;
         public int LifePoints => PlayerTablet.Health;
+        public bool IsAlive => PlayerTablet.IsAlive;
 
         private Game.Gameplay gamePlay;
 
@@ -145,11 +147,25 @@ namespace Bang.Players
 
         public void LoseLifePoint(int loseLifeAmount = 1)
         {
-            Debug.Assert(PlayerTablet.Health > 0);
+            if(loseLifeAmount <= 0)
+                throw new ArgumentOutOfRangeException();
+            
+            if (!IsAlive)
+                throw new InvalidOperationException($"Player {Name} is already dead");
 
             for (int i = 0; i < loseLifeAmount; i++)
             {
                 PlayerTablet.Health--;
+            }
+
+            if (IsAlive)
+            {
+                var visitor = new LoseLifePointCharacterVisitor();
+                for (int i = 0; i < loseLifeAmount; i++)
+                {
+                    var action = Character.Accept(visitor);
+                    action(this);
+                }
             }
         }
         
