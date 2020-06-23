@@ -22,18 +22,35 @@ namespace Bang.Tests
             butch.LifePoints.Should().Be(4);
         }
         
-        [Fact]
-        public void When_Butch_Cassidy_loses_a_life_point_he_immediately_draws_a_card_from_the_deck()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void When_Butch_Cassidy_loses_a_life_point_he_draws_a_card(int lifePoints)
         {
             var gamePlay = InitGame();
             var butch = SetCharacter(gamePlay, new BartCassidy());
 
-            var topDeckCard = gamePlay.GetTopCardFromDeck();
+            var hand = butch.Hand.Count;
+            
+            // Act
+            butch.LoseLifePoint(lifePoints);
+
+            butch.Hand.Count.Should().Be(hand + lifePoints);
+        }
+        
+        [Fact]
+        public void When_Butch_Cassidy_loses_a_life_point_he_draws_a_card_from_the_deck()
+        {
+            var gamePlay = InitGame();
+            var butch = SetCharacter(gamePlay, new BartCassidy());
+
+            var cardFromDeck = gamePlay.GetTopCardFromDeck();
             
             // Act
             butch.LoseLifePoint();
 
-            butch.Hand.Should().Contain(topDeckCard);
+            butch.Hand.Should().Contain(cardFromDeck);
         }
         
         [Fact]
@@ -48,6 +65,20 @@ namespace Bang.Tests
             
             // Act
             butch.LoseLifePoint();
+
+            gamePlay.GetTopCardFromDeck().Should().Be(topDeckCard);
+        }
+        
+        [Fact]
+        public void Butch_Cassidy_draws_card_only_if_he_is_still_alive()
+        {
+            var gamePlay = InitGame();
+            var butch = SetCharacter(gamePlay, new BartCassidy());
+
+            var topDeckCard = gamePlay.GetTopCardFromDeck();
+            
+            // Act
+            butch.LoseLifePoint(4);
 
             gamePlay.GetTopCardFromDeck().Should().Be(topDeckCard);
         }
