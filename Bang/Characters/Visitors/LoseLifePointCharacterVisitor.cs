@@ -3,19 +3,13 @@ using Bang.Players;
 
 namespace Bang.Characters.Visitors
 {
-    public class LoseLifePointCharacterVisitor : ICharacterVisitor<Action<Player>>
+    public class LoseLifePointCharacterVisitor : ICharacterVisitor<Action<Player, byte>>
     {
-        public Action<Player> DefaultValue
-        {
-            get
-            {
-                return (player) => { };
-            }
-        }
+        public Action<Player, byte> DefaultValue => (player, cardsAmount) => { };
 
-        public Action<Player> Visit(BartCassidy character)
+        public Action<Player, byte> Visit(BartCassidy character)
         {
-            return (player) => player.TakeCards(1);
+            return (player, cardsAmount) => player.TakeCards(cardsAmount);
         }
     }
 }

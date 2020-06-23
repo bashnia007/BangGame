@@ -69,7 +69,7 @@ namespace Bang.Players
             DropCards(new List<BangGameCard> { cardToDrop });
         }
 
-        public void TakeCards(short amount)
+        public void TakeCards(byte amount)
         {
             for (int i = 0; i < amount; i++)
             {
@@ -161,11 +161,9 @@ namespace Bang.Players
             if (IsAlive)
             {
                 var visitor = new LoseLifePointCharacterVisitor();
-                for (int i = 0; i < loseLifeAmount; i++)
-                {
-                    var action = Character.Accept(visitor);
-                    action(this);
-                }
+                var action = Character.Accept(visitor);
+                
+                action(this, (byte) loseLifeAmount);
             }
         }
         
