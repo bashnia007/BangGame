@@ -79,6 +79,34 @@ namespace Bang.Tests
             // Assert
             gamePlay.GetTopCardFromDiscarded().Should().Be(scopeCard);
         }
+
+        [Fact]
+        public void If_an_outlaw_plays_a_duel_and_loses_then_no_one_will_gain_a_reward()
+        {
+            var gameplay = InitGame();
+            var outlaw = gameplay.Players.First(p => p.Role is Outlaw);
+            outlaw.LoseLifePoint(outlaw.MaximumLifePoints - 1);
+            
+            var duelCard = new DuelCardType().ClubsSeven();
+            outlaw.AddCardToHand(duelCard);
+            
+            while (gameplay.GetNextPlayer() != outlaw)
+                gameplay.SetNextPlayer();
+
+            gameplay.StartNextPlayerTurn();
+
+            var otherPlayer = gameplay.Players.First(p => p != outlaw);
+            var bangCard = new BangCardType().SpadesQueen();
+            otherPlayer.AddCardToHand(bangCard);
+            
+            // Act
+            outlaw.PlayCard(duelCard, otherPlayer);
+            otherPlayer.Defense(bangCard);
+            outlaw.NotDefense();
+            
+            // Assert
+            otherPlayer.Hand.Should().BeEmpty();
+        }
         
         private Game.Gameplay InitGame() => InitGame(BangGameDeck());
 

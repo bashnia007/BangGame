@@ -9,14 +9,15 @@ using Bang.PlayingCards;
 using Bang.Roles;
 using Bang.GameEvents;
 using Bang.GameEvents.CardEffects;
+using Gameplay;
 using Gameplay.Players;
 
 namespace Bang.Players
 {
     [Serializable]
-    public abstract class Player
+    public abstract class Player : Entity
     {
-        public string Id { get; protected set; }
+        public override string Id { get; protected set; }
         public string Name { get; set; }
         public Role Role { get; private set; }
         public PlayerTablet PlayerTablet { get; private set; }
@@ -152,7 +153,7 @@ namespace Bang.Players
         public void LoseLifePoint(int loseLifeAmount = 1) => LoseLifePoint(null, loseLifeAmount);
         
         
-        public void LoseLifePoint(Player hitter, int loseLifeAmount)
+        public void LoseLifePoint(Player responsible, int loseLifeAmount)
         {
             if(loseLifeAmount <= 0)
                 throw new ArgumentOutOfRangeException();
@@ -174,7 +175,7 @@ namespace Bang.Players
             }
             else
             {
-                PlayerEliminator.Eliminate(this, hitter);
+                PlayerEliminator.Eliminate(this, responsible);
             }
         }
         

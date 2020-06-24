@@ -24,13 +24,16 @@ namespace Bang.GameEvents.CardEffects
         
         public override HandlerState ApplyReplyAction(Player player, BangGameCard firstCard, BangGameCard secondCard)
         {
-            if (player.Id != defender.Id)
+            if (player != defender)
                 return new ErrorState();
 
             if (firstCard != new BangCardType())
             {
                 Logger.Info($"Player {player.Name} lost duel");
-                player.LoseLifePoint(opponent, 1);
+                // FAQ.
+                // Q26. If an Outlaw plays a Duel and loses, does the player who won the Duel draw the 3 cards reward?
+                // A. No. The reward goes to the player who played the card which was responsible of the elimination of the Outlaw. But since that card was played by the Outlaw himself, no one can gain the reward.
+                player.LoseLifePoint(gamePlay.PlayerTurn, 1);
                 
                 return new DoneState();
             }

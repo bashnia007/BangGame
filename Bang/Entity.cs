@@ -6,7 +6,7 @@ namespace Gameplay
     // https://enterprisecraftsmanship.com/posts/entity-base-class/
     public abstract class Entity
     {
-        public virtual long Id { get; protected set; }
+        public virtual string Id { get; protected set; }
         protected virtual object Actual => this;
 
         public override bool Equals(object obj)
@@ -22,7 +22,7 @@ namespace Gameplay
             if (Actual.GetType() != other.Actual.GetType())
                 return false;
 
-            if (Id == 0 || other.Id == 0)
+            if (String.IsNullOrEmpty(Id) || String.IsNullOrEmpty(other.Id))
                 return false;
 
             return Id == other.Id;
