@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Bang.Characters;
 using Bang.PlayingCards;
+using Bang.Roles;
 
 namespace Bang.Tests
 {
@@ -30,6 +31,17 @@ namespace Bang.Tests
             };
         }
 
+        public static IEnumerable<object[]> AllRoles()
+        {
+            return new[]
+            {
+                new object[] {new Sheriff()},
+                new object[] {new Deputy()},
+                new object[] {new Outlaw()},
+                new object[] {new Renegade()},
+            };
+        }
+        
         public static IEnumerable<object[]> WeaponCards =>
             new List<object[]>
             {

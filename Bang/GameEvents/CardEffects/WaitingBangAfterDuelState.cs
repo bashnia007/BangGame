@@ -30,7 +30,7 @@ namespace Bang.GameEvents.CardEffects
             if (firstCard != new BangCardType())
             {
                 Logger.Info($"Player {player.Name} lost duel");
-                player.LoseLifePoint();
+                player.LoseLifePoint(opponent, 1);
                 
                 return new DoneState();
             }
