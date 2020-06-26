@@ -153,7 +153,7 @@ namespace Bang.Players
         public void LoseLifePoint(int loseLifeAmount = 1) => LoseLifePoint(null, loseLifeAmount);
         
         
-        public void LoseLifePoint(Player responsible, int loseLifeAmount)
+        public void LoseLifePoint(Player responsible, int loseLifeAmount = 1)
         {
             if(loseLifeAmount <= 0)
                 throw new ArgumentOutOfRangeException();

@@ -24,7 +24,7 @@ namespace Bang.GameEvents.CardEffects.States
         {
             if (card == null)
             {
-                victim.LoseLifePoint(hitter, 1);
+                victim.LoseLifePoint(hitter);
 
                 return new DoneState();
             }

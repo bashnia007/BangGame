@@ -15,7 +15,7 @@ namespace Bang.Tests
     public class PlayerEliminationSpecification
     {
         [Fact]
-        public void if_the_sheriff_eliminates_a_deputy_the_sheriff_must_discard_all_the_cards()
+        public void If_the_sheriff_eliminates_a_deputy_the_sheriff_must_discard_all_the_cards()
         {
             var gamePlay = InitGame();
             var sheriff = gamePlay.Players.First(p => p.Role is Sheriff);
