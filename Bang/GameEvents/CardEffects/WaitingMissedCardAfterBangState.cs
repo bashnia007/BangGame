@@ -30,7 +30,7 @@ namespace Bang.GameEvents.CardEffects
         {
             if (card == null || gameplay.PlayerTurn.Character is SlabTheKiller)
             {
-                victim.LoseLifePoint();
+                victim.LoseLifePoint(gameplay.PlayerTurn);
                 // TODO Future: check if victim alive
                 return new DoneState();
             }
@@ -58,7 +58,7 @@ namespace Bang.GameEvents.CardEffects
                 return new DoneState();
             }
             // TODO Check if victim is alive
-            victim.LoseLifePoint();
+            victim.LoseLifePoint(gameplay.PlayerTurn);
             
             return new DoneState();
         }

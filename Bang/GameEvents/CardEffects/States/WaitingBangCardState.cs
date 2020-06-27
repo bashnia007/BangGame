@@ -1,6 +1,7 @@
 ﻿using Bang.Players;
 using Bang.PlayingCards;
 using System;
+using Bang.Game;
 
 namespace Bang.GameEvents.CardEffects.States
 {
@@ -8,9 +9,11 @@ namespace Bang.GameEvents.CardEffects.States
     {
         public override CardType ExpectedCard => new BangCardType();
         private readonly Player victim;
-        public WaitingBangCardState(Player victim)
+        private readonly Player hitter;
+        public WaitingBangCardState(Player victim, Player hitter)
         {
-            this.victim = victim;
+            this.victim = victim ?? throw new ArgumentNullException(nameof(victim));
+            this.hitter = hitter ?? throw new ArgumentNullException(nameof(hitter));
         }
 
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay)
@@ -22,8 +25,8 @@ namespace Bang.GameEvents.CardEffects.States
         {
             if (card == null)
             {
-                victim.LoseLifePoint();
-                // TODO Future: check if victim alive
+                victim.LoseLifePoint(hitter);
+
                 return new DoneState();
             }
             else if (card == new BangCardType())

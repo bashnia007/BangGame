@@ -207,6 +207,7 @@ namespace Bang.Game
                 if (dynamiteChecker.Draw(this, PlayerTurn.Character))
                 {
                     PlayerTurn.DropActiveCard(dynamiteCard);
+                    // TODO introduce constant or maybe even enum
                     PlayerTurn.LoseLifePoint(3);
                     if (!PlayerTurn.PlayerTablet.IsAlive)
                     {

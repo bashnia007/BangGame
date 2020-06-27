@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Bang.Characters;
 using Bang.Characters.Visitors;
+using Bang.Game;
 using Bang.PlayingCards;
 using Bang.Roles;
 using Bang.GameEvents;
 using Bang.GameEvents.CardEffects;
+using Gameplay;
+using Gameplay.Players;
 
 namespace Bang.Players
 {
     [Serializable]
-    public abstract class Player
+    public abstract class Player : Entity
     {
-        public string Id { get; protected set; }
+        public override string Id { get; protected set; }
         public string Name { get; set; }
         public Role Role { get; private set; }
         public PlayerTablet PlayerTablet { get; private set; }
@@ -23,6 +27,7 @@ namespace Bang.Players
 
         public IReadOnlyList<BangGameCard> ActiveCards => PlayerTablet.ActiveCards;
         public Character Character => PlayerTablet.Character;
+        public int MaximumLifePoints => PlayerTablet.MaximumHealth;
         public int LifePoints => PlayerTablet.Health;
         public bool IsAlive => PlayerTablet.IsAlive;
 
@@ -160,7 +165,10 @@ namespace Bang.Players
             PlayerTablet.Health++;
         }
 
-        public void LoseLifePoint(int loseLifeAmount = 1)
+        public void LoseLifePoint(int loseLifeAmount = 1) => LoseLifePoint(null, loseLifeAmount);
+        
+        
+        public void LoseLifePoint(Player responsible, int loseLifeAmount = 1)
         {
             if(loseLifeAmount <= 0)
                 throw new ArgumentOutOfRangeException();
@@ -180,6 +188,10 @@ namespace Bang.Players
                 
                 action(this, (byte) loseLifeAmount);
             }
+            else
+            {
+                PlayerEliminator.Eliminate(this, responsible);
+            }
         }
         
         public void LoseCard(BangGameCard card)
@@ -194,5 +206,14 @@ namespace Bang.Players
 
         public void DrawCardFromPlayer(BangGameCard card) => gamePlay.StealCard(card);
         public void DrawCardFromPlayer() => gamePlay.StealCard();
+
+        public void DropAllCards()
+        {
+            DropCards(Hand.ToList());
+            foreach (var activeCard in ActiveCards.ToList())
+            {
+                DropActiveCard(activeCard);
+            }
+        }
     }
 }
