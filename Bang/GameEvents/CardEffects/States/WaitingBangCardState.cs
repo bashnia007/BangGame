@@ -6,6 +6,7 @@ namespace Bang.GameEvents.CardEffects.States
 {
     internal class WaitingBangCardState : HandlerState
     {
+        public override CardType ExpectedCard => new BangCardType();
         private readonly Player victim;
         public WaitingBangCardState(Player victim)
         {
@@ -27,7 +28,6 @@ namespace Bang.GameEvents.CardEffects.States
             }
             else if (card == new BangCardType())
             {
-                victim.DropCard(card);
                 return new DoneState();
             }
             else

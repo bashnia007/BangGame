@@ -9,6 +9,7 @@ namespace Bang.GameEvents.CardEffects.States
 {
     internal class WaitingMissedCardsAfterGatlingState : HandlerState
     {
+        public override CardType ExpectedCard => new MissedCardType();
         private readonly Dictionary<Player, HandlerState> victimStates;
         private readonly Game.Gameplay gameplay;
 

@@ -8,6 +8,7 @@ namespace Bang.GameEvents.CardEffects.States
 {
     internal class WaitingBangCardsAfterIndiansState : HandlerState
     {
+        public override CardType ExpectedCard => new BangCardType();
         private readonly Dictionary<Player, HandlerState> victimStates;
         private readonly Game.Gameplay gameplay;
 

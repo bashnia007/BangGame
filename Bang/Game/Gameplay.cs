@@ -25,6 +25,8 @@ namespace Bang.Game
 
         public Player PlayerTurn { get; private set; }
 
+        public CardType ExpectedCard => state.ExpectedCard;
+
         public Gameplay(Deck<Character> characters, Deck<BangGameCard> gameCards)
         {
             deck = gameCards ?? throw new ArgumentNullException(nameof(gameCards));

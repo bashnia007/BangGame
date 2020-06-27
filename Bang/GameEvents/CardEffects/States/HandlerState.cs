@@ -11,6 +11,7 @@ namespace Bang.GameEvents.CardEffects.States
         
         public virtual bool IsFinalState => false;
         public virtual bool IsError => false;
+        public virtual CardType ExpectedCard => null;
 
         public virtual Response SideEffect { get; set; } = new Done();
         

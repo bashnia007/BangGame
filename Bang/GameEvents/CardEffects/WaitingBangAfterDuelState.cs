@@ -8,6 +8,8 @@ namespace Bang.GameEvents.CardEffects
 {
     internal class WaitingBangAfterDuelState : HandlerState
     {
+        public override CardType ExpectedCard => new BangCardType();
+
         private readonly Player defender;
         private readonly Player opponent;
         private readonly Game.Gameplay gamePlay;
@@ -35,9 +37,6 @@ namespace Bang.GameEvents.CardEffects
                 return new DoneState();
             }
             
-            player.LoseCard(firstCard);
-            gamePlay.DropCard(firstCard);
-
             DefenceAgainstDuel response = new DefenceAgainstDuel {Player = opponent};
             
             return new WaitingBangAfterDuelState(gamePlay, opponent, defender){SideEffect = response};

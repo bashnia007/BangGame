@@ -10,6 +10,7 @@ namespace Bang.GameEvents.CardEffects
     {
         public override bool IsFinalState => false;
         public override bool IsError => false;
+        public override CardType ExpectedCard => new MissedCardType();
 
         private Player victim;
         private Game.Gameplay gameplay;
@@ -35,7 +36,6 @@ namespace Bang.GameEvents.CardEffects
             }
             else if (card == new MissedCardType())
             {
-                victim.DropCard(card);
                 return new DoneState();
             }
             else
@@ -55,9 +55,6 @@ namespace Bang.GameEvents.CardEffects
             var missedCard = new MissedCardType();
             if (firstCard == missedCard && secondCard == missedCard)
             {
-                victim.DropCard(firstCard);
-                victim.DropCard(secondCard);
-                
                 return new DoneState();
             }
             // TODO Check if victim is alive
