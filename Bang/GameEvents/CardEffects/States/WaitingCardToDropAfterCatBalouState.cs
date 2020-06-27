@@ -1,4 +1,5 @@
 using System;
+using Bang.Game;
 using Bang.Players;
 using Bang.PlayingCards;
 
@@ -6,7 +7,6 @@ namespace Bang.GameEvents.CardEffects.States
 {
     internal class WaitingCardToDropAfterCatBalouState : HandlerState
     {
-        private static Random random = new Random();
         private Player victim;
         private Game.Gameplay gamePlay;
 
@@ -30,9 +30,7 @@ namespace Bang.GameEvents.CardEffects.States
 
         public override HandlerState ApplyReplyAction()
         {
-            int number = random.Next(victim.Hand.Count);
-            var card = victim.Hand[number];
-            
+            var card = RandomCardChooser.ChooseCard(victim.Hand);
             victim.DropCard(card);
             
             return new DoneState();

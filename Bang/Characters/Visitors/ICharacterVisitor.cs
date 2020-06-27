@@ -1,6 +1,6 @@
 namespace Bang.Characters.Visitors
 {
-    public interface ICharacterVisitor<T>
+    interface ICharacterVisitor<T>
     {
         T DefaultValue { get; }
         T Visit(BartCassidy character) => DefaultValue;
