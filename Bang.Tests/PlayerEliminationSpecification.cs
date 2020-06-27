@@ -108,6 +108,37 @@ namespace Bang.Tests
             otherPlayer.Hand.Should().BeEmpty();
         }
         
+        [Fact]
+        public void If_a_deputy_plays_a_duel_to_sheriff_and_dies_then_sheriff_will_not_drop_cards()
+        {
+            var gameplay = InitGame();
+            var deputy = gameplay.Players.First(p => p.Role is Deputy);
+            deputy.LoseLifePoint(deputy.MaximumLifePoints - 1);
+            
+            var duelCard = new DuelCardType().ClubsSeven();
+            deputy.AddCardToHand(duelCard);
+            
+            while (gameplay.GetNextPlayer() != deputy)
+                gameplay.SetNextPlayer();
+
+            gameplay.StartNextPlayerTurn();
+
+            var sheriff = gameplay.Players.First(p => p.Role is Sheriff);
+            var bangCard = new BangCardType().SpadesQueen();
+            sheriff.AddCardToHand(bangCard);
+            sheriff.AddCardToHand(new CatBalouCardType().DiamondsThree());
+            sheriff.PlayerTablet.PutCard(new ScopeCardType().SpadesQueen());
+            
+            // Act
+            deputy.PlayCard(duelCard, sheriff);
+            sheriff.Defense(bangCard);
+            deputy.NotDefense();
+            
+            // Assert
+            sheriff.Hand.Should().NotBeEmpty();
+            sheriff.ActiveCards.Should().NotBeEmpty();
+        }
+        
         private Game.Gameplay InitGame() => InitGame(BangGameDeck());
 
         private Game.Gameplay InitGame(Deck<BangGameCard> deck)
