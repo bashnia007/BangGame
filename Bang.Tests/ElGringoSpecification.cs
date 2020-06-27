@@ -18,7 +18,7 @@ namespace Bang.Tests
         [Fact]
         public void El_Gringo_starts_game_with_3_life_points()
         {
-            var (elGringo, _) = InitGame();
+            var (elGringo, _) = ChoosePlayers();
 
             // Assert
             elGringo.LifePoints.Should().Be(3);
@@ -27,7 +27,7 @@ namespace Bang.Tests
         [Fact]
         public void When_El_Gringo_loses_a_life_point_he_draws_a_card()
         {
-            var (elGringo, sheriff) = InitGame();
+            var (elGringo, sheriff) = ChoosePlayers();
 
             var hand = elGringo.Hand.Count;
             
@@ -41,7 +41,7 @@ namespace Bang.Tests
         [Fact]
         public void When_El_Gringo_loses_a_life_point_he_draws_a_card_from_hitter_card()
         {
-            var (elGringo, sheriff) = InitGame();
+            var (elGringo, sheriff) = ChoosePlayers();
 
             var hand = sheriff.Hand.Count;
             
@@ -50,12 +50,13 @@ namespace Bang.Tests
 
             // Assert
             sheriff.Hand.Should().HaveCount(hand - 1);
+            
         }
         
         [Fact]
         public void If_hitter_does_not_have_a_card_in_hand_El_Gringo_will_draw_nothing()
         {
-            var (elGringo, sheriff) = InitGame();
+            var (elGringo, sheriff) = ChoosePlayers();
 
             sheriff.DropAllCards();
 
@@ -71,7 +72,7 @@ namespace Bang.Tests
         [Fact]
         public void When_El_Gringo_loses_last_life_point_he_does_not_draw_card()
         {
-            var (elGringo, sheriff) = InitGame();
+            var (elGringo, sheriff) = ChoosePlayers();
             
             elGringo.LoseLifePoint(2);
 
@@ -87,7 +88,7 @@ namespace Bang.Tests
         [Fact]
         public void If_El_Gringo_plays_a_duel_and_lose_he_will_not_draw_a_card_from_the_player_who_won()
         {
-            var (elGringo, sheriff) = InitGame();
+            var (elGringo, sheriff) = ChoosePlayers();
 
             var elGringoHandSize = elGringo.Hand.Count;
             
@@ -102,12 +103,27 @@ namespace Bang.Tests
             elGringo.Hand.Should().HaveCount(elGringoHandSize - 1);
         }
         
-        private (Player, Player) InitGame() => InitGame(BangGameDeck());
+        [Fact]
+        public void When_El_Gringo_draws_card_from_player_hand_it_does_not_affect_discard_pile()
+        {
+            var (gameplay, elGringo, sheriff) = InitGame();
+
+            var volcanicCard = new VolcanicCardType().ClubsSeven();
+            sheriff.AddCardToHand(volcanicCard);
+            
+            // Act
+            elGringo.LoseLifePoint(sheriff);
+            
+            // Assert
+            gameplay.GetTopCardFromDiscarded().Should().NotBe(volcanicCard);
+        }
+        
+        private (Game.Gameplay, Player, Player) InitGame() => InitGame(BangGameDeck());
         
         private BangGameCard DuelCard() => new DuelCardType().SpadesQueen();
         private BangGameCard BangCard() => new BangCardType().HeartsAce();
 
-        private (Player, Player) InitGame(Deck<BangGameCard> deck)
+        private (Game.Gameplay, Player, Player) InitGame(Deck<BangGameCard> deck)
         {
             var players = new List<Player>();
             for (int i = 0; i < 4; i++)
@@ -126,6 +142,13 @@ namespace Bang.Tests
 
             var sheriff = players.First(p => p.Role is Sheriff);
             sheriff.AddCardToHand(BangCard());
+
+            return (gameplay, elGringo, sheriff);
+        }
+
+        private (Player, Player) ChoosePlayers()
+        {
+            var (_, elGringo, sheriff) = InitGame();
 
             return (elGringo, sheriff);
         }

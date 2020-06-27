@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Bang.Characters;
@@ -175,8 +175,15 @@ namespace Bang.Players
             }
         }
         
+        /// <summary>
+        /// Remove card from hand (but don't put it on discard pile)
+        /// </summary>
+        /// <param name="card"></param>
         public void LoseCard(BangGameCard card)
         {
+            if (card == null)
+                throw new ArgumentNullException(nameof(card));
+            
             hand.Remove(card);
         }
 
@@ -198,7 +205,7 @@ namespace Bang.Players
             var card = RandomCardChooser.ChooseCard(victim.Hand);
             if (card != null)
             {
-                victim.DropCard(card);
+                victim.LoseCard(card);
                 AddCardToHand(card);
             }
         }
