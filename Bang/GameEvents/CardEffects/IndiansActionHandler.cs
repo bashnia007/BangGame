@@ -18,7 +18,7 @@ namespace Bang.GameEvents.CardEffects
             {
                 var response = new DefenceAgainstIndians { Player = victim };
 
-                var state = new WaitingBangCardState(victim) { SideEffect = response };
+                var state = new WaitingBangCardState(victim, attackPlayer) { SideEffect = response };
                 victimStatesList.Add(victim, state);
             }
 
