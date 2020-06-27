@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Bang.Characters;
 using Bang.Characters.Visitors;
@@ -8,9 +7,7 @@ using Bang.Game;
 using Bang.PlayingCards;
 using Bang.Roles;
 using Bang.GameEvents;
-using Bang.GameEvents.CardEffects;
 using Gameplay;
-using Gameplay.Players;
 
 namespace Bang.Players
 {
@@ -152,7 +149,6 @@ namespace Bang.Players
 
         public void LoseLifePoint(int loseLifeAmount = 1) => LoseLifePoint(null, loseLifeAmount);
         
-        
         public void LoseLifePoint(Player responsible, int loseLifeAmount = 1)
         {
             if(loseLifeAmount <= 0)
@@ -171,7 +167,7 @@ namespace Bang.Players
                 var visitor = new LoseLifePointCharacterVisitor();
                 var action = Character.Accept(visitor);
                 
-                action(this, (byte) loseLifeAmount);
+                action(this, responsible, (byte) loseLifeAmount);
             }
             else
             {
@@ -190,7 +186,22 @@ namespace Bang.Players
         }
 
         public void DrawCardFromPlayer(BangGameCard card) => gamePlay.StealCard(card);
+        // TODO remove this method
+        [Obsolete("use DrawCardFromPlayer(Player victim) instead")]
         public void DrawCardFromPlayer() => gamePlay.StealCard();
+
+        public void DrawCardFromPlayer(Player victim)
+        {
+            if (victim == null)
+                throw new ArgumentNullException(nameof(victim));
+
+            var card = RandomCardChooser.ChooseCard(victim.Hand);
+            if (card != null)
+            {
+                victim.DropCard(card);
+                AddCardToHand(card);
+            }
+        }
 
         public void DropAllCards()
         {

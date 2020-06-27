@@ -3,13 +3,23 @@ using Bang.Players;
 
 namespace Bang.Characters.Visitors
 {
-    public class LoseLifePointCharacterVisitor : ICharacterVisitor<Action<Player, byte>>
+    // TODO maybe it makes sense to introduce internal class DamageInfo { public byte Damage; public Player Hitter;} for more readability 
+    internal class LoseLifePointCharacterVisitor : ICharacterVisitor<Action<Player, Player, byte>>
     {
-        public Action<Player, byte> DefaultValue => (player, cardsAmount) => { };
+        public Action<Player, Player, byte> DefaultValue => (player, hitter, cardsAmount) => { };
 
-        public Action<Player, byte> Visit(BartCassidy character)
+        public Action<Player, Player, byte> Visit(BartCassidy character)
         {
-            return (player, cardsAmount) => player.TakeCards(cardsAmount);
+            return (victim, hitter, cardsAmount) => victim.TakeCards(cardsAmount);
+        }
+
+        public Action<Player, Player, byte> Visit(ElGringo character)
+        {
+            return (victim, hitter, cardsAmount) =>
+            {
+                if (hitter != null && victim != hitter)
+                    victim.DrawCardFromPlayer(hitter);
+            };
         }
     }
 }
