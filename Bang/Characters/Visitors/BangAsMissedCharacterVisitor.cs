@@ -13,19 +13,19 @@ namespace Bang.Characters.Visitors
         {
             return (card, expectedCard) => 
             {
-                if (card != new BangCardType() && card != new MissedCardType())
+                if (card == new BangCardType() || card == new MissedCardType())
                 {
-                    throw new ArgumentException("Only Bang or Missed card expected. But was " + card.Description);
+                    if (expectedCard == new BangCardType())
+                    {
+                        return new BangGameCard(new BangCardType(), card.Suite, card.Rank); ;
+                    }
+                    if (expectedCard == new MissedCardType())
+                    {
+                        return new BangGameCard(new MissedCardType(), card.Suite, card.Rank);
+                    }
                 }
 
-                if (expectedCard is BangCardType)
-                {
-                    return new BangGameCard(new BangCardType(), card.Suite, card.Rank); ;
-                }
-                else
-                {
-                    return new BangGameCard(new MissedCardType(), card.Suite, card.Rank);
-                }
+                return card;
             };
         }
     }
