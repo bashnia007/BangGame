@@ -90,11 +90,20 @@ namespace Bang.Players
             
             if (!hand.Contains(firstCard))
                 throw new InvalidOperationException($"Player doesn't have card {firstCard.Description}");
-            
-            if (secondCard != null && !hand.Contains(secondCard))
-                throw new InvalidOperationException($"Player doesn't have card {secondCard.Description}");
 
-            gamePlay.Defense(this, firstCard, secondCard);
+            if (secondCard != null)
+            {
+                if (!hand.Contains(secondCard))
+                {
+                    throw new InvalidOperationException($"Player doesn't have card {secondCard.Description}");
+                }
+            }
+
+            if (gamePlay.Defense(this, firstCard, secondCard))
+            {
+                DropCard(firstCard);
+                if (secondCard != null) DropCard(secondCard);
+            }
         }
 
         public void NotDefense()
@@ -107,15 +116,18 @@ namespace Bang.Players
             if (!hand.Contains(card))
                 throw new InvalidOperationException($"Player doesn't have card {card.Description}");
 
-            if (card.CanBePlayedToAnotherPlayer)
+            if (!card.IsUniversalCard)
             {
-                if (playOn == null || playOn == this)
-                    throw new InvalidOperationException($"Card {card.Description} must be played to another player!");
-            }
-            else
-            {
-                if (playOn != null && playOn != this)
-                    throw new InvalidOperationException($"Card {card.Description} can not be played to another player!");
+                if (card.CanBePlayedToAnotherPlayer)
+                {
+                    if (playOn == null || playOn == this)
+                        throw new InvalidOperationException($"Card {card.Description} must be played to another player!");
+                }
+                else
+                {
+                    if (playOn != null && playOn != this)
+                        throw new InvalidOperationException($"Card {card.Description} can not be played to another player!");
+                }
             }
 
             var response = gamePlay.CardPlayed(playOn?? this, card);

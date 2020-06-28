@@ -12,7 +12,7 @@ namespace Bang.GameEvents.CardEffects.States
 
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gamePlay)
         {
-            var handler = card.Accept(new GetHandlerVisitor());
+            var handler = card.Accept(new GetHandlerVisitor(gamePlay.PlayerTurn.Character));
             if (handler == null) throw new InvalidOperationException($"Card {card.Description} doesn't have a handler");
             
             return handler.ApplyEffect(gamePlay, player, card);

@@ -14,6 +14,7 @@ namespace Bang.PlayingCards
         public bool IsLongTerm => Type.Accept(new IsLongTermCardTypeVisitor());
         public bool IsWeapon => Type.Accept(new IsWeaponCardVisitor());
         public bool CanBePlayedToAnotherPlayer => Type.Accept(new CanBePlayedToAnotherPlayer());
+        public bool IsUniversalCard => Type.Accept(new UniversalCardVisitor());
         
         public BangGameCard(CardType card, Suite suite, Rank rank)
         {
