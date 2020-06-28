@@ -1,4 +1,5 @@
 using System;
+using Bang.Game;
 using Bang.Players;
 using Bang.PlayingCards;
 
@@ -6,8 +7,6 @@ namespace Bang.GameEvents.CardEffects.States
 {
     internal class WaitingCardToStealAfterPanicState : HandlerState
     {
-        private static readonly Random random = new Random();
-
         private Player activePlayer;
         private Player victim;
 
@@ -32,8 +31,7 @@ namespace Bang.GameEvents.CardEffects.States
         
         public override HandlerState ApplyReplyAction()
         {
-            int number = random.Next(victim.Hand.Count);
-            var card = victim.Hand[number];
+            var card = RandomCardChooser.ChooseCard(victim.Hand);
             
             victim.LoseCard(card);
             activePlayer.AddCardToHand(card);
