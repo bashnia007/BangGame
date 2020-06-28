@@ -184,7 +184,7 @@ namespace Bang.Players
             }
             else
             {
-                PlayerEliminator.Eliminate(this, responsible);
+                PlayerEliminator.Eliminate(this, responsible, gamePlay.AlivePlayers);
             }
         }
         
@@ -198,6 +198,11 @@ namespace Bang.Players
                 throw new ArgumentNullException(nameof(card));
             
             hand.Remove(card);
+        }
+
+        public void LoseActiveCard(BangGameCard card)
+        {
+            PlayerTablet.RemoveCard(card);
         }
 
         public void ChooseCard(BangGameCard card)
