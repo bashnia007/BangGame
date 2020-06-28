@@ -166,8 +166,9 @@ namespace Bang.Players
             {
                 var visitor = new LoseLifePointCharacterVisitor();
                 var action = Character.Accept(visitor);
-                
-                action(this, responsible, (byte) loseLifeAmount);
+
+                var damageInfo = new DamageInfo{Damage = (byte) loseLifeAmount, Hitter = responsible};
+                action(this, damageInfo);
             }
             else
             {
