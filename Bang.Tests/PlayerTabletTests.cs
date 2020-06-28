@@ -103,5 +103,7 @@ namespace Bang.Tests
 
             Assert.Equal(weapon, tablet.Weapon);
         }
+
+        // Add test for chesking that cards were taken at the begining of the players' turn.
     }
 }
