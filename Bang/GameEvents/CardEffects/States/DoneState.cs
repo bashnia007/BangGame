@@ -7,7 +7,6 @@ namespace Bang.GameEvents.CardEffects.States
 {
     internal class DoneState : HandlerState
     {
-        public override CardType ExpectedCard => new BangCardType();
         public override bool IsFinalState => true;
         public override bool IsError => false;
 

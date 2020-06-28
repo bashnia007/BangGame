@@ -11,7 +11,7 @@ namespace Bang.GameEvents.CardEffects
     {
         public override bool IsFinalState => false;
         public override bool IsError => false;
-        public override CardType ExpectedCard => new MissedCardType();
+        protected override CardType ExpectedCard => new MissedCardType();
 
         private Player victim;
         private Game.Gameplay gameplay;

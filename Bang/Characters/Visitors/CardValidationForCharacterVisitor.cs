@@ -13,8 +13,9 @@ namespace Bang.Characters.Visitors
         {
             return (card, expectedCard) => 
             {
-                return (expectedCard == new BangCardType() || expectedCard == new MissedCardType()) 
-                    && (card == new BangCardType() || card == new MissedCardType());
+                return (card == expectedCard) 
+                    || ((expectedCard == new BangCardType() || expectedCard == new MissedCardType()) 
+                        && (card == new BangCardType() || card == new MissedCardType()));
             };
         }
     }
