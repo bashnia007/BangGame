@@ -1,5 +1,6 @@
 using System;
 using Bang.Characters;
+using Bang.Characters.Visitors;
 using Bang.GameEvents.CardEffects.States;
 using Bang.Players;
 using Bang.PlayingCards;
@@ -14,11 +15,14 @@ namespace Bang.GameEvents.CardEffects
 
         private Player victim;
         private Game.Gameplay gameplay;
+        private CardValidationForCharacterVisitor cardValidationForCharacterVisitor;
         
         public WaitingMissedCardAfterBangState(Player victim, Game.Gameplay gameplay)
         {
             this.victim = victim;
             this.gameplay = gameplay;
+
+            cardValidationForCharacterVisitor = new CardValidationForCharacterVisitor();
         }
 
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay)
@@ -34,7 +38,7 @@ namespace Bang.GameEvents.CardEffects
                 // TODO Future: check if victim alive
                 return new DoneState();
             }
-            else if (card == new MissedCardType())
+            else if (IsValidCard(victim, card))
             {
                 return new DoneState();
             }
@@ -48,7 +52,12 @@ namespace Bang.GameEvents.CardEffects
         public override HandlerState ApplyReplyAction(Player player, BangGameCard firstCard, BangGameCard secondCard)
         {
             if (secondCard == null) return ApplyReplyAction(firstCard);
-            
+
+            if (!IsValidCard(player, secondCard))
+            {
+                return new ErrorState();
+            }
+
             if (!(gameplay.PlayerTurn.Character is SlabTheKiller))
                 throw new InvalidOperationException("Only Slab the Killer's Bang requires two Missed cards");
             

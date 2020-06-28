@@ -29,7 +29,7 @@ namespace Bang.GameEvents.CardEffects.States
 
                 return new DoneState();
             }
-            else if (card == new BangCardType())
+            else if (IsValidCard(victim, card))
             {
                 return new DoneState();
             }

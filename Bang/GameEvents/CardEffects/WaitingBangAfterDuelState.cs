@@ -29,7 +29,7 @@ namespace Bang.GameEvents.CardEffects
             if (player != defender)
                 return new ErrorState();
 
-            if (firstCard != new BangCardType())
+            if (!IsValidCard(player, firstCard))
             {
                 Logger.Info($"Player {player.Name} lost duel");
                 // FAQ.

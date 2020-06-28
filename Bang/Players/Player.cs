@@ -94,19 +94,15 @@ namespace Bang.Players
             if (!hand.Contains(firstCard))
                 throw new InvalidOperationException($"Player doesn't have card {firstCard.Description}");
 
-            BangGameCard exchangedFirstCard = Character.Accept(new BangAsMissedCharacterVisitor()).Invoke(firstCard, gamePlay.ExpectedCard);
-            BangGameCard exchangedSecondCard = null;
-
             if (secondCard != null)
             {
                 if (!hand.Contains(secondCard))
                 {
                     throw new InvalidOperationException($"Player doesn't have card {secondCard.Description}");
                 }
-                exchangedSecondCard = Character.Accept(new BangAsMissedCharacterVisitor()).Invoke(secondCard, gamePlay.ExpectedCard);
             }
 
-            if (gamePlay.Defense(this, exchangedFirstCard, exchangedSecondCard))
+            if (gamePlay.Defense(this, firstCard, secondCard))
             {
                 DropCard(firstCard);
                 if (secondCard != null) DropCard(secondCard);
@@ -123,20 +119,21 @@ namespace Bang.Players
             if (!hand.Contains(card))
                 throw new InvalidOperationException($"Player doesn't have card {card.Description}");
 
-            var exchangedCard = Character.Accept(new BangAsMissedCharacterVisitor()).Invoke(card, gamePlay.ExpectedCard);
-
-            if (exchangedCard.CanBePlayedToAnotherPlayer)
+            if (!card.IsUniversalCard)
             {
-                if (playOn == null || playOn == this)
-                    throw new InvalidOperationException($"Card {exchangedCard.Description} must be played to another player!");
-            }
-            else
-            {
-                if (playOn != null && playOn != this)
-                    throw new InvalidOperationException($"Card {exchangedCard.Description} can not be played to another player!");
+                if (card.CanBePlayedToAnotherPlayer)
+                {
+                    if (playOn == null || playOn == this)
+                        throw new InvalidOperationException($"Card {card.Description} must be played to another player!");
+                }
+                else
+                {
+                    if (playOn != null && playOn != this)
+                        throw new InvalidOperationException($"Card {card.Description} can not be played to another player!");
+                }
             }
 
-            var response = gamePlay.CardPlayed(playOn?? this, exchangedCard);
+            var response = gamePlay.CardPlayed(playOn?? this, card);
 
             if (response is LeaveCardOnTheTableResponse)
             {

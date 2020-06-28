@@ -1,3 +1,4 @@
+using Bang.Characters;
 using Bang.GameEvents.CardEffects;
 
 namespace Bang.PlayingCards.Visitors
@@ -31,6 +32,13 @@ namespace Bang.PlayingCards.Visitors
 
     internal class GetHandlerVisitor : ICardTypeVisitor<CardActionHandler>
     {
+        private Character character;
+
+        public GetHandlerVisitor(Character character)
+        {
+            this.character = character;
+        }
+
         public CardActionHandler DefaultValue => null;
 
         public CardActionHandler Visit(MustangCardType card) => new LongTermFeatureCardHandler();
@@ -40,6 +48,8 @@ namespace Bang.PlayingCards.Visitors
         public CardActionHandler Visit(StagecoachCardType card) => new StageCoachCardHandler();
         public CardActionHandler Visit(WellsFargoCardType card) => new WellsFargoCoachCardHandler();
         public CardActionHandler Visit(BangCardType card) => new BangCardHandler();
+        public CardActionHandler Visit(MissedCardType card) => character == new CalamityJanet() ? new BangCardHandler() : null;
+
 
         public CardActionHandler Visit(VolcanicCardType card) => new ChangeWeaponHandler();
         public CardActionHandler Visit(SchofieldCardType card) => new ChangeWeaponHandler();
