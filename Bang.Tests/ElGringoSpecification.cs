@@ -39,7 +39,7 @@ namespace Bang.Tests
         }
         
         [Fact]
-        public void When_El_Gringo_loses_a_life_point_he_draws_a_card_from_hitter_card()
+        public void When_El_Gringo_loses_a_life_point_he_draws_a_card_from_hitter_hand()
         {
             var (elGringo, sheriff) = ChoosePlayers();
 
