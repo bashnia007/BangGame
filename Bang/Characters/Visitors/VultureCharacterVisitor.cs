@@ -15,6 +15,7 @@ namespace Bang.Characters.Visitors
                 var vulture = vultureInfo.Vulture;
                 while (vultureInfo.Victim.Hand.Any())
                 {
+                    // maybe it will be cleaner to call vulture.DrawCardFromPlayer(victim)
                     var card = victim.Hand[0];
                     vulture.AddCardToHand(card);
                     victim.LoseCard(card);
@@ -23,8 +24,7 @@ namespace Bang.Characters.Visitors
                 while (victim.ActiveCards.Any())
                 {
                     var card = victim.ActiveCards[0];
-                    vulture.AddCardToHand(card);
-                    victim.LoseActiveCard(card);
+                    vulture.DrawPlayerActiveCard(victim, card);
                 }
             };
         }

@@ -210,7 +210,12 @@ namespace Bang.Players
             gamePlay.ChooseCard(card, this);
         }
 
-        public void DrawCardFromPlayer(BangGameCard card) => gamePlay.StealCard(card);
+        public void DrawPlayerActiveCard(Player victim, BangGameCard card)
+        {
+            victim.PlayerTablet.RemoveCard(card);
+            AddCardToHand(card);
+        }
+        
         // TODO remove this method
         [Obsolete("use DrawCardFromPlayer(Player victim) instead")]
         public void DrawCardFromPlayer() => gamePlay.StealCard();
