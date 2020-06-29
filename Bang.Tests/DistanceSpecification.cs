@@ -5,10 +5,7 @@ using Bang.Players;
 using Bang.PlayingCards;
 using Bang.Roles;
 using FluentAssertions;
-using Gameplay.Characters;
-using Gameplay.Roles;
 using Xunit;
-using Gameplay = Bang.Game.Gameplay;
 
 namespace Bang.Tests
 {

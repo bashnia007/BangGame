@@ -1,6 +1,4 @@
-﻿using Gameplay.Exceptions;
-
-namespace Bang.Exceptions
+﻿namespace Bang.Exceptions
 {
     public class DuplicatedCardException : BangException
     {

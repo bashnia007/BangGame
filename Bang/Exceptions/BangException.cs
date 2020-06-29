@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Gameplay.Exceptions
+namespace Bang.Exceptions
 {
     public class BangException : Exception
     {

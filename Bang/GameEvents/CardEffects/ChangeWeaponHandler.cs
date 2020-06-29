@@ -1,7 +1,6 @@
 using Bang.GameEvents.CardEffects.States;
 using Bang.Players;
 using Bang.PlayingCards;
-using Gameplay.Players;
 
 namespace Bang.GameEvents.CardEffects
 {

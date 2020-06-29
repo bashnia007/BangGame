@@ -1,7 +1,6 @@
 ﻿using System;
-using Bang.Roles;
 
-namespace Gameplay.Roles
+namespace Bang.Roles
 {
     [Serializable]
     public class RoleFactory<T> where T : Role, new()

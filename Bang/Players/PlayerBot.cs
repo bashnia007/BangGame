@@ -1,6 +1,4 @@
-﻿using Bang.Players;
-
-namespace Gameplay.Players
+﻿namespace Bang.Players
 {
     /// <summary>
     /// Player, ruled by AI. If we decide to implement it

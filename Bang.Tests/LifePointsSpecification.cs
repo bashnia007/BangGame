@@ -1,7 +1,6 @@
 using Bang.Characters;
 using Bang.Players;
 using FluentAssertions;
-using Gameplay.Players;
 using Xunit;
 
 namespace Bang.Tests

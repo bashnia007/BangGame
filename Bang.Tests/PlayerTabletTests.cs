@@ -5,7 +5,6 @@ using Bang.PlayingCards.Visitors;
 using Bang.Weapons;
 using Bang.Game;
 using FluentAssertions;
-using Gameplay.Characters;
 using Xunit;
 
 namespace Bang.Tests

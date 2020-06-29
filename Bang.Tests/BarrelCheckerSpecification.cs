@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using Bang.Characters;
+using Bang.Characters.Visitors;
+using Bang.Exceptions;
 using Bang.Game;
 using Bang.Players;
 using Bang.PlayingCards;
+using Bang.Roles;
 using FluentAssertions;
 using Xunit;
 

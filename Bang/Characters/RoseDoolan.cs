@@ -1,8 +1,5 @@
 ﻿using System;
 using Bang.Characters.Visitors;
-using Bang.Characters;
-using Gameplay;
-using Gameplay.Characters.Visitors;
 
 namespace Bang.Characters
 {

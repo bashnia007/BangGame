@@ -2,8 +2,6 @@
 using Bang.Characters;
 using Bang.PlayingCards;
 using Bang.Roles;
-using Gameplay.Characters;
-using Gameplay.Roles;
 using Server.Messages;
 
 namespace Bang.Messages

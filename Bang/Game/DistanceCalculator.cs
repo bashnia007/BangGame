@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bang.Characters.Visitors;
 using Bang.Players;
 using Bang.PlayingCards;
-using Gameplay.Characters.Visitors;
 using static Bang.MathExtension;
 using static System.Math;
 

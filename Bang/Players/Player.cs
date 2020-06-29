@@ -7,7 +7,6 @@ using Bang.Game;
 using Bang.PlayingCards;
 using Bang.Roles;
 using Bang.GameEvents;
-using Gameplay;
 
 namespace Bang.Players
 {

@@ -1,7 +1,4 @@
-using Bang.Characters.Visitors;
-using Bang.Characters;
-
-namespace Gameplay.Characters.Visitors
+namespace Bang.Characters.Visitors
 {
     public class DistanceFromPlayerVisitor : ICharacterVisitor<int>
     {

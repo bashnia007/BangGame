@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Gameplay
+namespace Bang
 {
     [Serializable]
     // https://enterprisecraftsmanship.com/posts/entity-base-class/

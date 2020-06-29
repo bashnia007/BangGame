@@ -1,5 +1,3 @@
-using Gameplay.Exceptions;
-
 namespace Bang.Exceptions
 {
     public class AmountPlayersException : BangException
