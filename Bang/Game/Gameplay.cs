@@ -121,9 +121,9 @@ namespace Bang.Game
             state = state.ApplyReplyAction(victim, card);
         }
 
-        public void ForceDropRandomCard()
+        public void ForceDropRandomCard(Player victim)
         {
-            state = state.ApplyReplyAction();
+            state = state.ApplyReplyAction(victim);
         }
 
         public void GivePhaseOneCards()
@@ -166,9 +166,9 @@ namespace Bang.Game
             state = state.ApplyReplyAction(victim, card);
         }
 
-        public void StealCard()
+        public void StealCard(Player victim)
         {
-            state = state.ApplyReplyAction();
+            state = state.ApplyReplyAction(victim);
         }
 
         public void ChooseCard(BangGameCard card, Player player)
@@ -245,9 +245,9 @@ namespace Bang.Game
             return playersAlive[(indexOfCurrentPlayer + 1) % playersAlive.Count];
         }
 
-        public Response ProcessReplyAction()
+        public Response ProcessReplyAction(Player victim)
         {
-            state = state.ApplyReplyAction();
+            state = state.ApplyReplyAction(victim);
             return state.SideEffect;
         }
 

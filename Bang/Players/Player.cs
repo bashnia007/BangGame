@@ -145,9 +145,9 @@ namespace Bang.Players
             gamePlay.ForceDropCard(victim, card);
         }
 
-        public void ForceToDropRandomCard()
+        public void ForceToDropRandomCard(Player victim)
         {
-            gamePlay.ForceDropRandomCard();
+            gamePlay.ForceDropRandomCard(victim);
         }
 
         public void RegainLifePoint()
@@ -202,9 +202,6 @@ namespace Bang.Players
         }
 
         public void DrawCardFromPlayer(Player victim, BangGameCard card) => gamePlay.StealCard(victim, card);
-        // TODO remove this method
-        [Obsolete("use DrawCardFromPlayer(Player victim) instead")]
-        public void DrawCardFromPlayer() => gamePlay.StealCard();
 
         public void DrawCardFromPlayer(Player victim)
         {

@@ -122,7 +122,7 @@ namespace Bang.Tests
             var availableCards = actor.PlayCard(panicCard, victim) as ChooseOneCardResponse;
 
             // Act
-            actor.DrawCardFromPlayer();
+            actor.DrawCardFromPlayer(victim);
             
             // Assert
             actor.Hand.Should().Contain(gatlingCard);
@@ -140,7 +140,7 @@ namespace Bang.Tests
             var availableCards = actor.PlayCard(panicCard, victim) as ChooseOneCardResponse;
             
             // Act
-            actor.DrawCardFromPlayer();
+            actor.DrawCardFromPlayer(victim);
             
             // Assert
             victim.Hand.Should().BeEmpty();

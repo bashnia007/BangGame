@@ -84,7 +84,7 @@ namespace Bang.Tests
             var availableCards = actor.PlayCard(catBalouCard, victim) as ChooseOneCardResponse;
             
             // Act
-            actor.ForceToDropRandomCard();
+            actor.ForceToDropRandomCard(victim);
             
             // Assert
             victim.Hand.Should().NotContain(bangCard);
@@ -149,7 +149,7 @@ namespace Bang.Tests
             var availableCards = actor.PlayCard(catBalouCard, victim) as ChooseOneCardResponse;
 
             // Act
-            actor.ForceToDropRandomCard();
+            actor.ForceToDropRandomCard(victim);
             
             // Assert
             gameplay.GetTopCardFromDiscarded().Should().Be(mustangCard);

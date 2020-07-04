@@ -107,12 +107,12 @@ namespace Server.Tests
 
             player.AddCardToHand(catBalouCard);
 
-            var opponent = game.Gameplay.Players.First(p => p != player);
+            var victim = game.Gameplay.Players.First(p => p != player);
 
-            var opponentHandSizeBefore = opponent.Hand.Count;
+            var opponentHandSizeBefore = victim.Hand.Count;
 
             // Act
-            var playCardMessage = new PlayCardMessage(player, catBalouCard, opponent);
+            var playCardMessage = new PlayCardMessage(player, catBalouCard, victim);
             var playCardResponse = (ReplyActionMessage) game.ProcessEvent(playCardMessage);
             var m = (ChooseOneCardResponse) playCardResponse.Response;
 
@@ -120,12 +120,12 @@ namespace Server.Tests
             m.ReplyTo.Should().BeSameAs(playCardMessage);
             m.Player.Should().BeSameAs(player);
 
-            var forceToDropCardMessage = playCardResponse.ReplyWithForcingToDrop(player);
+            var forceToDropCardMessage = playCardResponse.ReplyWithForcingToDrop(victim);
 
             var forceToDropResponse = game.ProcessEvent(forceToDropCardMessage);
             forceToDropResponse.Should().BeOfType<ActionDoneMessage>();
 
-            opponent.Hand.Should().HaveCountLessThan(opponentHandSizeBefore);
+            victim.Hand.Should().HaveCountLessThan(opponentHandSizeBefore);
         }
 
         [Fact]
@@ -357,12 +357,12 @@ namespace Server.Tests
 
             player.AddCardToHand(panicCard);
 
-            var opponent = game.Gameplay.Players.First(p => p != player);
+            var victim = game.Gameplay.Players.First(p => p != player);
 
-            var opponentHandSizeBefore = opponent.Hand.Count;
+            var opponentHandSizeBefore = victim.Hand.Count;
 
             // Act
-            var playCardMessage = new PlayCardMessage(player, panicCard, opponent);
+            var playCardMessage = new PlayCardMessage(player, panicCard, victim);
             var playCardResponse = (ReplyActionMessage) game.ProcessEvent(playCardMessage);
             var m = (ChooseOneCardResponse) playCardResponse.Response;
 
@@ -370,9 +370,9 @@ namespace Server.Tests
             m.ReplyTo.Should().BeSameAs(playCardMessage);
             m.Player.Should().BeSameAs(player);
 
-            var stealRandomCardMessage = new ReplyActionMessage(player)
+            var stealRandomCardMessage = new ReplyActionMessage(victim)
             {
-                Response = new DrawCardFromPlayerResponse() {Player = player, ReplyTo = playCardResponse}
+                Response = new DrawCardFromPlayerResponse() {Player = victim, ReplyTo = playCardResponse}
             };
 
             var stealingResponse = game.ProcessEvent(stealRandomCardMessage);
@@ -380,7 +380,7 @@ namespace Server.Tests
             stealingResponse.Should().BeOfType<ActionDoneMessage>();
 
             player.Hand.Should().HaveCountGreaterThan(playerHandSizeBefore);
-            opponent.Hand.Should().HaveCountLessThan(opponentHandSizeBefore);
+            victim.Hand.Should().HaveCountLessThan(opponentHandSizeBefore);
         }
 
         [Fact]
