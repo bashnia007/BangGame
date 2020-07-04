@@ -37,11 +37,6 @@ namespace Bang.GameEvents.CardEffects.States
             return UpdateStatus();
         }
 
-        public override HandlerState ApplyReplyAction(BangGameCard card)
-        {
-            throw new NotImplementedException();
-        }
-
         private HandlerState UpdateStatus()
         {
             return victimStates.All(state => state.Value is DoneState)

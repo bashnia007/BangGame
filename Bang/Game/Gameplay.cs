@@ -116,9 +116,9 @@ namespace Bang.Game
             return nextState.SideEffect;
         }
 
-        public void ForceDropCard(BangGameCard card)
+        public void ForceDropCard(Player victim, BangGameCard card)
         {
-            state = state.ApplyReplyAction(card);
+            state = state.ApplyReplyAction(victim, card);
         }
 
         public void ForceDropRandomCard()
@@ -161,9 +161,9 @@ namespace Bang.Game
             discardedCards.Put(card);
         }
 
-        public void StealCard(BangGameCard card)
+        public void StealCard(Player victim, BangGameCard card)
         {
-            state = state.ApplyReplyAction(card);
+            state = state.ApplyReplyAction(victim, card);
         }
 
         public void StealCard()
@@ -251,15 +251,6 @@ namespace Bang.Game
             return state.SideEffect;
         }
 
-        public Response ProcessReplyAction(BangGameCard card)
-        {
-            if (card == null)
-                return ProcessReplyAction();
-            
-            state = state.ApplyReplyAction(card);
-            return state.SideEffect;
-        }
-        
         public Response ProcessReplyAction(Player player, BangGameCard card)
         {
             state = state.ApplyReplyAction(player, card);
@@ -268,6 +259,8 @@ namespace Bang.Game
         
         public Response ProcessReplyAction(Player player, BangGameCard firstCard, BangGameCard secondCard)
         {
+            if (secondCard == null) return ProcessReplyAction(player, firstCard);
+            
             state = state.ApplyReplyAction(player, firstCard, secondCard);
             return state.SideEffect;
         }

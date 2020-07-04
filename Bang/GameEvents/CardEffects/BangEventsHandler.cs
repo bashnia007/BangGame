@@ -61,11 +61,11 @@ namespace Bang.GameEvents
                 
                 // Cat Balou
                 ForcePlayerToDropCardResponse forceToDrop when forceToDrop.RandomHandCard => gamePlay.ProcessReplyAction(),
-                ForcePlayerToDropCardResponse forceToDrop =>  gamePlay.ProcessReplyAction(forceToDrop.ActiveCardToDrop),
+                ForcePlayerToDropCardResponse forceToDrop =>gamePlay.ProcessReplyAction(forceToDrop.Player, forceToDrop.ActiveCardToDrop),
                 
                 // Panic
                 DrawCardFromPlayerResponse stealCard when stealCard.RandomHandCard => gamePlay.ProcessReplyAction(),
-                DrawCardFromPlayerResponse stealCard => gamePlay.ProcessReplyAction(stealCard.ActiveCardToSteal),
+                DrawCardFromPlayerResponse stealCard => gamePlay.ProcessReplyAction(stealCard.Player, stealCard.ActiveCardToSteal),
                 
                 // General store reply
                 TakeCardAfterGeneralStoreResponse chooseCard => gamePlay.ProcessReplyAction(chooseCard.Player, chooseCard.Card),

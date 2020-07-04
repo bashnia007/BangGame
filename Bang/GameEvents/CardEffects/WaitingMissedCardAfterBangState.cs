@@ -29,11 +29,6 @@ namespace Bang.GameEvents.CardEffects
             throw new InvalidOperationException();
         }
 
-        public override HandlerState ApplyReplyAction(BangGameCard card)
-        {
-            throw new NotImplementedException();
-        }
-
         public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
         {
             if (victim != player)

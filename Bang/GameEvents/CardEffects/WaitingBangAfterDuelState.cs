@@ -44,10 +44,5 @@ namespace Bang.GameEvents.CardEffects
             
             return new WaitingBangAfterDuelState(gamePlay, opponent, defender){SideEffect = response};
         }
-
-        public override HandlerState ApplyReplyAction(BangGameCard card)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

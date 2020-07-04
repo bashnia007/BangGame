@@ -1,4 +1,4 @@
-using Bang.Characters;
+﻿using Bang.Characters;
 using Bang.Players;
 using Bang.PlayingCards;
 using System;
@@ -19,11 +19,6 @@ namespace Bang.GameEvents.CardEffects.States
             this.gameplay = gameplay;
         }
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override HandlerState ApplyReplyAction(BangGameCard card)
         {
             throw new NotImplementedException();
         }

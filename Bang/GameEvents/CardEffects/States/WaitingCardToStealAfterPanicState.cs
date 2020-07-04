@@ -21,17 +21,12 @@ namespace Bang.GameEvents.CardEffects.States
             throw new NotImplementedException();
         }
 
-        public override HandlerState ApplyReplyAction(BangGameCard card)
+        public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
         {
             victim.PlayerTablet.RemoveCard(card);
             activePlayer.AddCardToHand(card);
             
             return new DoneState();
-        }
-
-        public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
-        {
-            throw new NotImplementedException();
         }
 
         public override HandlerState ApplyReplyAction()

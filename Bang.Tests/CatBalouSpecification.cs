@@ -105,7 +105,7 @@ namespace Bang.Tests
             var availableCards = actor.PlayCard(catBalouCard, victim) as ChooseOneCardResponse;
             
             // Act
-            actor.ForceToDropCard(availableCards.ActiveCards.First());
+            actor.ForceToDropCard(victim, availableCards.ActiveCards.First());
             
             // Assert
             victim.ActiveCards.Should().NotContain(mustangCard);
@@ -128,7 +128,7 @@ namespace Bang.Tests
             var cardToDrop = availableCards.ActiveCards.First();
             
             // Act
-            actor.ForceToDropCard(cardToDrop);
+            actor.ForceToDropCard(victim, cardToDrop);
             
             // Assert
             gameplay.GetTopCardFromDiscarded().Should().Be(cardToDrop);

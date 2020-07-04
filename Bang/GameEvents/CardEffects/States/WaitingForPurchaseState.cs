@@ -23,11 +23,6 @@ namespace Bang.GameEvents.CardEffects.States
             throw new NotImplementedException();
         }
 
-        public override HandlerState ApplyReplyAction(BangGameCard card)
-        {
-            throw new NotImplementedException();
-        }
-
         public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
         {
             Player currentPlayer = playersOrder[0];
