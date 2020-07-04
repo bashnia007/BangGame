@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Bang.Players;
 using Bang.PlayingCards;
@@ -88,5 +89,18 @@ namespace Bang.GameEvents
 
         public List<BangGameCard> CardsToChoose { get; set; }
         public Player PlayerTurn { get; set; }
+    }
+
+    public class TakeCardAfterGeneralStoreResponse : Response
+    {
+        public override bool IsDone => false;
+
+        public TakeCardAfterGeneralStoreResponse(Player player, BangGameCard card)
+        {
+            Player = player ?? throw new ArgumentNullException(nameof(player));
+            Card = card ?? throw new ArgumentNullException(nameof(card));
+        }
+        
+        public BangGameCard Card { get; }
     }
 }

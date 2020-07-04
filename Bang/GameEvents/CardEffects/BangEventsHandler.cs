@@ -45,37 +45,35 @@ namespace Bang.GameEvents
 
         public Response ReplyAction(ReplyActionMessage replyActionMessage)
         {
-            var player = replyActionMessage.Player;
-
-            if (replyActionMessage.Response is DefenceAgainstBang d)
-            {
-                player.Defense(d.FirstCard, d.SecondCard);
-            }
-            else if (replyActionMessage.Response is DefenceAgainstDuel duelReply)
-            {
-                if (duelReply.Card == null) player.NotDefense();
-                else player.Defense(duelReply.Card);
-            }
-            else if (replyActionMessage.Response is ForcePlayerToDropCardResponse forceToDrop)
-            {
-                if (forceToDrop.RandomHandCard)
-                    player.ForceToDropRandomCard();
-                else
-                    player.ForceToDropCard(forceToDrop.ActiveCardToDrop);
-            }
-            else if (replyActionMessage.Response is DrawCardFromPlayerResponse stealCardResponse)
-            {
-                if (stealCardResponse.RandomHandCard)
-                    player.DrawCardFromPlayer();
-                else 
-                    player.DrawCardFromPlayer(stealCardResponse.ActiveCardToSteal);
-            }
-            else
-            {
-                throw new NotImplementedException(replyActionMessage.Response.ToString());
-            }
+            Response response = new Done();
             
-            return new Done();
+            response = replyActionMessage.Response switch
+            {
+                // Bang or gatling reply
+                DefenceAgainstBang bangReply => gamePlay.ProcessReplyAction(bangReply.Player, bangReply.FirstCard,
+                    bangReply.SecondCard),
+                
+                // Indians reply
+                DefenceAgainstIndians indiansReply => gamePlay.ProcessReplyAction(indiansReply.Player, indiansReply.Card),
+                
+                // duel reply
+                DefenceAgainstDuel duelReply => gamePlay.ProcessReplyAction(duelReply.Player, duelReply.Card),
+                
+                // Cat Balou
+                ForcePlayerToDropCardResponse forceToDrop when forceToDrop.RandomHandCard => gamePlay.ProcessReplyAction(),
+                ForcePlayerToDropCardResponse forceToDrop =>  gamePlay.ProcessReplyAction(forceToDrop.ActiveCardToDrop),
+                
+                // Panic
+                DrawCardFromPlayerResponse stealCard when stealCard.RandomHandCard => gamePlay.ProcessReplyAction(),
+                DrawCardFromPlayerResponse stealCard => gamePlay.ProcessReplyAction(stealCard.ActiveCardToSteal),
+                
+                // General store reply
+                TakeCardAfterGeneralStoreResponse chooseCard => gamePlay.ProcessReplyAction(chooseCard.Player, chooseCard.Card),
+                
+                _ => throw new NotImplementedException(replyActionMessage.Response.ToString()) 
+            };
+            
+            return response;
         }
     }
 }
