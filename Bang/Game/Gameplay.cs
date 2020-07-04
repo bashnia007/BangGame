@@ -49,11 +49,19 @@ namespace Bang.Game
             foreach (var player in Players)
                 FillPlayerHand(player);
         }
-
-        public bool Defense(Player player, BangGameCard card, BangGameCard secondCard = null)
+        
+        public bool Defense(Player player, BangGameCard card)
         {
-            state = state.ApplyReplyAction(player, card, secondCard);
+            state = state.ApplyReplyAction(player, card);
 
+            return true;
+        }
+
+        public bool Defense(Player player, BangGameCard card, BangGameCard secondCard)
+        {
+            if (secondCard == null) return Defense(player, card);
+            
+            state = state.ApplyReplyAction(player, card, secondCard);
             return true;
         }
 
@@ -235,6 +243,33 @@ namespace Bang.Game
             int indexOfCurrentPlayer = playersAlive.IndexOf(PlayerTurn);
 
             return playersAlive[(indexOfCurrentPlayer + 1) % playersAlive.Count];
+        }
+
+        public Response ProcessReplyAction()
+        {
+            state = state.ApplyReplyAction();
+            return state.SideEffect;
+        }
+
+        public Response ProcessReplyAction(BangGameCard card)
+        {
+            if (card == null)
+                return ProcessReplyAction();
+            
+            state = state.ApplyReplyAction(card);
+            return state.SideEffect;
+        }
+        
+        public Response ProcessReplyAction(Player player, BangGameCard card)
+        {
+            state = state.ApplyReplyAction(player, card);
+            return state.SideEffect;
+        }
+        
+        public Response ProcessReplyAction(Player player, BangGameCard firstCard, BangGameCard secondCard)
+        {
+            state = state.ApplyReplyAction(player, firstCard, secondCard);
+            return state.SideEffect;
         }
     }
 }

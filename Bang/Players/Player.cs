@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Bang.Characters;
 using Bang.Characters.Visitors;
+using Bang.Exceptions;
 using Bang.Game;
 using Bang.PlayingCards;
 using Bang.Roles;
@@ -88,21 +89,17 @@ namespace Bang.Players
             }
             
             if (!hand.Contains(firstCard))
-                throw new InvalidOperationException($"Player doesn't have card {firstCard.Description}");
+                throw new PlayerDoesntHaveSuchCardException(this, firstCard);
 
             if (secondCard != null)
             {
                 if (!hand.Contains(secondCard))
                 {
-                    throw new InvalidOperationException($"Player doesn't have card {secondCard.Description}");
+                    throw new PlayerDoesntHaveSuchCardException(this, secondCard);
                 }
             }
 
-            if (gamePlay.Defense(this, firstCard, secondCard))
-            {
-                DropCard(firstCard);
-                if (secondCard != null) DropCard(secondCard);
-            }
+            gamePlay.Defense(this, firstCard, secondCard);
         }
 
         public void NotDefense()

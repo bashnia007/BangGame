@@ -30,14 +30,14 @@ namespace Bang.GameEvents.CardEffects.States
 
         public override HandlerState ApplyReplyAction(Player victim, BangGameCard card)
         {
-            var bangState = new WaitingMissedCardAfterBangState(victim, gameplay);
-            victimStates[victim] = bangState.ApplyReplyAction(card);
+            var bangState = new WaitingMissedCardAfterBangState(victim, gameplay, 1);
+            victimStates[victim] = bangState.ApplyReplyAction(victim, card);
             return UpdateStatus();
         }
 
         public override HandlerState ApplyReplyAction(Player victim, BangGameCard firstCard, BangGameCard secondCard)
         {
-            var bangState = new WaitingMissedCardAfterBangState(victim, gameplay);
+            var bangState = new WaitingMissedCardAfterBangState(victim, gameplay, 1);
             victimStates[victim] = bangState.ApplyReplyAction(victim, firstCard, secondCard);
             return UpdateStatus();
         }

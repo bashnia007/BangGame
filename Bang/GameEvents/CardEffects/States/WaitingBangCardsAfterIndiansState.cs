@@ -33,7 +33,7 @@ namespace Bang.GameEvents.CardEffects.States
         public override HandlerState ApplyReplyAction(Player victim, BangGameCard card)
         {
             var bangState = new WaitingBangCardState(victim, hitter);
-            victimStates[victim] = bangState.ApplyReplyAction(card);
+            victimStates[victim] = bangState.ApplyReplyAction(victim, card);
             return UpdateStatus();
         }
 

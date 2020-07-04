@@ -28,6 +28,11 @@ namespace Bang.GameEvents.CardEffects.States
             return new DoneState();
         }
 
+        public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
+        {
+            throw new NotImplementedException();
+        }
+
         public override HandlerState ApplyReplyAction()
         {
             var card = RandomCardChooser.ChooseCard(victim.Hand);
