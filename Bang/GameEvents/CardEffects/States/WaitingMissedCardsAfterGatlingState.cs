@@ -1,4 +1,4 @@
-﻿using Bang.Characters;
+using Bang.Characters;
 using Bang.Players;
 using Bang.PlayingCards;
 using System;
@@ -30,15 +30,9 @@ namespace Bang.GameEvents.CardEffects.States
 
         public override HandlerState ApplyReplyAction(Player victim, BangGameCard card)
         {
+            // TODO is it necessary to create another state object? What about victimStates[victim].ApplyReplyAction? 
             var bangState = new WaitingMissedCardAfterBangState(victim, gameplay, 1);
             victimStates[victim] = bangState.ApplyReplyAction(victim, card);
-            return UpdateStatus();
-        }
-
-        public override HandlerState ApplyReplyAction(Player victim, BangGameCard firstCard, BangGameCard secondCard)
-        {
-            var bangState = new WaitingMissedCardAfterBangState(victim, gameplay, 1);
-            victimStates[victim] = bangState.ApplyReplyAction(victim, firstCard, secondCard);
             return UpdateStatus();
         }
 
