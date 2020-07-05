@@ -9,8 +9,6 @@ namespace Bang.GameEvents.CardEffects
 {
     internal class WaitingBangAfterDuelState : HandlerState
     {
-        protected override CardType ExpectedCard => new BangCardType();
-
         private readonly Player defender;
         private readonly Player opponent;
         private readonly Game.Gameplay gamePlay;

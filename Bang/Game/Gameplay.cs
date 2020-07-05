@@ -181,12 +181,12 @@ namespace Bang.Game
         {
             SetNextPlayer();
             
-            if (!IsPlayerAliveAfterDynamite() || !IsPlayerLeavesJail()) return;
+            if (!IsPlayerAliveAfterDynamite() || !DoesPlayerLeavesJail()) return;
             
             // todo provide 2 new cards 
         }
 
-        private bool IsPlayerLeavesJail()
+        private bool DoesPlayerLeavesJail()
         {
             var jailCard = PlayerTurn.ActiveCards.FirstOrDefault(c => c == new JailCardType());
             if (jailCard != null)

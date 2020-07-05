@@ -7,7 +7,6 @@ namespace Bang.GameEvents.CardEffects.States
 {
     internal class WaitingBangCardState : HandlerState
     {
-        protected override CardType ExpectedCard => new BangCardType();
         private readonly Player victim;
         private readonly Player hitter;
         private readonly DefenceStrategy defenceStrategy;

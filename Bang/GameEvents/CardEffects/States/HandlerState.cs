@@ -1,5 +1,4 @@
 using System;
-using Bang.Characters.Visitors;
 using Bang.Players;
 using Bang.PlayingCards;
 using NLog;
@@ -12,7 +11,6 @@ namespace Bang.GameEvents.CardEffects.States
         
         public virtual bool IsFinalState => false;
         public virtual bool IsError => false;
-        protected virtual CardType ExpectedCard => null;
 
         public virtual Response SideEffect { get; set; } = new Done();
         
@@ -24,7 +22,6 @@ namespace Bang.GameEvents.CardEffects.States
         /// <param name="gameplay"></param>
         /// <returns></returns>
         public abstract HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay);
-        
 
         public virtual HandlerState ApplyReplyAction(Player player) => throw new InvalidOperationException();
         public abstract HandlerState ApplyReplyAction(Player player, BangGameCard card);
