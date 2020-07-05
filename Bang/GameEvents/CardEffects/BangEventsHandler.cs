@@ -68,7 +68,7 @@ namespace Bang.GameEvents
                 if (stealCardResponse.RandomHandCard)
                     player.DrawCardFromPlayer();
                 else 
-                    player.DrawCardFromPlayer(stealCardResponse.ActiveCardToSteal);
+                    gamePlay.StealCard(stealCardResponse.ActiveCardToSteal);
             }
             else
             {

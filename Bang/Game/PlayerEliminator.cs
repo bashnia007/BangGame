@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Bang.Characters.Visitors;
 using Bang.Players;
 using Bang.Roles;
 
@@ -6,13 +8,23 @@ namespace Bang.Game
 {
     static class PlayerEliminator
     {
-        internal static void Eliminate(Player victim, Player responsible)
+        internal static void Eliminate(Player victim, Player responsible, IReadOnlyList<Player> alivePlayers)
         {
             if (victim == null)
                 throw new ArgumentNullException(nameof(victim));
             
             if (victim.IsAlive)
                 throw new ArgumentException($"Player {victim.Name} is still alive!");
+            
+            if (alivePlayers == null)
+                throw new ArgumentNullException(nameof(alivePlayers));
+
+            var stealVictimCards = new VultureCharacterVisitor();
+            foreach (var alivePlayer in alivePlayers)
+            {
+                var func = alivePlayer.Character.Accept(stealVictimCards);
+                func(new VultureInfo{ Victim = victim, Vulture = alivePlayer});
+            }
 
             if (responsible != null && responsible != victim)
             {

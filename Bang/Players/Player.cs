@@ -183,7 +183,7 @@ namespace Bang.Players
             }
             else
             {
-                PlayerEliminator.Eliminate(this, responsible);
+                PlayerEliminator.Eliminate(this, responsible, gamePlay.AlivePlayers);
             }
         }
         
@@ -199,12 +199,22 @@ namespace Bang.Players
             hand.Remove(card);
         }
 
+        public void LoseActiveCard(BangGameCard card)
+        {
+            PlayerTablet.RemoveCard(card);
+        }
+
         public void ChooseCard(BangGameCard card)
         {
             gamePlay.ChooseCard(card, this);
         }
 
-        public void DrawCardFromPlayer(BangGameCard card) => gamePlay.StealCard(card);
+        public void DrawPlayerActiveCard(Player victim, BangGameCard card)
+        {
+            victim.PlayerTablet.RemoveCard(card);
+            AddCardToHand(card);
+        }
+        
         // TODO remove this method
         [Obsolete("use DrawCardFromPlayer(Player victim) instead")]
         public void DrawCardFromPlayer() => gamePlay.StealCard();

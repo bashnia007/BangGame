@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bang.Characters;
 using Bang.Game;
 using Bang.Players;
 using Bang.PlayingCards;
@@ -150,7 +151,10 @@ namespace Bang.Tests
                 players.Add(player);
             }
 
-            var gameplay = new Game.Gameplay(CharactersDeck(), deck);
+            var characters = new Character[]
+                {new CalamityJanet(), new KitCarlson(), new PedroRamirez(), new WillyTheKid(), new SlabTheKiller()};
+            
+            var gameplay = new Game.Gameplay(new Deck<Character>(characters), deck);
             gameplay.Initialize(players);
 
             return gameplay;
