@@ -86,8 +86,8 @@ namespace Bang.Tests
             var availableCards = actor.PlayCard(panicCard, victim) as ChooseOneCardResponse;
             
             // Act
-            actor.DrawPlayerActiveCard(victim, availableCards.ActiveCards[0]);
-            
+            actor.DrawCardFromPlayer(victim, availableCards.ActiveCards[0]);
+     
             // Assert
             actor.Hand.Should().Contain(volcanic);
         }
@@ -104,7 +104,7 @@ namespace Bang.Tests
             var availableCards = actor.PlayCard(panicCard, victim) as ChooseOneCardResponse;
             
             // Act
-            actor.DrawPlayerActiveCard(victim, availableCards.ActiveCards[0]);
+            actor.DrawCardFromPlayer(victim, availableCards.ActiveCards[0]);
             
             // Assert
             victim.ActiveCards.Should().NotContain(volcanic);
@@ -122,7 +122,7 @@ namespace Bang.Tests
             var availableCards = actor.PlayCard(panicCard, victim) as ChooseOneCardResponse;
 
             // Act
-            actor.DrawCardFromPlayer();
+            actor.DrawCardFromPlayer(victim);
             
             // Assert
             actor.Hand.Should().Contain(gatlingCard);
@@ -140,7 +140,7 @@ namespace Bang.Tests
             var availableCards = actor.PlayCard(panicCard, victim) as ChooseOneCardResponse;
             
             // Act
-            actor.DrawCardFromPlayer();
+            actor.DrawCardFromPlayer(victim);
             
             // Assert
             victim.Hand.Should().BeEmpty();

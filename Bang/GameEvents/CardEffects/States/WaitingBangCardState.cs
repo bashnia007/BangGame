@@ -10,10 +10,12 @@ namespace Bang.GameEvents.CardEffects.States
         protected override CardType ExpectedCard => new BangCardType();
         private readonly Player victim;
         private readonly Player hitter;
+        private readonly DefenceStrategy defenceStrategy;
         public WaitingBangCardState(Player victim, Player hitter)
         {
             this.victim = victim ?? throw new ArgumentNullException(nameof(victim));
             this.hitter = hitter ?? throw new ArgumentNullException(nameof(hitter));
+            this.defenceStrategy = new DefenceAgainstIndiansStrategy(hitter);
         }
 
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay)
@@ -21,22 +23,10 @@ namespace Bang.GameEvents.CardEffects.States
             throw new NotImplementedException();
         }
 
-        public override HandlerState ApplyReplyAction(BangGameCard card)
+        public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
         {
-            if (card == null)
-            {
-                victim.LoseLifePoint(hitter);
-
-                return new DoneState();
-            }
-            else if (IsValidCard(victim, card))
-            {
-                return new DoneState();
-            }
-            else
-            {
-                throw new ArgumentException($"Wrong card. Expected {new BangCardType().Description} or null");
-            }
+            bool savedLifePoint = defenceStrategy.Apply(victim, card);
+            return new DoneState();
         }
     }
 }

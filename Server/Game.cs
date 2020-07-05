@@ -86,7 +86,7 @@ namespace Server
 
             if (response.IsDone) return new ActionDoneMessage(messageBangGameEvent.Player);
             
-            return new ReplyActionMessage(response.Player)
+            return new ReplyActionMessage(response.Player?? messageBangGameEvent.Player)
             {
                 Response = response
             };

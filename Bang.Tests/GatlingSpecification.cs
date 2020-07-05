@@ -109,7 +109,7 @@ namespace Bang.Tests
         }
 
         [Fact]
-        public void Players_trying_to_cancel_the_Slab_the_Killers_bang_need_to_play_two_missed_cards()
+        public void Players_trying_to_cancel_the_Slab_the_Killers_bang_need_to_play_one_missed_card()
         {
             var gameplay = InitGame();
             (Player slabTheKiller, Player victim) = ChoosePlayer(gameplay);
@@ -124,12 +124,11 @@ namespace Bang.Tests
             slabTheKiller.PlayCard(GatlingCard());
 
             // Act
-            victim.Defense(MissedCard(), anotherMissedCard);
+            victim.Defense(MissedCard());
 
             // Assert
             victim.LifePoints.Should().Be(healthBefore);
             victim.Hand.Should().NotContain(MissedCard());
-            victim.Hand.Should().NotContain(anotherMissedCard);
         }
 
         #endregion

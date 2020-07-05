@@ -26,21 +26,8 @@ namespace Bang.GameEvents.CardEffects.States
         public abstract HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay);
         
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException">Generates for the final states</exception>
-        public abstract HandlerState ApplyReplyAction(BangGameCard card);
-
-        public virtual HandlerState ApplyReplyAction(Player player, BangGameCard card) => throw new InvalidOperationException();
-
+        public virtual HandlerState ApplyReplyAction(Player player) => throw new InvalidOperationException();
+        public abstract HandlerState ApplyReplyAction(Player player, BangGameCard card);
         public virtual HandlerState ApplyReplyAction(Player player, BangGameCard firstCard, BangGameCard secondCard) => throw new InvalidOperationException();
-        public virtual HandlerState ApplyReplyAction() => throw new InvalidOperationException();
-
-        protected virtual bool IsValidCard(Player player, BangGameCard card)
-        {
-            return player.Character.Accept(new CardValidationForCharacterVisitor()).Invoke(card, ExpectedCard);
-        }
     }
 }

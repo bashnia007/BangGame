@@ -19,5 +19,8 @@ namespace Bang.GameEvents
             Card = card?? throw  new ArgumentNullException(nameof(card));
             PlayAgainst = againstTo;
         }
+        
+        public PlayCardMessage(Player actor, BangGameCard card) : this(actor, card, null)
+        {}
     }
 }

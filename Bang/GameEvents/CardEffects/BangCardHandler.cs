@@ -37,7 +37,7 @@ namespace Bang.GameEvents.CardEffects
             // Barrels don't help.
             var response = new DefenceAgainstBang {Player = victim, CardsRequired = missedRequired};
             
-            return new WaitingMissedCardAfterBangState(victim, gameplay){SideEffect = response};
+            return new WaitingMissedCardAfterBangState(victim, gameplay, missedRequired){SideEffect = response};
         }
     }
 }

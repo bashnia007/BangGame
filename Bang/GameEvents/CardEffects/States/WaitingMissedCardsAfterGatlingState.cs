@@ -23,22 +23,11 @@ namespace Bang.GameEvents.CardEffects.States
             throw new NotImplementedException();
         }
 
-        public override HandlerState ApplyReplyAction(BangGameCard card)
-        {
-            throw new NotImplementedException();
-        }
-
         public override HandlerState ApplyReplyAction(Player victim, BangGameCard card)
         {
-            var bangState = new WaitingMissedCardAfterBangState(victim, gameplay);
-            victimStates[victim] = bangState.ApplyReplyAction(card);
-            return UpdateStatus();
-        }
-
-        public override HandlerState ApplyReplyAction(Player victim, BangGameCard firstCard, BangGameCard secondCard)
-        {
-            var bangState = new WaitingMissedCardAfterBangState(victim, gameplay);
-            victimStates[victim] = bangState.ApplyReplyAction(victim, firstCard, secondCard);
+            // TODO is it necessary to create another state object? What about victimStates[victim].ApplyReplyAction? 
+            var bangState = new WaitingMissedCardAfterBangState(victim, gameplay, 1);
+            victimStates[victim] = bangState.ApplyReplyAction(victim, card);
             return UpdateStatus();
         }
 

@@ -18,7 +18,7 @@ namespace Bang.GameEvents.CardEffects.States
             return handler.ApplyEffect(gamePlay, player, card);
         }
 
-        public override HandlerState ApplyReplyAction(BangGameCard card)
+        public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
         {
             throw new InvalidOperationException();
         }

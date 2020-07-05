@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using Bang.Players;
 
@@ -9,9 +10,7 @@ namespace Bang.GameEvents
 
         public BangGameMessage(Player player)
         {
-            Debug.Assert(player != null);
-
-            Player = player;
+            Player = player?? throw new ArgumentNullException(nameof(player));
         }
         public abstract Response Handle(BangEventsHandler handler);
     }
