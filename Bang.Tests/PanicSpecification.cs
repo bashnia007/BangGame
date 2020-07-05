@@ -87,7 +87,7 @@ namespace Bang.Tests
             
             // Act
             actor.DrawCardFromPlayer(victim, availableCards.ActiveCards[0]);
-            
+     
             // Assert
             actor.Hand.Should().Contain(volcanic);
         }

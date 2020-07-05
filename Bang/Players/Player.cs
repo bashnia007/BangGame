@@ -180,7 +180,7 @@ namespace Bang.Players
             }
             else
             {
-                PlayerEliminator.Eliminate(this, responsible);
+                PlayerEliminator.Eliminate(this, responsible, gamePlay.AlivePlayers);
             }
         }
         
@@ -196,12 +196,24 @@ namespace Bang.Players
             hand.Remove(card);
         }
 
+        public void LoseActiveCard(BangGameCard card)
+        {
+            PlayerTablet.RemoveCard(card);
+        }
+
         public void ChooseCard(BangGameCard card)
         {
             gamePlay.ChooseCard(card, this);
         }
 
+
         public void DrawCardFromPlayer(Player victim, BangGameCard card) => gamePlay.StealCard(victim, card);
+
+        public void DrawPlayerActiveCard(Player victim, BangGameCard card)
+        {
+            victim.PlayerTablet.RemoveCard(card);
+            AddCardToHand(card);
+        }
 
         public void DrawCardFromPlayer(Player victim)
         {

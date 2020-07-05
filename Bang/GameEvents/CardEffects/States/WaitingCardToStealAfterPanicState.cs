@@ -23,8 +23,7 @@ namespace Bang.GameEvents.CardEffects.States
 
         public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
         {
-            victim.PlayerTablet.RemoveCard(card);
-            activePlayer.AddCardToHand(card);
+            activePlayer.DrawPlayerActiveCard(victim, card);
             
             return new DoneState();
         }

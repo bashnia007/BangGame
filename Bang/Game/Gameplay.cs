@@ -24,6 +24,7 @@ namespace Bang.Game
         private HandlerState state = new DoneState();
 
         public Player PlayerTurn { get; private set; }
+        public IReadOnlyList<Player> AlivePlayers => Players.Where(p => p.IsAlive).ToList();
 
         public Gameplay(Deck<Character> characters, Deck<BangGameCard> gameCards)
         {
