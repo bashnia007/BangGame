@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Bang.Characters;
@@ -182,12 +182,12 @@ namespace Bang.Game
         {
             SetNextPlayer();
             
-            if (!IsPlayerAliveAfterDynamite() || !DoesPlayerLeavesJail()) return;
+            if (!IsPlayerAliveAfterDynamite() || !DoesPlayerLeaveJail()) return;
             
             // todo provide 2 new cards 
         }
 
-        private bool DoesPlayerLeavesJail()
+        private bool DoesPlayerLeaveJail()
         {
             var jailCard = PlayerTurn.ActiveCards.FirstOrDefault(c => c == new JailCardType());
             if (jailCard != null)
