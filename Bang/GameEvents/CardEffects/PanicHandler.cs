@@ -8,13 +8,17 @@ namespace Bang.GameEvents.CardEffects
 {
     internal class PanicHandler : CardActionHandler
     {
-        public override HandlerState ApplyEffect(Game.Gameplay gameplay, Player victim, BangGameCard card)
+        public PanicHandler(Gameplay gameplay, HandlerState state) : base(gameplay, state)
+        {
+        }
+
+        public override HandlerState ApplyEffect(Player victim, BangGameCard card)
         {
             if (DistanceCalculator.GetDistance(gameplay.Players.ToList(), gameplay.PlayerTurn, victim) != 1)
-                return new ErrorState();
+                return new ErrorState(state);
             
             if (victim.Hand.Count + victim.ActiveCards.Count == 0)
-                return new ErrorState();
+                return new ErrorState(state);
 
             var response = new ChooseOneCardResponse
             {
@@ -23,7 +27,7 @@ namespace Bang.GameEvents.CardEffects
                 ActiveCards = victim.ActiveCards.ToList(),
             };
             
-            return new WaitingCardToStealAfterPanicState(gameplay.PlayerTurn, victim){SideEffect = response};
+            return new WaitingCardToStealAfterPanicState(gameplay.PlayerTurn, victim, state){SideEffect = response};
         }
     }
 }

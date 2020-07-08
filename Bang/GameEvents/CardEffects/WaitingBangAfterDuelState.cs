@@ -11,36 +11,35 @@ namespace Bang.GameEvents.CardEffects
     {
         private readonly Player defender;
         private readonly Player opponent;
-        private readonly Game.Gameplay gamePlay;
         private readonly DefenceStrategy defenceStrategy;
 
-        internal WaitingBangAfterDuelState(Game.Gameplay gameplay, Player defender, Player opponent)
+        internal WaitingBangAfterDuelState(Player defender, Player opponent, HandlerState previousState)
+            : base(previousState)
         {
-            this.gamePlay = gameplay;
             this.defender = defender;
             this.opponent = opponent;
             this.defenceStrategy = new DefenceAgainstDuelStrategy(gameplay.PlayerTurn);
         }
         
-        public override HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay) => 
+        public override HandlerState ApplyCardEffect(Player player, BangGameCard card) => 
             throw new NotImplementedException();
         
         public override HandlerState ApplyReplyAction(Player player, BangGameCard firstCard)
         {
             if (player != defender)
-                return new ErrorState();
+                return new ErrorState(this);
 
             bool duelEnded = !defenceStrategy.Apply(player, firstCard);
 
             if (duelEnded)
             {
                 Logger.Info($"Player {player.Name} lost duel");
-                return new DoneState();
+                return new DoneState(this);
             }
             
             DefenceAgainstDuel response = new DefenceAgainstDuel {Player = opponent};
             
-            return new WaitingBangAfterDuelState(gamePlay, opponent, defender){SideEffect = response};
+            return new WaitingBangAfterDuelState(opponent, defender, this){SideEffect = response};
         }
     }
 }

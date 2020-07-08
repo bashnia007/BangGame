@@ -1,28 +1,31 @@
 ﻿using Bang.GameEvents.CardEffects.States;
 using Bang.Players;
 using Bang.PlayingCards;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Bang.Game;
 
 namespace Bang.GameEvents.CardEffects
 {
     internal class IndiansActionHandler : CardActionHandler
     {
-        public override HandlerState ApplyEffect(Game.Gameplay gameplay, Player attackPlayer, BangGameCard card)
+        public IndiansActionHandler(Gameplay gameplay, HandlerState state) : base(gameplay, state)
+        {
+        }
+
+        public override HandlerState ApplyEffect(Player attackPlayer, BangGameCard card)
         {
             var victimStatesList = new Dictionary<Player, HandlerState>();
 
-            foreach (var victim in gameplay.Players.Where(p => p.PlayerTablet.IsAlive & p.Id != attackPlayer.Id))
+            foreach (var victim in gameplay.AlivePlayers.Where(p => p != attackPlayer))
             {
                 var response = new DefenceAgainstIndians { Player = victim };
 
-                var state = new WaitingBangCardState(victim, attackPlayer) { SideEffect = response };
+                var state = new WaitingBangCardState(victim, attackPlayer, base.state) { SideEffect = response };
                 victimStatesList.Add(victim, state);
             }
 
-            return new WaitingBangCardsAfterIndiansState(victimStatesList, gameplay)
+            return new WaitingBangCardsAfterIndiansState(victimStatesList, state)
             {
                 SideEffect = new MultiplayerDefenceResponse
                 {

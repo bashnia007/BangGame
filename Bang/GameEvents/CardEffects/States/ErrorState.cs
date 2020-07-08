@@ -1,4 +1,5 @@
 using System;
+using Bang.Game;
 using Bang.Players;
 using Bang.PlayingCards;
 
@@ -12,7 +13,7 @@ namespace Bang.GameEvents.CardEffects.States
         
         // TODO add constructor with side effect parameter
 
-        public override HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay)
+        public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
         {
             throw new NotImplementedException();
         }
@@ -20,6 +21,10 @@ namespace Bang.GameEvents.CardEffects.States
         public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
         {
             throw new NotImplementedException();
+        }
+        
+        public ErrorState(HandlerState previous) : base(previous)
+        {
         }
     }
 }

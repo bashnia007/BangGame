@@ -1,3 +1,4 @@
+using Bang.Game;
 using Bang.GameEvents.CardEffects.States;
 using Bang.Players;
 using Bang.PlayingCards;
@@ -7,12 +8,16 @@ namespace Bang.GameEvents.CardEffects
 {
     internal class DuelActionHandler : CardActionHandler
     {
-        public override HandlerState ApplyEffect(Game.Gameplay gameplay, Player victim, BangGameCard card)
+        public DuelActionHandler(Gameplay gameplay, HandlerState state) : base(gameplay, state)
+        {
+        }
+
+        public override HandlerState ApplyEffect(Player victim, BangGameCard card)
         {
             Logger.Info($"Player {gameplay.PlayerTurn.Name} challenged {victim.Name} to a duel");
             DefenceAgainstDuel response = new DefenceAgainstDuel {Player = victim};
             
-            return new WaitingBangAfterDuelState(gameplay, victim, gameplay.PlayerTurn){SideEffect = response};
+            return new WaitingBangAfterDuelState(victim, gameplay.PlayerTurn, state){SideEffect = response};
         }
     }
 }

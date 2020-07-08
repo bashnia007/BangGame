@@ -7,10 +7,10 @@ namespace Bang.Game
 {
     abstract class DefenceStrategy
     {
-        private readonly int requiredCards;
         private readonly CardType expectedCard;
         private readonly Player hitter;
-
+        private readonly int requiredCards;
+        
         protected DefenceStrategy(CardType expectedCard, Player hitter, int requiredCards)
         {
             this.expectedCard = expectedCard ?? throw new ArgumentNullException(nameof(expectedCard));

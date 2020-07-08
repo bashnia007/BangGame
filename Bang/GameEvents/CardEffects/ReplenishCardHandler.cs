@@ -1,3 +1,4 @@
+using Bang.Game;
 using Bang.GameEvents.CardEffects.States;
 using Bang.Players;
 using Bang.PlayingCards;
@@ -6,11 +7,15 @@ namespace Bang.GameEvents.CardEffects
 {
     internal abstract class ReplenishCardHandler : CardActionHandler
     {
+        protected ReplenishCardHandler(Gameplay gameplay, HandlerState state) : base(gameplay, state)
+        {
+        }
+
         protected abstract short CardsToTakeAmount { get; }
 
-        public override HandlerState ApplyEffect(Game.Gameplay gameplay, Player player, BangGameCard card)
+        public override HandlerState ApplyEffect(Player player, BangGameCard card)
         {
-            if (gameplay.PlayerTurn != player) return new ErrorState();
+            if (gameplay.PlayerTurn != player) return new ErrorState(state);
             
             for (int i = 0; i < CardsToTakeAmount; i++)
             {
@@ -18,7 +23,7 @@ namespace Bang.GameEvents.CardEffects
                 player.AddCardToHand(newCard);
             }
 
-            return new DoneState();
+            return new DoneState(state);
         }
     }
 }

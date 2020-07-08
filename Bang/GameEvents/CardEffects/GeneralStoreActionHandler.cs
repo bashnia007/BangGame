@@ -4,12 +4,17 @@ using Bang.PlayingCards;
 using NLog.Fluent;
 using System.Collections.Generic;
 using System.Linq;
+using Bang.Game;
 
 namespace Bang.GameEvents.CardEffects
 {
     internal class GeneralStoreActionHandler : CardActionHandler
     {
-        public override HandlerState ApplyEffect(Game.Gameplay gameplay, Player player, BangGameCard card)
+        public GeneralStoreActionHandler(Gameplay gameplay, HandlerState state) : base(gameplay, state)
+        {
+        }
+
+        public override HandlerState ApplyEffect(Player player, BangGameCard card)
         {
             var cardsToChoose = new List<BangGameCard>();
             List<Player> playersOrder = new List<Player>();
@@ -30,7 +35,7 @@ namespace Bang.GameEvents.CardEffects
             Log.Debug($"Player {player.Name} played General Store card. Cards in the store:\n" +
                 $"{string.Join(", ", cardsToChoose.Select(c => c.Description))}");
 
-            return new WaitingForPurchaseState(playersOrder, cardsToChoose)
+            return new WaitingForPurchaseState(playersOrder, cardsToChoose, state)
             {
                 SideEffect = new ChooseCardsResponse
                 {

@@ -4,6 +4,7 @@ using NLog.Fluent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bang.Roles;
 
 namespace Bang.GameEvents.CardEffects.States
 {
@@ -12,13 +13,14 @@ namespace Bang.GameEvents.CardEffects.States
         private List<BangGameCard> cardsToChoose;
         private List<Player> playersOrder;
 
-        public WaitingForPurchaseState(List<Player> playersOrder, List<BangGameCard> cardsToChoose)
+        public WaitingForPurchaseState(List<Player> playersOrder, List<BangGameCard> cardsToChoose, HandlerState previousState)
+            : base(previousState)
         {
             this.cardsToChoose = cardsToChoose;
             this.playersOrder = playersOrder;
         }
 
-        public override HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay)
+        public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
         {
             throw new NotImplementedException();
         }
@@ -46,7 +48,7 @@ namespace Bang.GameEvents.CardEffects.States
             playersOrder.Remove(currentPlayer);
             Log.Info($"Player {player.Name} chose card {card.Description}");
 
-            if (playersOrder.Count == 0) return new DoneState();
+            if (playersOrder.Count == 0) return new DoneState(this);
 
             SideEffect = new ChooseCardsResponse
             {

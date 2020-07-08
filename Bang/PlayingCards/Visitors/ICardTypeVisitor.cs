@@ -1,5 +1,9 @@
+using System;
+using System.Data;
 using Bang.Characters;
+using Bang.Game;
 using Bang.GameEvents.CardEffects;
+using Bang.GameEvents.CardEffects.States;
 
 namespace Bang.PlayingCards.Visitors
 {
@@ -30,48 +34,61 @@ namespace Bang.PlayingCards.Visitors
         T Visit(WinchesterCardType card) => DefaultValue;
     }
 
-    internal class GetHandlerVisitor : ICardTypeVisitor<CardActionHandler>
+    internal class GetHandlerVisitor : ICardTypeVisitor<Func<Gameplay, HandlerState, Character, CardActionHandler>>
     {
-        private Character character;
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> DefaultValue => null;
 
-        public GetHandlerVisitor(Character character)
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(MustangCardType card)
         {
-            this.character = character;
+            return (gameplay, state, character) => new LongTermFeatureCardHandler(gameplay, state);
         }
 
-        public CardActionHandler DefaultValue => null;
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(ScopeCardType card) => 
+            (gameplay, state, character) => new LongTermFeatureCardHandler(gameplay, state);
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(BarrelCardType card) => 
+            (gameplay, state, character) => new LongTermFeatureCardHandler(gameplay, state);
 
-        public CardActionHandler Visit(MustangCardType card) => new LongTermFeatureCardHandler();
-        public CardActionHandler Visit(ScopeCardType card) => new LongTermFeatureCardHandler();
-        public CardActionHandler Visit(BarrelCardType card) => new LongTermFeatureCardHandler();
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(StagecoachCardType card) => 
+            (gameplay, state, character) => new StageCoachCardHandler(gameplay, state);
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(WellsFargoCardType card) => 
+            (gameplay, state, character) => new WellsFargoCoachCardHandler(gameplay, state);
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(BangCardType card) => 
+            (gameplay, state, character) => new BangCardHandler(gameplay, state);
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(MissedCardType card) => 
+            (gameplay, state, character) => character == new CalamityJanet() ? new BangCardHandler(gameplay, state) : null;
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(VolcanicCardType card) => 
+            (gameplay, state, character) => new ChangeWeaponHandler(gameplay, state);
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(SchofieldCardType card) => 
+            (gameplay, state, character) => new ChangeWeaponHandler(gameplay, state);
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(CarabineCardType card) => 
+            (gameplay, state, character) => new ChangeWeaponHandler(gameplay, state);
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(RemingtonCardType card) => 
+            (gameplay, state, character) => new ChangeWeaponHandler(gameplay, state);
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(WinchesterCardType card) => 
+            (gameplay, state, character) => new ChangeWeaponHandler(gameplay, state);
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(CatBalouCardType card) => 
+        (gameplay, state, character) => new CatBalouHandler(gameplay, state);
 
-        public CardActionHandler Visit(StagecoachCardType card) => new StageCoachCardHandler();
-        public CardActionHandler Visit(WellsFargoCardType card) => new WellsFargoCoachCardHandler();
-        public CardActionHandler Visit(BangCardType card) => new BangCardHandler();
-        public CardActionHandler Visit(MissedCardType card) => character == new CalamityJanet() ? new BangCardHandler() : null;
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(GatlingCardType card) => 
+            (gameplay, state, character) => new GatlingActionHandler(gameplay, state);
 
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(PanicCardType card) => 
+            (gameplay, state, character) => new PanicHandler(gameplay, state);
 
-        public CardActionHandler Visit(VolcanicCardType card) => new ChangeWeaponHandler();
-        public CardActionHandler Visit(SchofieldCardType card) => new ChangeWeaponHandler();
-        public CardActionHandler Visit(CarabineCardType card) => new ChangeWeaponHandler();
-        public CardActionHandler Visit(RemingtonCardType card) => new ChangeWeaponHandler();
-        public CardActionHandler Visit(WinchesterCardType card) => new ChangeWeaponHandler();
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(IndiansCardType card) => 
+            (gameplay, state, character) => new IndiansActionHandler(gameplay, state);
 
-        public CardActionHandler Visit(CatBalouCardType card) => new CatBalouHandler();
-
-        public CardActionHandler Visit(GatlingCardType card) => new GatlingActionHandler();
-
-        public CardActionHandler Visit(PanicCardType card) => new PanicHandler();
-
-        public CardActionHandler Visit(IndiansCardType card) => new IndiansActionHandler();
-
-        public CardActionHandler Visit(GeneralStoreCardType card) => new GeneralStoreActionHandler();
-        public CardActionHandler Visit(DuelCardType card) => new DuelActionHandler();
-        public CardActionHandler Visit(BeerCardType card) => new BeerActionHandler();
-        public CardActionHandler Visit(SaloonCardType card) => new SaloonCardHandler();
-
-        public CardActionHandler Visit(JailCardType card) => new JailActionHandler();
-
-        public CardActionHandler Visit(DynamiteCardType card) => new DynamiteActionHandler();
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(GeneralStoreCardType card) => 
+            (gameplay, state, character) => new GeneralStoreActionHandler(gameplay, state);
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(DuelCardType card) => 
+            (gameplay, state, character) => new DuelActionHandler(gameplay, state);
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(BeerCardType card) => 
+            (gameplay, state, character) => new BeerActionHandler(gameplay, state);
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(SaloonCardType card) => 
+            (gameplay, state, character) => new SaloonCardHandler(gameplay, state);
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(JailCardType card) => 
+            (gameplay, state, character) => new JailActionHandler(gameplay, state);
+        public Func<Gameplay, HandlerState, Character, CardActionHandler> Visit(DynamiteCardType card) => 
+            (gameplay, state, character) => new DynamiteActionHandler(gameplay, state);
     }
 }

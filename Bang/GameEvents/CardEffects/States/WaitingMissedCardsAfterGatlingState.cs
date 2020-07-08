@@ -1,40 +1,37 @@
-﻿using Bang.Characters;
-using Bang.Players;
+﻿using Bang.Players;
 using Bang.PlayingCards;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bang.Game;
 
 namespace Bang.GameEvents.CardEffects.States
 {
     internal class WaitingMissedCardsAfterGatlingState : HandlerState
     {
-        private readonly Dictionary<Player, HandlerState> victimStates;
-        private readonly Game.Gameplay gameplay;
+        private readonly List<Player> victims;
+        private readonly DefenceStrategy defenceStrategy;
 
-        public WaitingMissedCardsAfterGatlingState(Dictionary<Player, HandlerState> victimStates, Game.Gameplay gameplay)
+        public WaitingMissedCardsAfterGatlingState(List<Player> victims, HandlerState previousState)
+            : base(previousState)
         {
-            this.victimStates = victimStates;
-            this.gameplay = gameplay;
+            this.victims = victims?? throw new ArgumentNullException(nameof(victims));
+            this.defenceStrategy = new DefenceAgainstBangStrategy(gameplay.PlayerTurn, 1);
         }
-        public override HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay)
+        public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
         {
             throw new NotImplementedException();
         }
 
         public override HandlerState ApplyReplyAction(Player victim, BangGameCard card)
         {
-            // TODO is it necessary to create another state object? What about victimStates[victim].ApplyReplyAction? 
-            var bangState = new WaitingMissedCardAfterBangState(victim, gameplay, 1);
-            victimStates[victim] = bangState.ApplyReplyAction(victim, card);
-            return UpdateStatus();
-        }
-
-        private HandlerState UpdateStatus()
-        {
-            return victimStates.All(state => state.Value is DoneState) 
-                ? new DoneState() 
-                : (HandlerState)this;
+            if (!victims.Contains(victim))
+                throw new InvalidOperationException($"Player {victim.Name} is already saved from gatling!");
+                
+            defenceStrategy.Apply(victim, card);
+            victims.Remove(victim);
+            
+            return victims.Any()? (HandlerState)this : new DoneState(this);
         }
     }
 }
