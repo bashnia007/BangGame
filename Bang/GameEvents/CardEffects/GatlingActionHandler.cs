@@ -3,29 +3,50 @@ using Bang.Players;
 using Bang.PlayingCards;
 using System.Collections.Generic;
 using System.Linq;
+using Bang.Game;
 
 namespace Bang.GameEvents.CardEffects
 {
     internal class GatlingActionHandler : CardActionHandler
     {
-        public override HandlerState ApplyEffect(Game.Gameplay gameplay, Player attackPlayer, BangGameCard card)
+        public GatlingActionHandler(Gameplay gameplay, HandlerState state) : base(gameplay, state)
         {
-            var victimStatesList = new Dictionary<Player, HandlerState>();
-            var bangHandler = new BangCardHandler();
+        }
 
-            foreach (var victim in gameplay.Players.Where(p => p.PlayerTablet.IsAlive && p.Id != attackPlayer.Id))
+        public override HandlerState ApplyEffect(Player attackPlayer, BangGameCard card)
+        {
+            var victims = new List<Player>();
+
+            foreach (var victim in gameplay.AlivePlayers.Where(p => p != attackPlayer))
             {
-                victimStatesList.Add(victim, bangHandler.ApplyEffect(gameplay, victim, null));
+                int missedRequired = 1;
+                BarrelApplyer.ApplyBarrel(gameplay, victim, ref missedRequired);
+
+                if (missedRequired > 0)
+                {
+                    victims.Add(victim);
+                }
             }
 
-            return new WaitingMissedCardsAfterGatlingState(victimStatesList, gameplay)
+            if (victims.Any())
             {
-                SideEffect = new MultiplayerDefenceResponse
+                var responses = new List<Response>();
+                foreach (var victim in victims)
                 {
-                    CardTypeRequired = new MissedCardType(),
-                    PlayersResponses = victimStatesList.Values.Select(s => s.SideEffect).Cast<Response>().ToList()
+                    responses.Add(new DefenceAgainstBang{Player = victim, CardsRequired = 1});
                 }
-            };
+
+                return new WaitingMissedCardsAfterGatlingState(victims, state)
+                {
+                    SideEffect = new MultiplayerDefenceResponse
+                    {
+                        CardTypeRequired = new MissedCardType(),
+                        PlayersResponses = responses
+                    }
+                }; 
+            }
+
+            return new DoneState(state);
         }
     }
 }

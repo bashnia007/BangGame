@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Bang.Characters;
@@ -21,7 +21,7 @@ namespace Bang.Game
 
         private BangEventsHandler handler;
 
-        private HandlerState state = new DoneState();
+        private HandlerState state;
 
         public Player PlayerTurn { get; private set; }
         public IReadOnlyList<Player> AlivePlayers => Players.Where(p => p.IsAlive).ToList();
@@ -32,6 +32,7 @@ namespace Bang.Game
             discardedCards = new Deck<BangGameCard>();
 
             this.characters = characters;
+            this.state = new DoneState(this);
         }
 
         public void Initialize(List<Player> players)
@@ -109,7 +110,7 @@ namespace Bang.Game
 
         internal Response CardPlayed(Player player, BangGameCard card)
         {
-            var nextState = state.ApplyCardEffect(player, card, this);
+            var nextState = state.ApplyCardEffect(player, card);
 
             if (!nextState.IsError)
                 state = nextState;
@@ -181,12 +182,12 @@ namespace Bang.Game
         {
             SetNextPlayer();
             
-            if (!IsPlayerAliveAfterDynamite() || !IsPlayerLeavesJail()) return;
+            if (!IsPlayerAliveAfterDynamite() || !DoesPlayerLeaveJail()) return;
             
             // todo provide 2 new cards 
         }
 
-        private bool IsPlayerLeavesJail()
+        private bool DoesPlayerLeaveJail()
         {
             var jailCard = PlayerTurn.ActiveCards.FirstOrDefault(c => c == new JailCardType());
             if (jailCard != null)
@@ -233,13 +234,16 @@ namespace Bang.Game
             return true;
         }
 
+        // TODO rename to NextTurn
         public void SetNextPlayer()
         {
+            state.BangAlreadyPlayed = false;
             PlayerTurn = GetNextPlayer();
         }
 
         public Player GetNextPlayer()
         {
+            // TODO use AlivePlayers instead
             var playersAlive = Players.Where(p => p.PlayerTablet.IsAlive).ToList();
             int indexOfCurrentPlayer = playersAlive.IndexOf(PlayerTurn);
 

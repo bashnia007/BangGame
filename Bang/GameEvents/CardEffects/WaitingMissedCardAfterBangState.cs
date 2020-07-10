@@ -10,21 +10,18 @@ namespace Bang.GameEvents.CardEffects
     {
         public override bool IsFinalState => false;
         public override bool IsError => false;
-        protected override CardType ExpectedCard => new MissedCardType();
 
         private Player victim;
-        private Game.Gameplay gameplay;
-        private DefenceStrategy defenceStrategy;
+        private DefenceAgainstBangStrategy defenceStrategy;
         
-        public WaitingMissedCardAfterBangState(Player victim, Game.Gameplay gameplay, int requiredCards)
+        public WaitingMissedCardAfterBangState(Player victim, DefenceAgainstBangStrategy defenceStrategy, HandlerState previousState) 
+            : base(previousState)
         {
-            this.victim = victim;
-            this.gameplay = gameplay;
-
-            this.defenceStrategy = new DefenceAgainstBangStrategy(gameplay.PlayerTurn, requiredCards);
+            this.victim = victim ?? throw new ArgumentNullException(nameof(victim));
+            this.defenceStrategy = defenceStrategy ?? throw new ArgumentNullException(nameof(defenceStrategy));
         }
 
-        public override HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay)
+        public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
         {
             throw new InvalidOperationException();
         }
@@ -35,7 +32,7 @@ namespace Bang.GameEvents.CardEffects
                 throw new InvalidOperationException();
             
             defenceStrategy.Apply(victim, card);
-            return new DoneState();
+            return new DoneState(this);
         }
 
         public override HandlerState ApplyReplyAction(Player player, BangGameCard firstCard, BangGameCard secondCard)
@@ -47,7 +44,7 @@ namespace Bang.GameEvents.CardEffects
 
             defenceStrategy.Apply(victim, firstCard, secondCard);
             
-            return new DoneState();
+            return new DoneState(this);
         }
     }
 }

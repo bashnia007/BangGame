@@ -2,6 +2,7 @@ using System;
 using Bang.Game;
 using Bang.Players;
 using Bang.PlayingCards;
+using Bang.Roles;
 
 namespace Bang.GameEvents.CardEffects.States
 {
@@ -10,13 +11,14 @@ namespace Bang.GameEvents.CardEffects.States
         private Player activePlayer;
         private Player victim;
 
-        internal WaitingCardToStealAfterPanicState(Player activePlayer, Player victim)
+        internal WaitingCardToStealAfterPanicState(Player activePlayer, Player victim, HandlerState previousState) 
+            : base(previousState)
         {
             this.activePlayer = activePlayer;
             this.victim = victim;
         }
 
-        public override HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay)
+        public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
         {
             throw new NotImplementedException();
         }
@@ -25,7 +27,7 @@ namespace Bang.GameEvents.CardEffects.States
         {
             activePlayer.DrawPlayerActiveCard(victim, card);
             
-            return new DoneState();
+            return new DoneState(this);
         }
 
         public override HandlerState ApplyReplyAction(Player player)
@@ -37,7 +39,7 @@ namespace Bang.GameEvents.CardEffects.States
             victim.LoseCard(card);
             activePlayer.AddCardToHand(card);
 
-            return new DoneState();
+            return new DoneState(this);
         }
     }
 }

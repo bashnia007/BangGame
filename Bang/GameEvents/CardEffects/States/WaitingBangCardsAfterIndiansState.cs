@@ -8,19 +8,17 @@ namespace Bang.GameEvents.CardEffects.States
 {
     internal class WaitingBangCardsAfterIndiansState : HandlerState
     {
-        protected override CardType ExpectedCard => new BangCardType();
         private readonly Dictionary<Player, HandlerState> victimStates;
-        private readonly Game.Gameplay gameplay;
         private readonly Player hitter;
 
-        public WaitingBangCardsAfterIndiansState(Dictionary<Player, HandlerState> victimStates, Game.Gameplay gameplay)
+        public WaitingBangCardsAfterIndiansState(Dictionary<Player, HandlerState> victimStates, HandlerState previousState)
+            : base(previousState)
         {
             this.victimStates = victimStates;
-            this.gameplay = gameplay;
             this.hitter = gameplay.PlayerTurn;
         }
 
-        public override HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay)
+        public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
         {
             throw new NotImplementedException();
         }
@@ -32,7 +30,7 @@ namespace Bang.GameEvents.CardEffects.States
 
         public override HandlerState ApplyReplyAction(Player victim, BangGameCard card)
         {
-            var bangState = new WaitingBangCardState(victim, hitter);
+            var bangState = victimStates[victim];
             victimStates[victim] = bangState.ApplyReplyAction(victim, card);
             return UpdateStatus();
         }
@@ -40,7 +38,7 @@ namespace Bang.GameEvents.CardEffects.States
         private HandlerState UpdateStatus()
         {
             return victimStates.All(state => state.Value is DoneState)
-                ? new DoneState()
+                ? new DoneState(this)
                 : (HandlerState)this;
         }
     }

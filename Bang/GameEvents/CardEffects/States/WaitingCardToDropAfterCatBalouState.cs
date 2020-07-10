@@ -2,22 +2,21 @@ using System;
 using Bang.Game;
 using Bang.Players;
 using Bang.PlayingCards;
+using Bang.Roles;
 
 namespace Bang.GameEvents.CardEffects.States
 {
     internal class WaitingCardToDropAfterCatBalouState : HandlerState
     {
         private Player victim;
-        private Game.Gameplay gamePlay;
 
-        internal WaitingCardToDropAfterCatBalouState(Player victim, Game.Gameplay gameplay)
+        internal WaitingCardToDropAfterCatBalouState(Player victim, HandlerState previousState) : base(previousState)
         {
             this.victim = victim;
-            this.gamePlay = gameplay;
         }
             
         
-        public override HandlerState ApplyCardEffect(Player player, BangGameCard card, Game.Gameplay gameplay)
+        public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
         {
             throw new System.NotImplementedException();
         }
@@ -25,7 +24,7 @@ namespace Bang.GameEvents.CardEffects.States
         public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
         {
             victim.DropActiveCard(card);
-            return new DoneState();
+            return new DoneState(this);
         }
 
         public override HandlerState ApplyReplyAction(Player player)
@@ -35,7 +34,7 @@ namespace Bang.GameEvents.CardEffects.States
             var card = RandomCardChooser.ChooseCard(victim.Hand);
             victim.DropCard(card);
             
-            return new DoneState();
+            return new DoneState(this);
         }
     }
 }
