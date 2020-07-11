@@ -20,17 +20,12 @@ namespace Bang.GameEvents.CardEffects.States
 
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
         {
-            throw new NotImplementedException();
-        }
-
-        public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
-        {
             activePlayer.DrawPlayerActiveCard(victim, card);
             
             return new DoneState(this);
         }
 
-        public override HandlerState ApplyReplyAction(Player player)
+        public override HandlerState ApplyCardEffect(Player player)
         {
             if (player != victim) throw new InvalidOperationException();
             

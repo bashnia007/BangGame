@@ -23,11 +23,6 @@ namespace Bang.GameEvents.CardEffects
 
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
         {
-            throw new InvalidOperationException();
-        }
-
-        public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
-        {
             if (victim != player)
                 throw new InvalidOperationException();
             
@@ -35,9 +30,9 @@ namespace Bang.GameEvents.CardEffects
             return new DoneState(this);
         }
 
-        public override HandlerState ApplyReplyAction(Player player, BangGameCard firstCard, BangGameCard secondCard)
+        public override HandlerState ApplyCardEffect(Player player, BangGameCard firstCard, BangGameCard secondCard)
         {
-            if (secondCard == null) return ApplyReplyAction(victim, firstCard);
+            if (secondCard == null) return ApplyCardEffect(victim, firstCard);
 
             if (victim != player)
                 throw new InvalidOperationException();
