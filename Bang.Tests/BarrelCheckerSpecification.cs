@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
 using Bang.Characters;
-using Bang.Characters.Visitors;
-using Bang.Exceptions;
 using Bang.Game;
-using Bang.Players;
 using Bang.PlayingCards;
-using Bang.Roles;
 using FluentAssertions;
 using Xunit;
+using static Bang.Tests.TestUtils;
 
 namespace Bang.Tests
 {
@@ -26,7 +21,7 @@ namespace Bang.Tests
             var topDeckCard = new BangGameCard(new BeerCardType(), suite, Rank.Ten); 
             deck.Put(topDeckCard);
 
-            var gamePlay = Gameplay(deck);
+            var gamePlay = InitGameplay(deck);
             
             var barrelChecker = new BarrelChecker();
             
@@ -45,7 +40,7 @@ namespace Bang.Tests
             var card = new BangGameCard(new BeerCardType(), Suite.Clubs, Rank.Ten); 
             deck.Put(card);
 
-            var gamePlay = Gameplay(deck);
+            var gamePlay = InitGameplay(deck);
             
             var barrelChecker = new BarrelChecker();
             
@@ -66,7 +61,7 @@ namespace Bang.Tests
             deck.Put(heartCard);
             deck.Put(diamondCard);
 
-            var gamePlay = Gameplay(deck);
+            var gamePlay = InitGameplay(deck);
             
             var barrelChecker = new BarrelChecker();
             
@@ -87,7 +82,7 @@ namespace Bang.Tests
             deck.Put(heartCard);
             deck.Put(diamondCard);
 
-            var gamePlay = Gameplay(deck);
+            var gamePlay = InitGameplay(deck);
             
             var barrelChecker = new BarrelChecker();
             
@@ -96,12 +91,6 @@ namespace Bang.Tests
 
             // Assert
             gamePlay.GetTopCardFromDiscarded().Should().Be(heartCard);
-        }
-        
-        private Game.Gameplay Gameplay(Deck<BangGameCard> deck)
-        {
-            var gameplay = new Game.Gameplay(new Deck<Character>(), deck);
-            return gameplay;
         }
     }
 }

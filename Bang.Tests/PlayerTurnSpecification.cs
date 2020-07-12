@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Bang.Characters;
 using Bang.Game;
@@ -9,8 +7,6 @@ using Bang.PlayingCards;
 using FluentAssertions;
 using Xunit;
 
-using static Bang.Game.GamePlayInitializer;
-
 namespace Bang.Tests
 {
     public class PlayerTurnSpecification
@@ -18,7 +14,7 @@ namespace Bang.Tests
         [Fact]
         public void Player_can_play_only_one_bang_card_per_turn()
         {
-            var gamePlay = InitGame();
+            var gamePlay = CreateGameplay();
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
 
             // Act
@@ -33,7 +29,7 @@ namespace Bang.Tests
         [Fact]
         public void If_player_plays_bang_card_he_can_play_another_bang_card_in_his_next_turn()
         {
-            var gamePlay = InitGame();
+            var gamePlay = CreateGameplay();
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
             var anotherBangCard = new BangCardType().DiamondsThree();
             actor.AddCardToHand(anotherBangCard);
@@ -41,11 +37,7 @@ namespace Bang.Tests
             actor.PlayCard(BangCard(), victim);
             victim.NotDefense();
 
-            gamePlay.SetNextPlayer();
-            while (gamePlay.PlayerTurn != actor)
-            {
-                gamePlay.SetNextPlayer();
-            }
+            gamePlay.SkipTurnsUntilPlayer(actor);
             
             // Act
             var response = actor.PlayCard(anotherBangCard, victim);
@@ -57,7 +49,7 @@ namespace Bang.Tests
         [Fact]
         public void Player_with_active_volcanic_can_play_multiple_bang_cards_per_turn()
         {
-            var gamePlay = InitGame();
+            var gamePlay = CreateGameplay();
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
             
             var volcanic = new VolcanicCardType().ClubsSeven();
@@ -79,7 +71,7 @@ namespace Bang.Tests
         [Fact]
         public void Player_can_play_bang_and_duel_per_turn()
         {
-            var gamePlay = InitGame();
+            var gamePlay = CreateGameplay();
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
 
             // Act
@@ -95,7 +87,7 @@ namespace Bang.Tests
         [Fact]
         public void Player_can_play_bang_and_gatling_per_turn()
         {
-            var gamePlay = InitGame();
+            var gamePlay = CreateGameplay();
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
 
             // Act
@@ -118,26 +110,9 @@ namespace Bang.Tests
         private BangGameCard DuelCard() => new DuelCardType().SpadesQueen();
         private BangGameCard GatlingCard() => new GatlingCardType().SpadesQueen();
 
-        private Game.Gameplay InitGame() => InitGame(GamePlayInitializer.BangGameDeck());
-        
-        private Game.Gameplay InitGame(Deck<BangGameCard> deck)
-        {
-            var players = new List<Player>();
-            for (int i = 0; i < 4; i++)
-            {
-                var player = new PlayerOnline(Guid.NewGuid().ToString());
-                players.Add(player);
-            }
-            
-            var gameplay = new Game.Gameplay(CharactersDeck(), deck);
-            gameplay.Initialize(players);
-            return gameplay;
-        }
-        
         private (Player actor, Player victim) ChoosePlayers(Game.Gameplay gameplay)
         {
             var actor = gameplay.PlayerTurn;
-            actor.SetInfo(gameplay, actor.Role, new KitCarlson());
             actor.AddCardToHand(BangCard());
             actor.AddCardToHand(AnotherBangCard());
             actor.AddCardToHand(DuelCard());
@@ -145,10 +120,18 @@ namespace Bang.Tests
             
 
             var victim = gameplay.Players.First(p => p != actor);
-            victim.SetInfo(gameplay, actor.Role, new PedroRamirez());
             victim.AddCardToHand(MissedCard());
             
             return (actor, victim);
+        }
+
+        private Gameplay CreateGameplay()
+        {
+            return new GameplayBuilder()
+                .WithoutCharacter(new ElGringo())
+                .WithoutCharacter(new WillyTheKid())
+                .WithoutCharacter(new Jourdonnais())
+                .Build();
         }
     }
 }
