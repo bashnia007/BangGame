@@ -2,12 +2,11 @@ using System.Linq;
 using Bang.Characters;
 using Bang.Game;
 using Bang.Players;
-using Bang.Roles;
 using FluentAssertions;
 using Xunit;
 using static Bang.Tests.TestUtils;
 
-namespace Bang.Tests
+namespace Bang.Tests.Characters
 {
     public class ButchCassidySpecification
     {

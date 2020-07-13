@@ -1,15 +1,11 @@
-﻿using Bang.Characters;
+﻿using System.Diagnostics;
+using Bang.Characters;
 using Bang.Game;
 using Bang.GameEvents;
 using Bang.Players;
 using Bang.PlayingCards;
-using Bang.Roles;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
-using static Bang.Game.GamePlayInitializer;
 
 namespace Bang.Tests.Characters
 {
@@ -21,9 +17,8 @@ namespace Bang.Tests.Characters
         public void Jourdonnais_starts_game_with_4_life_points()
         {
             var gamePlay = InitGame();
-            if (gamePlay.PlayerTurn.Role is Sheriff)
-                gamePlay.SetNextPlayer();
-            var jourdonnais = SetCharacter(gamePlay, new Jourdonnais());
+            var jourdonnais = gamePlay.FindPlayer(new Jourdonnais());
+            jourdonnais.AsOutlaw(gamePlay);
 
             jourdonnais.LifePoints.Should().Be(4);
         }
@@ -77,39 +72,27 @@ namespace Bang.Tests.Characters
 
         private BangGameCard BangCard() => new BangCardType().SpadesQueen();
 
-        private Game.Gameplay InitGame() => InitGame(BangGameDeck());
-
-        private Game.Gameplay InitGame(Deck<BangGameCard> deck)
+        private Gameplay InitGame(Deck<BangGameCard> deck = null)
         {
-            var players = new List<Player>();
-            for (int i = 0; i < 4; i++)
-            {
-                var player = new PlayerOnline(Guid.NewGuid().ToString());
-                players.Add(player);
-            }
+            var builder = new GameplayBuilder()
+                .WithCharacter(new Jourdonnais())
+                .WithoutCharacter(new SlabTheKiller());
 
-            var gameplay = new Game.Gameplay(CharactersDeck(), deck);
-            gameplay.Initialize(players);
+            if (deck != null)
+                builder.WithDeck(deck);
 
-            return gameplay;
+            return builder.Build();
         }
 
-        private Player SetCharacter(Game.Gameplay gameplay, Character character)
+        private (Player actor, Player victim) ChoosePlayers(Gameplay gameplay)
         {
-            var actor = gameplay.PlayerTurn;
-            actor.SetInfo(gameplay, actor.Role, character);
+            var victim = gameplay.FindPlayer(new Jourdonnais());
 
-            return actor;
-        }
-
-        private (Player actor, Player victim) ChoosePlayers(Game.Gameplay gameplay)
-        {
+            gameplay.SkipTurnsUntilPlayer(victim);
             var actor = gameplay.PlayerTurn;
-            actor.SetInfo(gameplay, actor.Role, new KitCarlson());
             actor.AddCardToHand(BangCard());
-
-            var victim = gameplay.Players.First(p => p != actor);
-            victim.SetInfo(gameplay, actor.Role, new Jourdonnais());
+            
+            Debug.Assert(victim != actor, "player can't bang to himself!");
 
             return (actor, victim);
         }

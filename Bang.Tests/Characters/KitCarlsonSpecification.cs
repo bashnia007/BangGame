@@ -20,10 +20,8 @@ namespace Bang.Tests.Characters
         [Fact]
         public void Kit_Carlson_starts_game_with_4_life_points()
         {
-            var gamePlay = InitGame();
-            if (gamePlay.PlayerTurn.Role is Sheriff)
-                gamePlay.SetNextPlayer();
-            var kitCarlson = SetCharacter(gamePlay, new KitCarlson());
+            var (gamePlay, kitCarlson) = InitGame();
+            kitCarlson.AsDeputy(gamePlay);
 
             kitCarlson.LifePoints.Should().Be(4);
         }
@@ -36,8 +34,7 @@ namespace Bang.Tests.Characters
             deck.Put(MissedCard());
             deck.Put(MustangCard());
 
-            var gamePlay = InitGame(deck);
-            var actor = SetCharacter(gamePlay, new KitCarlson());
+            var (gamePlay, kitCarlson) = InitGame(deck);
 
             var response = gamePlay.GivePhaseOneCards();
 
@@ -54,11 +51,10 @@ namespace Bang.Tests.Characters
             deck.Put(MissedCard());
             deck.Put(MustangCard());
 
-            var gamePlay = InitGame(deck);
-            var actor = SetCharacter(gamePlay, new KitCarlson());
+            var (gamePlay, kitCarlson) = InitGame(deck);
 
             var response = gamePlay.GivePhaseOneCards();
-            actor.ChooseCard(MissedCard());
+            kitCarlson.ChooseCard(MissedCard());
             gamePlay.GetTopCardFromDeck().Should().Be(MissedCard());
         }
 
@@ -70,12 +66,11 @@ namespace Bang.Tests.Characters
             deck.Put(MissedCard());
             deck.Put(MustangCard());
 
-            var gamePlay = InitGame(deck);
-            var actor = SetCharacter(gamePlay, new KitCarlson());
+            var (gamePlay, kitCarlson) = InitGame(deck);
 
             var response = gamePlay.GivePhaseOneCards();
-            actor.ChooseCard(MissedCard());
-            actor.Hand.Count.Should().Be(2);
+            kitCarlson.ChooseCard(MissedCard());
+            kitCarlson.Hand.Count.Should().Be(2);
         }
 
         #endregion
@@ -86,41 +81,20 @@ namespace Bang.Tests.Characters
         private BangGameCard MissedCard() => new MissedCardType().SpadesQueen();
         private BangGameCard MustangCard() => new MustangCardType().SpadesQueen();
 
-        private Gameplay InitGame() => InitGame(BangGameDeck());
-
-        private Gameplay InitGame(Deck<BangGameCard> deck)
+        private (Gameplay, Player) InitGame(Deck<BangGameCard> deck = null)
         {
-            var players = new List<Player>();
-            for (int i = 0; i < 4; i++)
-            {
-                var player = new PlayerOnline(Guid.NewGuid().ToString());
-                players.Add(player);
-            }
+            var kitKarlson = new KitCarlson();
+            var gameplayBuilder = new GameplayBuilder().WithCharacter(kitKarlson);
 
-            var gameplay = new Game.Gameplay(CharactersDeck(), deck);
-            gameplay.Initialize(players);
+            if (deck != null)
+                gameplayBuilder.WithDeck(deck);
+                
+            var gameplay = gameplayBuilder.Build();
 
-            return gameplay;
-        }
-
-        private Player SetCharacter(Game.Gameplay gameplay, Character character)
-        {
-            var actor = gameplay.PlayerTurn;
-            actor.SetInfo(gameplay, actor.Role, character);
-
-            return actor;
-        }
-
-        private (Player actor, Player victim) ChoosePlayers(Game.Gameplay gameplay)
-        {
-            var actor = gameplay.PlayerTurn;
-            actor.SetInfo(gameplay, actor.Role, new KitCarlson());
-            actor.AddCardToHand(BangCard());
-
-            var victim = gameplay.Players.First(p => p != actor);
-            victim.SetInfo(gameplay, actor.Role, new Jourdonnais());
-
-            return (actor, victim);
+            var player = gameplay.FindPlayer(kitKarlson);
+            gameplay.SetTurnToPlayer(player);
+            
+            return (gameplay, player);
         }
 
         #endregion

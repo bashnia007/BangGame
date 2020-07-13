@@ -3,11 +3,10 @@ using Bang.Characters;
 using Bang.Game;
 using Bang.Players;
 using Bang.PlayingCards;
-using Bang.Roles;
 using FluentAssertions;
 using Xunit;
 
-namespace Bang.Tests
+namespace Bang.Tests.Characters
 {
     public class ElGringoSpecification
     {
