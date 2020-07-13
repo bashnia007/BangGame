@@ -13,17 +13,21 @@ namespace Bang.Tests
             return SetTurnToCharacter(gameplay, player.Character);
         }
 
-        internal static Gameplay SkipTurnsUntilPlayer(this Gameplay gameplay, Player player)
+        internal static Gameplay SkipTurnsUntilCharacter(this Gameplay gameplay, Character character)
         {
-            if (gameplay.PlayerTurn == player)
+            if (gameplay.PlayerTurn.Character == character)
                 gameplay.SetNextPlayer();
 
-            while (gameplay.GetNextPlayer() != player)
+            while (gameplay.GetNextPlayer().Character != character)
             {
                 gameplay.SetNextPlayer();
             }
 
             return gameplay;
+        }
+        internal static Gameplay SkipTurnsUntilPlayer(this Gameplay gameplay, Player player)
+        {
+            return SkipTurnsUntilCharacter(gameplay, player.Character);
         }
         
         internal static Player SetTurnToCharacter(this Gameplay gameplay, Character character)
