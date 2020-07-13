@@ -11,6 +11,7 @@ namespace Bang.GameEvents.CardEffects
     {
         private readonly Player defender;
         private readonly Player opponent;
+
         private readonly DefenceStrategy defenceStrategy;
 
         internal WaitingBangAfterDuelState(Player defender, Player opponent, HandlerState previousState)
@@ -21,10 +22,7 @@ namespace Bang.GameEvents.CardEffects
             this.defenceStrategy = new DefenceAgainstDuelStrategy(gameplay.PlayerTurn);
         }
         
-        public override HandlerState ApplyCardEffect(Player player, BangGameCard card) => 
-            throw new NotImplementedException();
-        
-        public override HandlerState ApplyReplyAction(Player player, BangGameCard firstCard)
+        public override HandlerState ApplyCardEffect(Player player, BangGameCard firstCard)
         {
             if (player != defender)
                 return new ErrorState(this);

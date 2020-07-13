@@ -1,12 +1,11 @@
-﻿using Bang.Characters;
+﻿using System.Diagnostics;
+using Bang.Characters;
 using Bang.Game;
 using Bang.Players;
 using Bang.PlayingCards;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
 using Xunit;
-using static Bang.Game.GamePlayInitializer;
+using static Bang.Tests.TestUtils;
 
 namespace Bang.Tests
 {
@@ -17,7 +16,7 @@ namespace Bang.Tests
         [Fact]
         public void Player_discards_dynamite_card_after_it_played()
         {
-            var gameplay = InitGame();
+            var gameplay = InitGameplay();
             Player actor = ChoosePlayer(gameplay);
 
             // act
@@ -30,7 +29,7 @@ namespace Bang.Tests
         [Fact]
         public void Player_has_dynamite_card_on_his_tablet_after_it_played()
         {
-            var gameplay = InitGame();
+            var gameplay = InitGameplay();
             Player actor = ChoosePlayer(gameplay);
 
             // act
@@ -46,19 +45,19 @@ namespace Bang.Tests
             var deck = new Deck<BangGameCard>();
             deck.Put(ExplodeCard());
 
-            var gameplay = InitGame(deck);
+            var gameplay = CreateGameplay(deck);
             Player actor = ChoosePlayer(gameplay);
             int healthBefore = actor.LifePoints;
 
             // act
             actor.PlayerTablet.PutCard(DynamiteCard());
-            while (gameplay.GetNextPlayer() != actor)
-                gameplay.SetNextPlayer();
+
+            gameplay.SkipTurnsUntilPlayer(actor);
 
             gameplay.StartNextPlayerTurn();
 
             // Assert
-            actor.LifePoints.Should().Equals(healthBefore - 3);
+            actor.LifePoints.Should().Be(healthBefore - 3);
         }
 
         [Fact]
@@ -67,13 +66,13 @@ namespace Bang.Tests
             var deck = new Deck<BangGameCard>();
             deck.Put(ExplodeCard());
 
-            var gameplay = InitGame(deck);
+            var gameplay = CreateGameplay(deck);
             Player actor = ChoosePlayer(gameplay);
 
             // act
             actor.PlayerTablet.PutCard(DynamiteCard());
-            while (gameplay.GetNextPlayer() != actor)
-                gameplay.SetNextPlayer();
+            
+            gameplay.SkipTurnsUntilPlayer(actor);
 
             gameplay.StartNextPlayerTurn();
 
@@ -87,13 +86,13 @@ namespace Bang.Tests
             var deck = new Deck<BangGameCard>();
             deck.Put(NotExplodeCard());
 
-            var gameplay = InitGame(deck);
+            var gameplay = CreateGameplay(deck);
             Player actor = ChoosePlayer(gameplay);
 
             // act
             actor.PlayerTablet.PutCard(DynamiteCard());
-            while (gameplay.GetNextPlayer() != actor)
-                gameplay.SetNextPlayer();
+
+            gameplay.SkipTurnsUntilPlayer(actor);
 
             gameplay.StartNextPlayerTurn();
 
@@ -107,13 +106,13 @@ namespace Bang.Tests
             var deck = new Deck<BangGameCard>();
             deck.Put(NotExplodeCard());
 
-            var gameplay = InitGame(deck);
+            var gameplay = InitGameplay(deck);
             Player actor = ChoosePlayer(gameplay);
 
             // act
             actor.PlayerTablet.PutCard(DynamiteCard());
-            while (gameplay.GetNextPlayer() != actor)
-                gameplay.SetNextPlayer();
+
+            gameplay.SkipTurnsUntilPlayer(actor);
 
             gameplay.StartNextPlayerTurn();
             gameplay.SetNextPlayer();
@@ -126,26 +125,9 @@ namespace Bang.Tests
 
         #region Private methods
 
-        private Game.Gameplay InitGame() => InitGame(BangGameDeck());
-
-        private Game.Gameplay InitGame(Deck<BangGameCard> deck)
-        {
-            var players = new List<Player>();
-            for (int i = 0; i < 4; i++)
-            {
-                var player = new PlayerOnline(Guid.NewGuid().ToString());
-                players.Add(player);
-            }
-
-            var gameplay = new Game.Gameplay(CharactersDeck(), deck);
-            gameplay.Initialize(players);
-            return gameplay;
-        }
-
-        private Player ChoosePlayer(Game.Gameplay gameplay)
+        private Player ChoosePlayer(Gameplay gameplay)
         {
             var actor = gameplay.PlayerTurn;
-            actor.SetInfo(gameplay, actor.Role, new KitCarlson());
             actor.AddCardToHand(DynamiteCard());
 
             return actor;
@@ -156,6 +138,14 @@ namespace Bang.Tests
         private BangGameCard ExplodeCard() => new DynamiteCardType().ClubsSeven();
 
         private BangGameCard NotExplodeCard() => new DynamiteCardType().SpadesQueen();
+
+        private Gameplay CreateGameplay(Deck<BangGameCard> deck)
+        {
+            return new GameplayBuilder()
+                .WithDeck(deck)
+                .WithoutCharacter(new BartCassidy())
+                .Build(); 
+        }
 
         #endregion
     }

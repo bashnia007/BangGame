@@ -18,20 +18,15 @@ namespace Bang.GameEvents.CardEffects.States
             this.hitter = gameplay.PlayerTurn;
         }
 
-        public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
+        public override HandlerState ApplyCardEffect(Player victim, BangGameCard firstCard, BangGameCard secondCard)
         {
-            throw new NotImplementedException();
+            return ApplyCardEffect(victim, firstCard);
         }
 
-        public override HandlerState ApplyReplyAction(Player victim, BangGameCard firstCard, BangGameCard secondCard)
-        {
-            return ApplyReplyAction(victim, firstCard);
-        }
-
-        public override HandlerState ApplyReplyAction(Player victim, BangGameCard card)
+        public override HandlerState ApplyCardEffect(Player victim, BangGameCard card)
         {
             var bangState = victimStates[victim];
-            victimStates[victim] = bangState.ApplyReplyAction(victim, card);
+            victimStates[victim] = bangState.ApplyCardEffect(victim, card);
             return UpdateStatus();
         }
 

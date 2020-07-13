@@ -1,24 +1,22 @@
-using System;
-using System.Collections.Generic;
+using System.Linq;
 using Bang.Characters;
 using Bang.Game;
 using Bang.Players;
-using Bang.PlayingCards;
-using Bang.Roles;
 using FluentAssertions;
 using Xunit;
-using static Bang.Game.GamePlayInitializer;
+using static Bang.Tests.TestUtils;
 
-namespace Bang.Tests
+namespace Bang.Tests.Characters
 {
     public class ButchCassidySpecification
     {
         [Fact]
         public void Butch_Cassidy_starts_game_with_4_life_points()
         {
-            var gamePlay = InitGame();
-            var butch = SetCharacter(gamePlay, new BartCassidy());
-
+            var (gamePlay, butch) = CreateGamePlayWithButch();
+            butch.AsOutlaw(gamePlay);
+            
+            // Assert
             butch.LifePoints.Should().Be(4);
         }
         
@@ -28,8 +26,7 @@ namespace Bang.Tests
         [InlineData(3)]
         public void When_Butch_Cassidy_loses_a_life_point_he_draws_a_card(int lifePoints)
         {
-            var gamePlay = InitGame();
-            var butch = SetCharacter(gamePlay, new BartCassidy());
+            var (_, butch) = CreateGamePlayWithButch();
 
             var hand = butch.Hand.Count;
             
@@ -42,8 +39,7 @@ namespace Bang.Tests
         [Fact]
         public void When_Butch_Cassidy_loses_a_life_point_he_draws_a_card_from_the_deck()
         {
-            var gamePlay = InitGame();
-            var butch = SetCharacter(gamePlay, new BartCassidy());
+            var (gamePlay, butch) = CreateGamePlayWithButch();
 
             var cardFromDeck = gamePlay.GetTopCardFromDeck();
             
@@ -56,10 +52,9 @@ namespace Bang.Tests
         [Fact]
         public void When_Butch_Cassidy_loses_last_life_point_he_does_not_draw_card()
         {
-            var gamePlay = InitGame();
-            var butch = SetCharacter(gamePlay, new BartCassidy());
+            var (gamePlay, butch) = CreateGamePlayWithButch();
 
-            butch.LoseLifePoint(3);
+            butch.LoseLifePoint(butch.MaximumLifePoints - 1);
             
             var topDeckCard = gamePlay.GetTopCardFromDeck();
             
@@ -72,40 +67,23 @@ namespace Bang.Tests
         [Fact]
         public void Butch_Cassidy_draws_card_only_if_he_is_still_alive()
         {
-            var gamePlay = InitGame();
-            var butch = SetCharacter(gamePlay, new BartCassidy());
+            var (gamePlay, butch) = CreateGamePlayWithButch();
 
             var topDeckCard = gamePlay.GetTopCardFromDeck();
             
             // Act
-            butch.LoseLifePoint(4);
+            butch.Die();
 
             gamePlay.GetTopCardFromDeck().Should().Be(topDeckCard);
         }
-        
-        private Game.Gameplay InitGame() => InitGame(BangGameDeck());
 
-        private Game.Gameplay InitGame(Deck<BangGameCard> deck)
+        private (Gameplay, Player) CreateGamePlayWithButch()
         {
-            var players = new List<Player>();
-            for (int i = 0; i < 4; i++)
-            {
-                var player = new PlayerOnline(Guid.NewGuid().ToString());
-                players.Add(player);
-            }
+            var character = new BartCassidy();
+            var gamePlay = InitGameplayWithCharacter(character);
+            var butch = gamePlay.Players.First(p => p.Character == character);
 
-            var gameplay = new Game.Gameplay(CharactersDeck(), deck);
-            gameplay.Initialize(players);
-
-            return gameplay;
-        }
-
-        private Player SetCharacter(Game.Gameplay gameplay, Character character)
-        {
-            var actor = gameplay.PlayerTurn;
-            actor.SetInfo(gameplay, new Outlaw(), character);
-
-            return actor;
+            return (gamePlay, butch);
         }
     }
 }

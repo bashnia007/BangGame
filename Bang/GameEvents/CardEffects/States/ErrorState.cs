@@ -18,11 +18,6 @@ namespace Bang.GameEvents.CardEffects.States
             throw new NotImplementedException();
         }
 
-        public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
-        {
-            throw new NotImplementedException();
-        }
-        
         public ErrorState(HandlerState previous) : base(previous)
         {
         }

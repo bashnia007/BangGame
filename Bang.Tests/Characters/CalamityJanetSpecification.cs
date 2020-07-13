@@ -1,15 +1,13 @@
-﻿using Bang.Characters;
+﻿using System.Linq;
+using Bang.Characters;
 using Bang.Game;
 using Bang.Players;
 using Bang.PlayingCards;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
-using static Bang.Game.GamePlayInitializer;
+using static Bang.Tests.TestUtils;
 
-namespace Bang.Tests
+namespace Bang.Tests.Characters
 {
     public class CalamityJanetSpecification
     {
@@ -18,7 +16,12 @@ namespace Bang.Tests
         [Fact]
         public void Calamity_Janet_Can_Play_Missed_As_Bang_When_Shoots()
         {
-            var gamePlay = InitGame();
+            var gamePlay = 
+                new GameplayBuilder()
+                    .WithCharacter(new CalamityJanet())
+                    .WithoutCharacter(new Jourdonnais())
+                    .Build();
+            
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             calamity.PlayCard(MissedCard(), opponent);
@@ -34,7 +37,7 @@ namespace Bang.Tests
         [Fact]
         public void Calamity_Janet_Can_Play_Bang_As_Usual_When_Shoots()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             calamity.PlayCard(BangCard(), opponent);
@@ -50,7 +53,7 @@ namespace Bang.Tests
         [Fact]
         public void Calamity_Janet_Can_Play_Bang_As_Missed_When_Defends()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             var healthBefore = calamity.PlayerTablet.Health;
@@ -67,7 +70,7 @@ namespace Bang.Tests
         [Fact]
         public void Calamity_Janet_Can_Play_Missed_As_Usual_When_Defends()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             var healthBefore = calamity.PlayerTablet.Health;
@@ -84,7 +87,7 @@ namespace Bang.Tests
         [Fact]
         public void Camility_Janet_Can_Play_Missed_During_Duel()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             var healthBefore = calamity.PlayerTablet.Health;
@@ -101,7 +104,7 @@ namespace Bang.Tests
         [Fact]
         public void Camility_Janet_Can_Play_Bang_As_Usual_During_Duel()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             var healthBefore = calamity.PlayerTablet.Health;
@@ -118,7 +121,7 @@ namespace Bang.Tests
         [Fact]
         public void Camility_Janet_Can_Play_Missed_Against_Indians()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             var healthBefore = calamity.PlayerTablet.Health;
@@ -134,7 +137,7 @@ namespace Bang.Tests
         [Fact]
         public void Camility_Janet_Can_Play_Bang_Against_Indians()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             var healthBefore = calamity.PlayerTablet.Health;
@@ -150,7 +153,7 @@ namespace Bang.Tests
         [Fact]
         public void Camility_Janet_Can_Play_Bang_Against_Gatling()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             var healthBefore = calamity.PlayerTablet.Health;
@@ -166,7 +169,7 @@ namespace Bang.Tests
         [Fact]
         public void Camility_Janet_Can_Play_Missed_Against_Gatling()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             var healthBefore = calamity.PlayerTablet.Health;
@@ -182,7 +185,7 @@ namespace Bang.Tests
         [Fact]
         public void Camility_Janet_Drops_Missed_Card_When_Playes_It_As_Bang()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             calamity.PlayCard(MissedCard(), opponent);
@@ -197,7 +200,7 @@ namespace Bang.Tests
         [Fact]
         public void Camility_Janet_Drops_Bang_Card_When_Playes_It_As_Missed()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             opponent.PlayCard(BangCard(), calamity);
@@ -212,7 +215,7 @@ namespace Bang.Tests
         [Fact]
         public void Camility_Janet_Drops_Missed_Card_When_Playes_It_During_Duel()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             // Act
@@ -227,7 +230,7 @@ namespace Bang.Tests
         [Fact]
         public void Camility_Janet_Drops_Missed_Card_When_Playes_It_Against_Indians()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             // Act
@@ -241,7 +244,7 @@ namespace Bang.Tests
         [Fact]
         public void Camility_Janet_Drops_Bang_Card_When_Playes_It_Against_Gatling()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             // Act
@@ -263,38 +266,20 @@ namespace Bang.Tests
         private BangGameCard IndiansCard() => new IndiansCardType().SpadesQueen();
         private BangGameCard GatlingCard() => new GatlingCardType().SpadesQueen();
 
-        private Game.Gameplay InitGame() => InitGame(GamePlayInitializer.BangGameDeck());
-
-        private (Player calamity, Player victim) ChoosePlayers(Game.Gameplay gameplay)
+        private (Player calamity, Player victim) ChoosePlayers(Gameplay gameplay)
         {
-            var calamity = gameplay.PlayerTurn;
-            calamity.SetInfo(gameplay, calamity.Role, new CalamityJanet());
+            var calamity = gameplay.Players.First(p => p.Character == new CalamityJanet());
+            gameplay.SetTurnToPlayer(calamity);
             calamity.AddCardToHand(BangCard());
             calamity.AddCardToHand(MissedCard());
 
             var opponent = gameplay.Players.First(p => p != calamity);
-            opponent.SetInfo(gameplay, calamity.Role, new PedroRamirez());
             opponent.AddCardToHand(BangCard()); 
             opponent.AddCardToHand(GatlingCard());
             opponent.AddCardToHand(IndiansCard());
             opponent.AddCardToHand(DuelCard());
 
             return (calamity, opponent);
-        }
-
-        private Game.Gameplay InitGame(Deck<BangGameCard> deck)
-        {
-            var players = new List<Player>();
-            for (int i = 0; i < 4; i++)
-            {
-                var player = new PlayerOnline(Guid.NewGuid().ToString());
-                players.Add(player);
-            }
-
-            var gameplay = new Game.Gameplay(CharactersDeck(), deck);
-            gameplay.Initialize(players);
-
-            return gameplay;
         }
 
         #endregion

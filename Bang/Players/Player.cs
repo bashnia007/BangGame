@@ -28,7 +28,7 @@ namespace Bang.Players
         public int LifePoints => PlayerTablet.Health;
         public bool IsAlive => PlayerTablet.IsAlive;
 
-        private Game.Gameplay gamePlay;
+        private Gameplay gamePlay;
 
         public Player()
         {

@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Bang.Characters;
-using Bang.Game;
-using Bang.Players;
 using Bang.PlayingCards;
 using Bang.Roles;
 using FluentAssertions;
 using Xunit;
-
-using static Bang.Game.GamePlayInitializer;
+using static Bang.Tests.TestUtils;
 
 namespace Bang.Tests
 {
@@ -18,7 +13,7 @@ namespace Bang.Tests
         [Fact]
         public void If_the_sheriff_eliminates_a_deputy_the_sheriff_must_discard_all_the_cards()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplay(5);
             var sheriff = gamePlay.Players.First(p => p.Role is Sheriff);
             sheriff.AddCardToHand(new SaloonCardType().ClubsSeven());
             sheriff.PlayerTablet.PutCard(new ScopeCardType().HeartsAce());
@@ -26,7 +21,7 @@ namespace Bang.Tests
             var deputy = gamePlay.Players.First(p => p.Role is Deputy);
             
             // Act
-            deputy.LoseLifePoint(sheriff, deputy.MaximumLifePoints);
+            deputy.Die(sheriff);
             
             // Assert
             sheriff.Hand.Should().BeEmpty();
@@ -37,13 +32,13 @@ namespace Bang.Tests
         [MemberData(nameof(TestDataGenerator.AllRoles), MemberType = typeof(TestDataGenerator))]
         public void Any_player_eliminating_an_outlaw_must_draw_a_reward_of_3_cards_from_the_deck(Role killerRole)
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplay(5);
             var killer = gamePlay.Players.First(p => p.Role == killerRole);
             
             var outLaw = gamePlay.Players.First(p => p.Role is Outlaw && p != killer);
             
             // Act
-            outLaw.LoseLifePoint(killer, outLaw.MaximumLifePoints);
+            outLaw.Die(killer);
             
             // Assert
             killer.Hand.Count.Should().Be(3);
@@ -52,14 +47,14 @@ namespace Bang.Tests
         [Fact]
         public void Hand_cards_of_eliminated_player_are_discarded()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplayWithoutCharacter(new VultureSam());
             var victim = gamePlay.Players.First();
 
             var catBalouCard = new CatBalouCardType().HeartsAce();
             victim.AddCardToHand(catBalouCard);
             
             // Act
-            victim.LoseLifePoint(null, victim.PlayerTablet.MaximumHealth);
+            victim.Die();
             
             // Assert
             gamePlay.GetTopCardFromDiscarded().Should().Be(catBalouCard);
@@ -68,14 +63,14 @@ namespace Bang.Tests
         [Fact]
         public void Active_cards_of_eliminated_player_are_discarded()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplayWithoutCharacter(new VultureSam());
             var victim = gamePlay.Players.First();
 
             var scopeCard = new ScopeCardType().HeartsAce();
             victim.PlayerTablet.PutCard(scopeCard);
             
             // Act
-            victim.LoseLifePoint(null, victim.MaximumLifePoints);
+            victim.Die();
             
             // Assert
             gamePlay.GetTopCardFromDiscarded().Should().Be(scopeCard);
@@ -84,15 +79,14 @@ namespace Bang.Tests
         [Fact]
         public void If_an_outlaw_plays_a_duel_and_loses_then_no_one_will_gain_a_reward()
         {
-            var gameplay = InitGame();
+            var gameplay = InitGameplay();
             var outlaw = gameplay.Players.First(p => p.Role is Outlaw);
             outlaw.LoseLifePoint(outlaw.MaximumLifePoints - 1);
             
             var duelCard = new DuelCardType().ClubsSeven();
             outlaw.AddCardToHand(duelCard);
             
-            while (gameplay.GetNextPlayer() != outlaw)
-                gameplay.SetNextPlayer();
+            gameplay.SkipTurnsUntilPlayer(outlaw);
 
             gameplay.StartNextPlayerTurn();
 
@@ -112,15 +106,14 @@ namespace Bang.Tests
         [Fact]
         public void If_a_deputy_plays_a_duel_to_sheriff_and_dies_then_sheriff_will_not_drop_cards()
         {
-            var gameplay = InitGame();
+            var gameplay = InitGameplay(5);
             var deputy = gameplay.Players.First(p => p.Role is Deputy);
             deputy.LoseLifePoint(deputy.MaximumLifePoints - 1);
             
             var duelCard = new DuelCardType().ClubsSeven();
             deputy.AddCardToHand(duelCard);
-            
-            while (gameplay.GetNextPlayer() != deputy)
-                gameplay.SetNextPlayer();
+
+            gameplay.SkipTurnsUntilPlayer(deputy);
 
             gameplay.StartNextPlayerTurn();
 
@@ -138,26 +131,6 @@ namespace Bang.Tests
             // Assert
             sheriff.Hand.Should().NotBeEmpty();
             sheriff.ActiveCards.Should().NotBeEmpty();
-        }
-        
-        private Game.Gameplay InitGame() => InitGame(BangGameDeck());
-
-        private Game.Gameplay InitGame(Deck<BangGameCard> deck)
-        {
-            var players = new List<Player>();
-            for (int i = 0; i < 5; i++)
-            {
-                var player = new PlayerOnline(Guid.NewGuid().ToString());
-                players.Add(player);
-            }
-
-            var characters = new Character[]
-                {new CalamityJanet(), new KitCarlson(), new PedroRamirez(), new WillyTheKid(), new SlabTheKiller()};
-            
-            var gameplay = new Game.Gameplay(new Deck<Character>(characters), deck);
-            gameplay.Initialize(players);
-
-            return gameplay;
         }
     }
 }

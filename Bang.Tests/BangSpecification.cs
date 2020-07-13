@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Bang.Characters;
 using Bang.Game;
@@ -8,8 +6,7 @@ using Bang.Players;
 using Bang.PlayingCards;
 using FluentAssertions;
 using Xunit;
-
-using static Bang.Game.GamePlayInitializer;
+using static Bang.Tests.TestUtils;
 
 namespace Bang.Tests
 {
@@ -18,7 +15,7 @@ namespace Bang.Tests
         [Fact]
         public void After_played_bang_is_discarded()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplay();
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
             
             // Act
@@ -32,7 +29,7 @@ namespace Bang.Tests
         [Fact]
         public void If_victim_plays_missed_card_he_or_she_will_not_lose_life_point()
         {
-            var gamePlay = InitGame();
+            var gamePlay = CreateGamePlay();
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
             
             actor.PlayCard(BangCard(), victim);
@@ -48,7 +45,7 @@ namespace Bang.Tests
         [Fact]
         public void If_victim_plays_missed_card_it_goes_to_discard_pile()
         {
-            var gamePlay = InitGame();
+            var gamePlay = CreateGamePlay();
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
             
             victim.AddCardToHand(MissedCard());
@@ -64,7 +61,7 @@ namespace Bang.Tests
         [Fact]
         public void If_victim_plays_missed_card_he_discard_it()
         {
-            var gamePlay = InitGame();
+            var gamePlay = CreateGamePlay();
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
             
             actor.PlayCard(BangCard(), victim);
@@ -79,7 +76,7 @@ namespace Bang.Tests
         [Fact]
         public void If_victim_does_not_play_missed_card_he_or_she_will_lose_life_point()
         {
-            var gamePlay = InitGame();
+            var gamePlay = CreateGamePlay();
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
             
             actor.PlayCard(BangCard(), victim);
@@ -98,7 +95,7 @@ namespace Bang.Tests
             var deck = new Deck<BangGameCard>();
             deck.Put(new StagecoachCardType().HeartsAce());
             
-            var gamePlay = InitGame(deck);
+            var gamePlay = CreateGamePlay(deck);
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
 
             var barrelCard = new BarrelCardType().SpadesQueen();
@@ -118,10 +115,13 @@ namespace Bang.Tests
         [Fact]
         public void Players_trying_to_cancel_the_Slab_the_Killers_bang_need_to_play_two_missed_cards()
         {
-            var gamePlay = InitGame();
-            (Player slabTheKiller, Player victim) = ChoosePlayers(gamePlay);
+            var gamePlay = 
+                new GameplayBuilder()
+                    .WithCharacter(new SlabTheKiller())
+                    .WithoutCharacter(new Jourdonnais())
+                    .Build();
             
-            slabTheKiller.SetInfo(gamePlay, slabTheKiller.Role, new SlabTheKiller());
+            (Player slabTheKiller, Player victim) = ChoosePlayers(gamePlay, new SlabTheKiller());
             
             var anotherMissedCard = new MissedCardType().HeartsAce();
             victim.AddCardToHand(anotherMissedCard);
@@ -145,11 +145,15 @@ namespace Bang.Tests
             var deck = new Deck<BangGameCard>();
             deck.Put(new StagecoachCardType().HeartsAce());
             
-            var gamePlay = InitGame(deck);
-            (Player actor, Player jourdonnais) = ChoosePlayers(gamePlay);
-
-            jourdonnais.SetInfo(gamePlay, jourdonnais.Role, new Jourdonnais());
+            var gamePlay = 
+                new GameplayBuilder()
+                    .WithDeck(deck)
+                    .WithCharacter(new Jourdonnais())
+                    .Build();
             
+            (Player actor, Player _) = ChoosePlayers(gamePlay);
+
+            var jourdonnais = gamePlay.FindPlayer(new Jourdonnais());
             var healthBefore = jourdonnais.PlayerTablet.Health;
             
             // Act
@@ -163,30 +167,26 @@ namespace Bang.Tests
         private BangGameCard BangCard() => new BangCardType().SpadesQueen();
         private BangGameCard MissedCard() => new MissedCardType().SpadesQueen();
 
-        private Game.Gameplay InitGame() => InitGame(GamePlayInitializer.BangGameDeck());
-        
-        private Game.Gameplay InitGame(Deck<BangGameCard> deck)
+        private Gameplay CreateGamePlay(Deck<BangGameCard> deck = null)
         {
-            var players = new List<Player>();
-            for (int i = 0; i < 4; i++)
-            {
-                var player = new PlayerOnline(Guid.NewGuid().ToString());
-                players.Add(player);
-            }
+            var builder = new GameplayBuilder();
+
+            if (deck != null)
+                builder = builder.WithDeck(deck);
             
-            var gameplay = new Game.Gameplay(CharactersDeck(), deck);
-            gameplay.Initialize(players);
-            return gameplay;
+            return builder.WithoutCharacter(new Jourdonnais())
+                    .WithoutCharacter(new SlabTheKiller())
+                    .Build();
         }
         
-        private (Player actor, Player victim) ChoosePlayers(Game.Gameplay gameplay)
+        private (Player actor, Player victim) ChoosePlayers(Gameplay gameplay, Character character = null)
         {
-            var actor = gameplay.PlayerTurn;
-            actor.SetInfo(gameplay, actor.Role, new KitCarlson());
+            Player actor = 
+                character != null ? gameplay.SetTurnToCharacter(character) : gameplay.PlayerTurn;
+            
             actor.AddCardToHand(BangCard());
 
             var victim = gameplay.Players.First(p => p != actor);
-            victim.SetInfo(gameplay, actor.Role, new PedroRamirez());
             victim.AddCardToHand(MissedCard());
             
             return (actor, victim);

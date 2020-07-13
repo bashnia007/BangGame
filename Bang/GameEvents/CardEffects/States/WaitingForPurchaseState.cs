@@ -22,11 +22,6 @@ namespace Bang.GameEvents.CardEffects.States
 
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
         {
-            throw new NotImplementedException();
-        }
-
-        public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
-        {
             Player currentPlayer = playersOrder[0];
             if (player.Id != currentPlayer.Id)
             {
