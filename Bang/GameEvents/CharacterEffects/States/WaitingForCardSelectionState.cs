@@ -13,11 +13,6 @@ namespace Bang.GameEvents.CharacterEffects.States
 
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
         {
-            throw new NotImplementedException();
-        }
-
-        public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
-        {
             player.PutCardOnDeck(card);
             return new DoneState(gameplay);
         }
