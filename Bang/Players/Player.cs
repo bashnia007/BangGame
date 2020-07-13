@@ -71,6 +71,12 @@ namespace Bang.Players
             DropCards(new List<BangGameCard> { cardToDrop });
         }
 
+        public void PutCardOnDeck(BangGameCard card)
+        {
+            gamePlay.PutCardOnDeck(card);
+            hand.Remove(card);
+        }
+
         public void TakeCards(byte amount)
         {
             for (int i = 0; i < amount; i++)
