@@ -97,6 +97,11 @@ namespace Bang.Game
             }
         }
 
+        public void PutCardOnDeck(BangGameCard card)
+        {
+            deck.Put(card);
+        }
+
         private void ProvideCardsForPlayers(Deck<Character> characters)
         {
             var roles = new Deck<Role>(GamePlayInitializer.CreateRolesForGame(Players.Count));
@@ -128,12 +133,17 @@ namespace Bang.Game
             state = state.ApplyReplyAction(victim);
         }
 
-        public void GivePhaseOneCards()
+        public Response GivePhaseOneCards()
         {
-            PlayerTurn
+            var nextState = PlayerTurn
                 .Character
                 .Accept(new DrawCardsCharacterVisitor())
                 .Invoke(this, PlayerTurn);
+
+            if (!nextState.IsError)
+                state = nextState;
+
+            return state.SideEffect;
         }
 
         private void FillPlayerHand(Player player)
