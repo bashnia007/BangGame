@@ -18,16 +18,11 @@ namespace Bang.GameEvents.CardEffects.States
         
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
-        {
             victim.DropActiveCard(card);
             return new DoneState(this);
         }
 
-        public override HandlerState ApplyReplyAction(Player player)
+        public override HandlerState ApplyCardEffect(Player player)
         {
             if (player != victim) throw new InvalidOperationException();
             

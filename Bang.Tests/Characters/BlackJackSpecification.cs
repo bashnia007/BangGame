@@ -3,11 +3,8 @@ using Bang.Game;
 using Bang.Players;
 using Bang.PlayingCards;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
-using static Bang.Game.GamePlayInitializer;
 
 namespace Bang.Tests
 {
@@ -30,12 +27,11 @@ namespace Bang.Tests
             deck.Put(new StagecoachCardType().HeartsAce());
             deck.Put(new MissedCardType().ClubsSeven());
 
-            var gamePlay = InitGame(deck);
-            var actor = SetCharacter(gamePlay, new BlackJack());
-
+            var (gamePlay, blackJack) = CreateGameplay(new BlackJack(), deck); 
+                
             gamePlay.GivePhaseOneCards();
 
-            actor.Hand.Count.Should().Be(3);
+            blackJack.Hand.Should().HaveCount(3);
         }
 
         [Fact]
@@ -46,28 +42,26 @@ namespace Bang.Tests
             deck.Put(new StagecoachCardType().DiamondsThree());
             deck.Put(new MissedCardType().ClubsSeven());
 
-            var gamePlay = InitGame(deck);
-            var actor = SetCharacter(gamePlay, new BlackJack());
+            var (gamePlay, blackJack) = CreateGameplay(new BlackJack(), deck);
 
             gamePlay.GivePhaseOneCards();
 
-            actor.Hand.Count.Should().Be(3);
+            blackJack.Hand.Should().HaveCount(3);
         }
 
         [Fact]
-        public void BlackJack_receives_two_cards_if_the_second_is_neither_herts_nor_diamond()
+        public void BlackJack_receives_two_cards_if_the_second_is_neither_hearts_nor_diamond()
         {
             var deck = new Deck<BangGameCard>();
             deck.Put(new BangCardType().HeartsAce());
             deck.Put(new StagecoachCardType().ClubsSeven());
             deck.Put(new MissedCardType().DiamondsThree ());
 
-            var gamePlay = InitGame(deck);
-            var actor = SetCharacter(gamePlay, new BlackJack());
+            var (gamePlay, blackJack) = CreateGameplay(new BlackJack(), deck);
 
             gamePlay.GivePhaseOneCards();
 
-            actor.Hand.Count.Should().Be(2);
+            blackJack.Hand.Should().HaveCount(2);
         }
 
         [Fact]
@@ -78,39 +72,25 @@ namespace Bang.Tests
             deck.Put(new StagecoachCardType().HeartsAce());
             deck.Put(new MissedCardType().ClubsSeven());
 
-            var gamePlay = InitGame(deck);
-            var actor = SetCharacter(gamePlay, new SlabTheKiller());
+            var (gamePlay, nonBlackJack) = CreateGameplay(new SlabTheKiller(), deck);
 
             gamePlay.GivePhaseOneCards();
 
-            actor.Hand.Count.Should().Be(2);
+            nonBlackJack.Hand.Should().HaveCount(2);
         }
 
         #endregion
 
-        private Game.Gameplay InitGame() => InitGame(BangGameDeck());
-
-        private Game.Gameplay InitGame(Deck<BangGameCard> deck)
+        private (Gameplay, Player) CreateGameplay(Character character, Deck<BangGameCard> deck)
         {
-            var players = new List<Player>();
-            for (int i = 0; i < 4; i++)
-            {
-                var player = new PlayerOnline(Guid.NewGuid().ToString());
-                players.Add(player);
-            }
+            var gamePlay = 
+                new GameplayBuilder()
+                    .WithCharacter(character)
+                    .WithDeck(deck).Build();
 
-            var gameplay = new Game.Gameplay(CharactersDeck(), deck);
-            gameplay.Initialize(players);
+            var actor = gamePlay.SetTurnToCharacter(character);
 
-            return gameplay;
-        }
-
-        private Player SetCharacter(Game.Gameplay gameplay, Character character)
-        {
-            var actor = gameplay.PlayerTurn;
-            actor.SetInfo(gameplay, actor.Role, character);
-
-            return actor;
+            return (gamePlay, actor);
         }
     }
 }

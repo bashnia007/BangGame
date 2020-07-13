@@ -19,11 +19,6 @@ namespace Bang.GameEvents.CardEffects.States
 
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
         {
-            throw new NotImplementedException();
-        }
-
-        public override HandlerState ApplyReplyAction(Player player, BangGameCard card)
-        {
             bool savedLifePoint = defenceStrategy.Apply(victim, card);
             return new DoneState(this);
         }

@@ -4,11 +4,9 @@ using Bang.Players;
 using Bang.PlayingCards;
 using Bang.Roles;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
-using static Bang.Game.GamePlayInitializer;
+using static Bang.Tests.TestUtils;
 
 namespace Bang.Tests
 {
@@ -19,7 +17,7 @@ namespace Bang.Tests
         [Fact]
         public void Player_discards_jail_card_after_it_played()
         {
-            var gameplay = InitGame();
+            var gameplay = InitGameplay();
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
@@ -32,7 +30,7 @@ namespace Bang.Tests
         [Fact]
         public void Victim_has_jail_card_on_the_tablet()
         {
-            var gameplay = InitGame();
+            var gameplay = InitGameplay();
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
@@ -45,7 +43,7 @@ namespace Bang.Tests
         [Fact]
         public void Jail_card_cannot_be_played_on_sheriff()
         {
-            var gameplay = InitGame();
+            var gameplay = InitGameplay();
             (Player sheriff, Player badGuy) = ChoosePlayer(gameplay);
             badGuy.AddCardToHand(JailCard());
 
@@ -62,13 +60,13 @@ namespace Bang.Tests
             var deck = new Deck<BangGameCard>();
             deck.Put(NotHeartsCard());
 
-            var gameplay = InitGame(deck);
+            var gameplay = InitGameplay(deck);
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
             actor.PlayCard(JailCard(), victim);
-            while (gameplay.GetNextPlayer() != victim)
-                gameplay.SetNextPlayer();
+
+            gameplay.SkipTurnsUntilPlayer(victim);
 
             gameplay.StartNextPlayerTurn();
 
@@ -82,13 +80,12 @@ namespace Bang.Tests
             var deck = new Deck<BangGameCard>();
             deck.Put(HeartsCard());
 
-            var gameplay = InitGame(deck);
+            var gameplay = InitGameplay(deck);
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
             actor.PlayCard(JailCard(), victim);
-            while (gameplay.GetNextPlayer() != victim)
-                gameplay.SetNextPlayer();
+            gameplay.SkipTurnsUntilPlayer(victim);
 
             gameplay.StartNextPlayerTurn();
 
@@ -102,13 +99,13 @@ namespace Bang.Tests
             var deck = new Deck<BangGameCard>();
             deck.Put(NotHeartsCard());
 
-            var gameplay = InitGame(deck);
+            var gameplay = InitGameplay(deck);
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
             actor.PlayCard(JailCard(), victim);
-            while (gameplay.GetNextPlayer() != victim)
-                gameplay.SetNextPlayer();
+
+            gameplay.SkipTurnsUntilPlayer(victim);
 
             gameplay.StartNextPlayerTurn();
 
@@ -120,30 +117,12 @@ namespace Bang.Tests
 
         #region Private methods
 
-        private Game.Gameplay InitGame() => InitGame(BangGameDeck());
-
-        private Game.Gameplay InitGame(Deck<BangGameCard> deck)
-        {
-            var players = new List<Player>();
-            for (int i = 0; i < 4; i++)
-            {
-                var player = new PlayerOnline(Guid.NewGuid().ToString());
-                players.Add(player);
-            }
-
-            var gameplay = new Game.Gameplay(CharactersDeck(), deck);
-            gameplay.Initialize(players);
-            return gameplay;
-        }
-
         private (Player, Player) ChoosePlayer(Game.Gameplay gameplay)
         {
             var actor = gameplay.PlayerTurn;
-            actor.SetInfo(gameplay, actor.Role, new KitCarlson());
             actor.AddCardToHand(JailCard());
 
             var victim = gameplay.Players.First(p => p != actor && !(p.Role is Sheriff));
-            victim.SetInfo(gameplay, victim.Role, new PedroRamirez());
 
             return (actor, victim);
         }

@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Bang.Characters;
 using Bang.Game;
@@ -9,8 +7,6 @@ using Bang.Roles;
 using FluentAssertions;
 using Xunit;
 
-using static Bang.Game.GamePlayInitializer;
-
 namespace Bang.Tests
 {
     public class ElGringoSpecification
@@ -18,8 +14,9 @@ namespace Bang.Tests
         [Fact]
         public void El_Gringo_starts_game_with_3_life_points()
         {
-            var (elGringo, _) = ChoosePlayers();
+            var (gameplay, elGringo, _) = InitGame();
             
+            elGringo.AsRenegade(gameplay);
             // Assert
             elGringo.LifePoints.Should().Be(3);
         }
@@ -50,7 +47,6 @@ namespace Bang.Tests
 
             // Assert
             otherPlayer.Hand.Should().HaveCount(hand - 1);
-            
         }
         
         [Fact]
@@ -72,9 +68,10 @@ namespace Bang.Tests
         [Fact]
         public void When_El_Gringo_loses_last_life_point_he_does_not_draw_card()
         {
-            var (elGringo, otherPlayer) = ChoosePlayers();
+            var (gameplay, elGringo, otherPlayer) = InitGame();
+            elGringo.AsRenegade(gameplay);
             
-            elGringo.LoseLifePoint(2);
+            elGringo.LoseLifePoint(elGringo.MaximumLifePoints - 1);
 
             var handSize = otherPlayer.Hand.Count;
             
@@ -118,35 +115,21 @@ namespace Bang.Tests
             gameplay.GetTopCardFromDiscarded().Should().NotBe(volcanicCard);
         }
         
-        private (Game.Gameplay, Player, Player) InitGame() => InitGame(BangGameDeck());
-        
         private BangGameCard DuelCard() => new DuelCardType().SpadesQueen();
         private BangGameCard BangCard() => new BangCardType().HeartsAce();
 
-        private (Game.Gameplay, Player, Player) InitGame(Deck<BangGameCard> deck)
+        private (Gameplay, Player, Player) InitGame()
         {
-            var players = new List<Player>();
-            for (int i = 0; i < 4; i++)
-            {
-                var player = new PlayerOnline(Guid.NewGuid().ToString());
-                players.Add(player);
-            }
-            
-            var charactersDeck = new Deck<Character>();
-            charactersDeck.Put(new ElGringo());
-            charactersDeck.Put(new KitCarlson());
-            charactersDeck.Put(new SlabTheKiller());
-            charactersDeck.Put(new WillyTheKid());
+            var gameplay = 
+                new GameplayBuilder()
+                    .WithCharacter(new ElGringo())
+                    .WithoutCharacter(new VultureSam())
+                    .Build();
 
-            var gameplay = new Game.Gameplay(charactersDeck, deck);
-            gameplay.Initialize(players);
-
-            var elGringo = players.First(p => p.Character is ElGringo);
-            elGringo.SetInfo(gameplay, new Renegade(), elGringo.Character);
-            
+            var elGringo = gameplay.Players.First(p => p.Character == new ElGringo());
             elGringo.AddCardToHand(DuelCard());
 
-            var otherPlayer = players.First(p => p != elGringo);
+            var otherPlayer = gameplay.Players.First(p => p != elGringo);
             otherPlayer.AddCardToHand(BangCard());
 
             return (gameplay, elGringo, otherPlayer);

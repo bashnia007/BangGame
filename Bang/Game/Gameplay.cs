@@ -54,7 +54,7 @@ namespace Bang.Game
         
         public bool Defense(Player player, BangGameCard card)
         {
-            state = state.ApplyReplyAction(player, card);
+            state = state.ApplyCardEffect(player, card);
 
             return true;
         }
@@ -63,7 +63,7 @@ namespace Bang.Game
         {
             if (secondCard == null) return Defense(player, card);
             
-            state = state.ApplyReplyAction(player, card, secondCard);
+            state = state.ApplyCardEffect(player, card, secondCard);
             return true;
         }
 
@@ -120,12 +120,12 @@ namespace Bang.Game
 
         public void ForceDropCard(Player victim, BangGameCard card)
         {
-            state = state.ApplyReplyAction(victim, card);
+            state = state.ApplyCardEffect(victim, card);
         }
 
         public void ForceDropRandomCard(Player victim)
         {
-            state = state.ApplyReplyAction(victim);
+            state = state.ApplyCardEffect(victim);
         }
 
         public void GivePhaseOneCards()
@@ -165,17 +165,17 @@ namespace Bang.Game
 
         public void StealCard(Player victim, BangGameCard card)
         {
-            state = state.ApplyReplyAction(victim, card);
+            state = state.ApplyCardEffect(victim, card);
         }
 
         public void StealCard(Player victim)
         {
-            state = state.ApplyReplyAction(victim);
+            state = state.ApplyCardEffect(victim);
         }
 
         public void ChooseCard(BangGameCard card, Player player)
         {
-            state = state.ApplyReplyAction(player, card);
+            state = state.ApplyCardEffect(player, card);
         }
 
         public void StartNextPlayerTurn()
@@ -252,13 +252,13 @@ namespace Bang.Game
 
         public Response ProcessReplyAction(Player victim)
         {
-            state = state.ApplyReplyAction(victim);
+            state = state.ApplyCardEffect(victim);
             return state.SideEffect;
         }
 
         public Response ProcessReplyAction(Player player, BangGameCard card)
         {
-            state = state.ApplyReplyAction(player, card);
+            state = state.ApplyCardEffect(player, card);
             return state.SideEffect;
         }
         
@@ -266,7 +266,7 @@ namespace Bang.Game
         {
             if (secondCard == null) return ProcessReplyAction(player, firstCard);
             
-            state = state.ApplyReplyAction(player, firstCard, secondCard);
+            state = state.ApplyCardEffect(player, firstCard, secondCard);
             return state.SideEffect;
         }
     }

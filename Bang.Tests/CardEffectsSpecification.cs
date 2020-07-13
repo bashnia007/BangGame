@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
 using Bang.Players;
 using Bang.PlayingCards;
 using Bang.PlayingCards.Visitors;
 using Bang.Weapons;
 using FluentAssertions;
 using Xunit;
-
-using static Bang.Game.GamePlayInitializer;
+using static Bang.Tests.TestUtils;
 
 namespace Bang.Tests
 {
@@ -16,7 +13,7 @@ namespace Bang.Tests
         [Fact]
         public void Played_card_goes_to_discard_pile()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplay();
             var player = gamePlay.PlayerTurn;
 
             var stagecoach = new StagecoachCardType().SpadesQueen();
@@ -27,7 +24,7 @@ namespace Bang.Tests
         }
         
         [Fact]
-        public void Stagecoard_card_adds_two_cards_to_hand_and_drops_itself()
+        public void Stagecoach_card_adds_two_cards_to_hand_and_drops_itself()
         {
             var player = CreateGameAndReturnPlayer();
             
@@ -122,22 +119,8 @@ namespace Bang.Tests
 
         private Player CreateGameAndReturnPlayer()
         {
-            var gamePlay = InitGame();
+            var gamePlay = InitGameplay();
             return gamePlay.PlayerTurn;
-        }
-
-        private Game.Gameplay InitGame()
-        {
-            var players = new List<Player>();
-            for (int i = 0; i < 4; i++)
-            {
-                var player = new PlayerOnline(Guid.NewGuid().ToString());
-                players.Add(player);
-            }
-            
-            var gameplay = new Game.Gameplay(CharactersDeck(), BangGameDeck());
-            gameplay.Initialize(players);
-            return gameplay;
         }
     }
 }

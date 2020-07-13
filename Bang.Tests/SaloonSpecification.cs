@@ -9,6 +9,7 @@ using FluentAssertions;
 using Xunit;
 
 using static Bang.Game.GamePlayInitializer;
+using static Bang.Tests.TestUtils;
 
 namespace Bang.Tests
 {
@@ -17,7 +18,7 @@ namespace Bang.Tests
         [Fact]
         public void After_played_saloon_card_goes_to_discard_pile()
         {
-            var gameplay = InitGame();
+            var gameplay = InitGameplay();
             (Player player, BangGameCard saloonCard) = ChoosePlayer(gameplay);
 
             // act
@@ -30,7 +31,7 @@ namespace Bang.Tests
         [Fact]
         public void Player_discards_saloon_card_after_it_played()
         {
-            var gameplay = InitGame();
+            var gameplay = InitGameplay();
             (Player player, BangGameCard saloonCard) = ChoosePlayer(gameplay);
 
             // act
@@ -43,7 +44,7 @@ namespace Bang.Tests
         [Fact]
         public void Saloon_regains_one_life_point_to_all_alive_players_with_no_full_health()
         {
-            var gameplay = InitGame();
+            var gameplay = InitGameplay();
             (Player player, BangGameCard saloonCard) = ChoosePlayer(gameplay);
 
             var otherPlayer = gameplay.Players.First(p => p != player);
@@ -65,29 +66,12 @@ namespace Bang.Tests
         private (Player actor, BangGameCard saloonCard) ChoosePlayer(Game.Gameplay gameplay)
         {
             var actor = gameplay.PlayerTurn;
-            actor.SetInfo(gameplay, actor.Role, new KitCarlson());
 
             actor.LoseLifePoint();
             var saloonCard = new SaloonCardType().HeartsAce();
             actor.AddCardToHand(saloonCard);
             
             return (actor, saloonCard);
-        }
-        
-        private Game.Gameplay InitGame() => InitGame(BangGameDeck());
-        
-        private Game.Gameplay InitGame(Deck<BangGameCard> deck)
-        {
-            var players = new List<Player>();
-            for (int i = 0; i < 4; i++)
-            {
-                var player = new PlayerOnline(Guid.NewGuid().ToString());
-                players.Add(player);
-            }
-            
-            var gameplay = new Game.Gameplay(CharactersDeck(), deck);
-            gameplay.Initialize(players);
-            return gameplay;
         }
     }
 }

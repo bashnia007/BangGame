@@ -28,18 +28,11 @@ namespace Bang.GameEvents.CardEffects.States
         }
 
         public virtual Response SideEffect { get; set; } = new Done();
+
         
-        /// <summary>
-        /// Handles card played by player on it's turn
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="card"></param>
-        /// <param name="gameplay"></param>
-        /// <returns></returns>
         public abstract HandlerState ApplyCardEffect(Player player, BangGameCard card);
 
-        public virtual HandlerState ApplyReplyAction(Player player) => throw new InvalidOperationException();
-        public abstract HandlerState ApplyReplyAction(Player player, BangGameCard card);
-        public virtual HandlerState ApplyReplyAction(Player player, BangGameCard firstCard, BangGameCard secondCard) => throw new InvalidOperationException();
+        public virtual HandlerState ApplyCardEffect(Player player) => throw new InvalidOperationException();
+        public virtual HandlerState ApplyCardEffect(Player player, BangGameCard firstCard, BangGameCard secondCard) => throw new InvalidOperationException();
     }
 }

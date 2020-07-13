@@ -1,14 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using Bang.Characters;
 using Bang.Game;
 using Bang.Players;
 using Bang.PlayingCards;
 using FluentAssertions;
 using Xunit;
-
-using static Bang.Game.GamePlayInitializer;
+using static Bang.Tests.TestUtils;
 
 namespace Bang.Tests
 {
@@ -17,7 +14,7 @@ namespace Bang.Tests
         [Fact]
         public void Beer_card_can_not_be_used_to_help_other_players()
         {
-            var gameplay = InitGame();
+            var gameplay = InitGameplay();
             (Player actor, BangGameCard beerCard) = ChoosePlayer(gameplay);
 
             var otherPlayer = gameplay.Players.First(p => p != actor);
@@ -32,7 +29,7 @@ namespace Bang.Tests
         [Fact]
         public void After_played_beer_card_goes_to_discard_pile()
         {
-            var gameplay = InitGame();
+            var gameplay = InitGameplay();
             (Player actor, BangGameCard beerCard) = ChoosePlayer(gameplay);
             
             // act
@@ -45,7 +42,7 @@ namespace Bang.Tests
         [Fact]
         public void Player_discards_beer_card_after_it_played()
         {
-            var gameplay = InitGame();
+            var gameplay = InitGameplay();
             (Player actor, BangGameCard beerCard) = ChoosePlayer(gameplay);
 
             // act
@@ -58,7 +55,7 @@ namespace Bang.Tests
         [Fact]
         public void Beer_card_regains_one_life_point()
         {
-            var gameplay = InitGame();
+            var gameplay = InitGameplay();
             (Player actor, BangGameCard beerCard) = ChoosePlayer(gameplay);
 
             int healthBefore = actor.LifePoints;
@@ -72,7 +69,7 @@ namespace Bang.Tests
         [Fact]
         public void Player_cannot_gain_more_life_points_than_his_starting_amount()
         {
-            var gameplay = InitGame();
+            var gameplay = InitGameplay();
             (Player actor, BangGameCard beerCard) = ChoosePlayer(gameplay);
 
             int fullHealth = actor.PlayerTablet.MaximumHealth;
@@ -88,7 +85,7 @@ namespace Bang.Tests
         [Fact]
         public void Beer_has_no_effect_if_there_are_only_two_players_left()
         {
-            var gameplay = InitGame();
+            var gameplay = InitGameplay();
             (Player actor, BangGameCard beerCard) = ChoosePlayer(gameplay);
             Player opponent = gameplay.Players.First();
 
@@ -107,27 +104,11 @@ namespace Bang.Tests
             actor.LifePoints.Should().Be(lifePointsBefore);
         }
 
-        private Game.Gameplay InitGame() => InitGame(BangGameDeck());
-        private Game.Gameplay InitGame(Deck<BangGameCard> deck)
-        {
-            var players = new List<Player>();
-            for (int i = 0; i < 4; i++)
-            {
-                var player = new PlayerOnline(Guid.NewGuid().ToString());
-                players.Add(player);
-            }
-            
-            var gameplay = new Game.Gameplay(CharactersDeck(), deck);
-            gameplay.Initialize(players);
-            return gameplay;
-        }
-        
-        private (Player actor, BangGameCard beerCard) ChoosePlayer(Game.Gameplay gameplay)
+        private (Player actor, BangGameCard beerCard) ChoosePlayer(Gameplay gameplay)
         {
             var actor = gameplay.PlayerTurn;
-            actor.SetInfo(gameplay, actor.Role, new KitCarlson());
-
             actor.LoseLifePoint();
+            
             var beerCard = new BeerCardType().HeartsAce();
             actor.AddCardToHand(beerCard);
             
@@ -136,10 +117,7 @@ namespace Bang.Tests
 
         private void KillPlayer(Player player)
         {
-            while (player.LifePoints > 0)
-            {
-                player.LoseLifePoint();
-            }
+            player.LoseLifePoint(player.MaximumLifePoints);
         }
     }
 }

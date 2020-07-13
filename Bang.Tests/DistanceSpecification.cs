@@ -6,6 +6,7 @@ using Bang.PlayingCards;
 using Bang.Roles;
 using FluentAssertions;
 using Xunit;
+using static Bang.Tests.TestUtils;
 
 namespace Bang.Tests
 {
@@ -14,9 +15,8 @@ namespace Bang.Tests
         private Player CreatePlayer(Character character = null)
         {
             var player = new PlayerOnline(Guid.NewGuid().ToString());
+            player.SetInfo(InitGameplay(), new Outlaw(), character?? new Jourdonnais());
             
-            player.SetInfo(new Game.Gameplay(new Deck<Character>(), new Deck<BangGameCard>()), new Outlaw(), character?? new Jourdonnais());
-
             return player;
         }
 
