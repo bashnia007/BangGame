@@ -8,9 +8,14 @@ namespace Bang.Tests
 {
     public static class PlayerExtensions
     {
-        public static void Die(this Player player, Player killer = null)
+        public static void WithOneLifePoint(this Player player)
         {
-            player.LoseLifePoint(killer, player.MaximumLifePoints);
+            player.LoseLifePoint(player.LifePoints - 1);
+        }
+        
+        public static void Die(this Player player, Player becauseOf = null)
+        {
+            player.LoseLifePoint(becauseOf, player.MaximumLifePoints);
         }
         
         public static Player AsSheriff(this Player player, Gameplay gameplay)

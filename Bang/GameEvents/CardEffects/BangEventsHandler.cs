@@ -34,8 +34,10 @@ namespace Bang.GameEvents
         public Response PlayCard(PlayCardMessage message)
         {
             var player = message.Player;
-            
-            return player.PlayCard(message.Card, message.PlayAgainst);
+
+            return message.AdditionalCard != null ? 
+                player.PlayCard(message.Card, message.AdditionalCard) : 
+                player.PlayCard(message.Card, message.PlayAgainst);
         }
 
         public Response CheckDrawCard(CheckDrawCardMessage checkDrawCardMessage)
