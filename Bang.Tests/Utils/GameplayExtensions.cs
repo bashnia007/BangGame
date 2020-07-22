@@ -45,7 +45,7 @@ namespace Bang.Tests
             return gameplay.PlayerTurn;
         }
 
-        internal static Player FindPlayerWithCharacter(this Gameplay gameplay, Character character)
+        internal static Player FindPlayer(this Gameplay gameplay, Character character)
         {
             return gameplay.AlivePlayers.First(p => p.Character == character);
         }

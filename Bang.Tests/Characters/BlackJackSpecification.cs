@@ -6,7 +6,7 @@ using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Bang.Tests
+namespace Bang.Tests.Characters
 {
     public class BlackJackSpecification
     {

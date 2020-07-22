@@ -1,13 +1,13 @@
-﻿using Bang.Characters;
+﻿using System.Linq;
+using Bang.Characters;
 using Bang.Game;
 using Bang.Players;
 using Bang.PlayingCards;
 using FluentAssertions;
-using System.Linq;
 using Xunit;
 using static Bang.Tests.TestUtils;
 
-namespace Bang.Tests
+namespace Bang.Tests.Characters
 {
     public class CalamityJanetSpecification
     {

@@ -153,7 +153,7 @@ namespace Bang.Tests
             
             (Player actor, Player _) = ChoosePlayers(gamePlay);
 
-            var jourdonnais = gamePlay.FindPlayerWithCharacter(new Jourdonnais());
+            var jourdonnais = gamePlay.FindPlayer(new Jourdonnais());
             var healthBefore = jourdonnais.PlayerTablet.Health;
             
             // Act
