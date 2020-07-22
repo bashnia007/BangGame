@@ -36,7 +36,7 @@ namespace Bang.Players
         }
 
         // TODO it would be much better add constructor with this parameters
-        public void SetInfo(Game.Gameplay gamePlay, Role role, Character character)
+        public void SetInfo(Gameplay gamePlay, Role role, Character character)
         {
             this.gamePlay = gamePlay?? throw new ArgumentNullException();
             Role = role?? throw new ArgumentNullException();
@@ -116,7 +116,7 @@ namespace Bang.Players
         public Response PlayCard(BangGameCard card, Player playOn = null)
         {
             if (!hand.Contains(card))
-                throw new InvalidOperationException($"Player doesn't have card {card.Description}");
+                throw new PlayerDoesntHaveSuchCardException(this, card);
 
             if (!card.IsUniversalCard)
             {
@@ -144,6 +144,29 @@ namespace Bang.Players
                 DropCard(card);
 
             return response;
+        }
+
+        public Response PlayCard(BangGameCard firstCard, BangGameCard secondCard)
+        {
+            if (secondCard == null) return PlayCard(firstCard); 
+            
+            if (!hand.Contains(firstCard))
+                throw new PlayerDoesntHaveSuchCardException(this, firstCard);
+            
+            if (!hand.Contains(secondCard))
+                throw new PlayerDoesntHaveSuchCardException(this, secondCard);
+            
+            if (Character != new SidKetchum())
+                return new NotAllowedOperation();
+            
+            if (LifePoints == MaximumLifePoints)
+                return new NotAllowedOperation();
+            
+            DropCard(firstCard);
+            DropCard(secondCard);
+            RegainLifePoint();
+            
+            return new Done();
         }
 
         public void ForceToDropCard(Player victim, BangGameCard card)

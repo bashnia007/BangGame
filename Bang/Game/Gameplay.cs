@@ -227,6 +227,8 @@ namespace Bang.Game
                     PlayerTurn.DropActiveCard(dynamiteCard);
                     // TODO introduce constant or maybe even enum
                     PlayerTurn.LoseLifePoint(3);
+                    
+                    // TODO move to StartNextPlayerTurn
                     if (!PlayerTurn.PlayerTablet.IsAlive)
                     {
                         StartNextPlayerTurn();
