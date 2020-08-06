@@ -1,9 +1,11 @@
 using System;
 using System.Linq;
+using Bang.Characters;
 using Bang.GameEvents;
 using Bang.Players;
 using Bang.PlayingCards;
 using FluentAssertions;
+using Server.Messages;
 using Xunit;
 
 namespace Server.Tests
@@ -533,6 +535,19 @@ namespace Server.Tests
             // Assert
             playCardResponse.Should().BeOfType<ActionDoneMessage>();
             player.Hand.Should().HaveCountLessThan(handBefore);
+        }
+
+        [Fact]
+        public void Next_player_turn_scenario()
+        {
+            var game = CreateAndStartGame();
+            var nextPlayer = game.Gameplay.GetNextPlayer();
+
+            var nextPlayerTurnMessage = new NextPlayerTurnMessage(game.Gameplay.PlayerTurn);
+
+            game.ProcessEvent(nextPlayerTurnMessage);
+
+            game.Gameplay.PlayerTurn.Should().Be(nextPlayer);
         }
 
         private Player CreatePlayer()

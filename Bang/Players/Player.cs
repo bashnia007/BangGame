@@ -242,5 +242,11 @@ namespace Bang.Players
                 DropActiveCard(activeCard);
             }
         }
+
+        public Response EndTurn()
+        {
+            gamePlay.SetNextPlayer();
+            return gamePlay.GivePhaseOneCards();
+        }
     }
 }

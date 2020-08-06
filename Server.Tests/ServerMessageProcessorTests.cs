@@ -289,7 +289,6 @@ namespace Server.Tests
             Assert.Equal(cardsAmountBeforeMessage + cardsToTake, player.Hand.Count);
         }
 
-
         [Fact]
         public void Change_weapon_message_removes_card_from_hand()
         {
