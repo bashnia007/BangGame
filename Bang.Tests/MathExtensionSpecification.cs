@@ -19,7 +19,7 @@ namespace Bang.Tests
         
         [InlineData(-1, -3, 2)]
         [InlineData(2, -3, 2)]
-        public void Mod_works_correctly(int number, int modulo, int expected)
+        public void Mod_is_always_non_negative(int number, int modulo, int expected)
         {
             Mod(number, modulo).Should().Be(expected);
         }
