@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace Bang.GameEvents
 {
@@ -72,6 +73,8 @@ namespace Bang.GameEvents
                 // General store reply
                 TakeCardAfterGeneralStoreResponse chooseCard => gamePlay.ProcessReplyAction(chooseCard.Player, chooseCard.Card),
                 
+                ChooseCardToReturnResponse chooseCard => gamePlay.ProcessReplyAction(chooseCard.Player, chooseCard.CardToReturn),
+
                 _ => throw new NotImplementedException(replyActionMessage.Response.ToString()) 
             };
             

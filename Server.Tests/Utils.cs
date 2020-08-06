@@ -66,13 +66,15 @@ namespace Server.Tests
             };
         }
 
-        public static BangGameMessage ReplyWithChoosingCard(this BangGameMessage replyTo, Player player, BangGameCard cards)
+        public static BangGameMessage ReplyWithChoosingCard(this BangGameMessage replyTo, Player player, BangGameCard card)
         {
             return new ReplyActionMessage(player)
             {
-                Response = new ChooseOneCardResponse()
+                Response = new ChooseCardToReturnResponse()
                 {
-
+                    Player = player,
+                    ReplyTo = replyTo,
+                    CardToReturn = card
                 }
             };
         }
