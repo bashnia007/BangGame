@@ -37,7 +37,7 @@ namespace Server.Tests.Characters
             var responseMessage = game.ProcessEvent(nextPlayerTurnMessage);
             var replayActionMessage = (ReplyActionMessage)responseMessage;
             var response = (ChooseCardsResponse)replayActionMessage.Response;
-            response.CardsToChoose.Count.Should().Be(3);
+            response.CardsToChoose.Should().HaveCount(3);
         }
 
         [Fact]

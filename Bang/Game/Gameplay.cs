@@ -188,13 +188,13 @@ namespace Bang.Game
             state = state.ApplyCardEffect(player, card);
         }
 
-        public void StartNextPlayerTurn()
+        public Response StartNextPlayerTurn()
         {
-            SetNextPlayer();
+            NextTurn();
             
-            if (!IsPlayerAliveAfterDynamite() || !DoesPlayerLeaveJail()) return;
-            
-            // todo provide 2 new cards 
+            if (!IsPlayerAliveAfterDynamite() || !DoesPlayerLeaveJail()) return StartNextPlayerTurn();
+
+            return GivePhaseOneCards();
         }
 
         private bool DoesPlayerLeaveJail()
@@ -247,7 +247,7 @@ namespace Bang.Game
         }
 
         // TODO rename to NextTurn
-        public void SetNextPlayer()
+        public void NextTurn()
         {
             state.BangAlreadyPlayed = false;
             PlayerTurn = GetNextPlayer();

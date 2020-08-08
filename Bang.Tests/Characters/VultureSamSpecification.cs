@@ -93,7 +93,7 @@ namespace Bang.Tests.Characters
             
             gameplay.SkipTurnsUntilPlayer(outLaw);
             while (gameplay.GetNextPlayer() != outLaw)
-                gameplay.SetNextPlayer();
+                gameplay.NextTurn();
 
             // Act
             deck.Put(new StagecoachCardType().ClubsSeven()); // card to explode

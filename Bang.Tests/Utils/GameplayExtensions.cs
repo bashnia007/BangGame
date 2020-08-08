@@ -16,11 +16,11 @@ namespace Bang.Tests
         internal static Gameplay SkipTurnsUntilCharacter(this Gameplay gameplay, Character character)
         {
             if (gameplay.PlayerTurn.Character == character)
-                gameplay.SetNextPlayer();
+                gameplay.NextTurn();
 
             while (gameplay.GetNextPlayer().Character != character)
             {
-                gameplay.SetNextPlayer();
+                gameplay.NextTurn();
             }
 
             return gameplay;
@@ -37,10 +37,10 @@ namespace Bang.Tests
             
             while (gameplay.GetNextPlayer().Character != character)
             {
-                gameplay.SetNextPlayer();
+                gameplay.NextTurn();
             }
             
-            gameplay.SetNextPlayer();
+            gameplay.NextTurn();
 
             return gameplay.PlayerTurn;
         }

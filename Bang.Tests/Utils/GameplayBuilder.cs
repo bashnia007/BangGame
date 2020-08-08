@@ -25,7 +25,15 @@ namespace Bang.Tests
 
         public GameplayBuilder WithDeck(Deck<BangGameCard> deck)
         {
-            cardsDeck = deck;
+            var stack = new Stack<BangGameCard>();
+            while (!deck.IsEmpty())
+            {
+                stack.Push(deck.Deal());
+            }
+            while(stack.Count > 0)
+            {
+                cardsDeck.Put(stack.Pop());
+            }
             return this;
         }
 

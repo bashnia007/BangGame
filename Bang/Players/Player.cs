@@ -268,8 +268,7 @@ namespace Bang.Players
 
         public Response EndTurn()
         {
-            gamePlay.SetNextPlayer();
-            return gamePlay.GivePhaseOneCards();
+            return gamePlay.StartNextPlayerTurn();
         }
     }
 }
