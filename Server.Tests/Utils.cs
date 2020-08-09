@@ -1,6 +1,7 @@
 using Bang.GameEvents;
 using Bang.Players;
 using Bang.PlayingCards;
+using System.Collections.Generic;
 
 namespace Server.Tests
 {
@@ -62,6 +63,19 @@ namespace Server.Tests
                 Response = card == null?
                     new ForcePlayerToDropCardResponse() {Player = player, ReplyTo = replyTo} :
                     new ForcePlayerToDropCardResponse(card) {Player = player, ReplyTo = replyTo}
+            };
+        }
+
+        public static BangGameMessage ReplyWithChoosingCard(this BangGameMessage replyTo, Player player, BangGameCard card)
+        {
+            return new ReplyActionMessage(player)
+            {
+                Response = new ChooseCardToReturnResponse()
+                {
+                    Player = player,
+                    ReplyTo = replyTo,
+                    CardToReturn = card
+                }
             };
         }
     }

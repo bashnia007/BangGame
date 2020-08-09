@@ -265,5 +265,10 @@ namespace Bang.Players
                 DropActiveCard(activeCard);
             }
         }
+
+        public Response EndTurn()
+        {
+            return gamePlay.StartNextPlayerTurn();
+        }
     }
 }

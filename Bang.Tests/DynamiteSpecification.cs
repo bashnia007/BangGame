@@ -43,7 +43,6 @@ namespace Bang.Tests
         public void Player_with_dynamite_card_loses_3_life_points_if_dynamite_explodes()
         {
             var deck = new Deck<BangGameCard>();
-            deck.Put(ExplodeCard());
 
             var gameplay = CreateGameplay(deck);
             Player actor = ChoosePlayer(gameplay);
@@ -54,6 +53,7 @@ namespace Bang.Tests
 
             gameplay.SkipTurnsUntilPlayer(actor);
 
+            gameplay.PutCardOnDeck(ExplodeCard());
             gameplay.StartNextPlayerTurn();
 
             // Assert
@@ -115,7 +115,7 @@ namespace Bang.Tests
             gameplay.SkipTurnsUntilPlayer(actor);
 
             gameplay.StartNextPlayerTurn();
-            gameplay.SetNextPlayer();
+            gameplay.NextTurn();
 
             // Assert
             gameplay.PlayerTurn.ActiveCards.Should().Contain(DynamiteCard());
