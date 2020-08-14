@@ -57,7 +57,7 @@ namespace Bang.Tests
             victim.Die();
             
             // Assert
-            gamePlay.GetTopCardFromDiscarded().Should().Be(catBalouCard);
+            gamePlay.PeekTopCardFromDiscarded().Should().Be(catBalouCard);
         }
         
         [Fact]
@@ -73,7 +73,7 @@ namespace Bang.Tests
             victim.Die();
             
             // Assert
-            gamePlay.GetTopCardFromDiscarded().Should().Be(scopeCard);
+            gamePlay.PeekTopCardFromDiscarded().Should().Be(scopeCard);
         }
 
         [Fact]

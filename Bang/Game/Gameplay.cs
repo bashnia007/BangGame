@@ -5,6 +5,7 @@ using Bang.Characters;
 using Bang.Characters.Visitors;
 using Bang.GameEvents;
 using Bang.GameEvents.CardEffects.States;
+using Bang.GameEvents.Enums;
 using Bang.Players;
 using Bang.PlayingCards;
 using Bang.Roles;
@@ -67,19 +68,41 @@ namespace Bang.Game
             return true;
         }
 
-        public BangGameCard GetTopCardFromDiscarded()
+        /// <summary>
+        /// Return the top card from the discarded without removing it. Use it to check the top card only
+        /// </summary>
+        /// <returns></returns>
+        public BangGameCard PeekTopCardFromDiscarded()
         {
             if (discardedCards.IsEmpty()) return null;
             return discardedCards.Peek();
         }
 
-        public BangGameCard GetTopCardFromDeck()
+        /// <summary>
+        /// Return the top card from the discarded deck
+        /// </summary>
+        /// <returns></returns>
+        public BangGameCard DealCardFromDiscarded()
+        {
+            if (discardedCards.IsEmpty()) return null;
+            return discardedCards.Deal();
+        }
+
+        /// <summary>
+        /// Return the top card from the deck without removing it. Use it to check the top card only
+        /// </summary>
+        /// <returns></returns>
+        public BangGameCard PeekTopCardFromDeck()
         {
             if (deck.IsEmpty()) ResetDeck();
 
             return deck.Peek();
         }
 
+        /// <summary>
+        /// Return the top card from the deck
+        /// </summary>
+        /// <returns></returns>
         public BangGameCard DealCard()
         {
             if (deck.IsEmpty()) ResetDeck();
@@ -279,6 +302,12 @@ namespace Bang.Game
             if (secondCard == null) return ProcessReplyAction(player, firstCard);
             
             state = state.ApplyCardEffect(player, firstCard, secondCard);
+            return state.SideEffect;
+        }
+
+        public Response ProcessDrawSelection(Player player, DrawOptions drawOption)
+        {
+            state = state.ApplyDrawOption(player, drawOption);
             return state.SideEffect;
         }
     }

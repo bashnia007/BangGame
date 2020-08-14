@@ -48,7 +48,7 @@ namespace Bang.Tests
             var barrelResult = barrelChecker.Draw(gamePlay, new Jourdonnais());
 
             // Assert
-            gamePlay.GetTopCardFromDiscarded().Should().Be(card);
+            gamePlay.PeekTopCardFromDiscarded().Should().Be(card);
         }
 
         [Fact]
@@ -90,7 +90,7 @@ namespace Bang.Tests
             var barrelResult = barrelChecker.Draw(gamePlay, new LuckyDuke());
 
             // Assert
-            gamePlay.GetTopCardFromDiscarded().Should().Be(heartCard);
+            gamePlay.PeekTopCardFromDiscarded().Should().Be(heartCard);
         }
     }
 }

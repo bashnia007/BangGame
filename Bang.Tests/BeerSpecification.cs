@@ -36,7 +36,7 @@ namespace Bang.Tests
             actor.PlayCard(beerCard);
             
             // Assert
-            gameplay.GetTopCardFromDiscarded().Should().Be(beerCard);
+            gameplay.PeekTopCardFromDiscarded().Should().Be(beerCard);
         }
          
         [Fact]

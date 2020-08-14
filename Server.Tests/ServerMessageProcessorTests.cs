@@ -270,7 +270,7 @@ namespace Server.Tests
             game.ProcessEvent(message);
 
             // Assert
-            Assert.Equal(cardsToDrop.First(), game.Gameplay.GetTopCardFromDiscarded());
+            Assert.Equal(cardsToDrop.First(), game.Gameplay.PeekTopCardFromDiscarded());
         }
         
         [Fact]

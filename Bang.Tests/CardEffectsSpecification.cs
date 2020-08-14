@@ -20,7 +20,7 @@ namespace Bang.Tests
             player.AddCardToHand(stagecoach);
             player.PlayCard(stagecoach);
 
-            gamePlay.GetTopCardFromDiscarded().Should().Be(stagecoach);
+            gamePlay.PeekTopCardFromDiscarded().Should().Be(stagecoach);
         }
         
         [Fact]

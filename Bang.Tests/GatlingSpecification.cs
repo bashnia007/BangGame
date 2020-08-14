@@ -23,7 +23,7 @@ namespace Bang.Tests
             actor.PlayCard(GatlingCard());
 
             // Assert
-            gameplay.GetTopCardFromDiscarded().Should().Be(GatlingCard());
+            gameplay.PeekTopCardFromDiscarded().Should().Be(GatlingCard());
         }
 
         [Fact]
@@ -50,7 +50,7 @@ namespace Bang.Tests
             victim.Defense(MissedCard());
 
             // Assert
-            gameplay.GetTopCardFromDiscarded().Should().Be(MissedCard());
+            gameplay.PeekTopCardFromDiscarded().Should().Be(MissedCard());
         }
 
         [Fact]

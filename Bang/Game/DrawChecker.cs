@@ -39,7 +39,7 @@ namespace Bang.Game
 
         public bool Peek(Gameplay gameplay)
         {
-            var card = gameplay.GetTopCardFromDeck();
+            var card = gameplay.PeekTopCardFromDeck();
             Logger.Info("Top card in the deck is " + card.ToString());
 
             return ShouldApplyEffect(card);

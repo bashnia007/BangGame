@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Bang.GameEvents.Enums;
 using Bang.Players;
 using Bang.PlayingCards;
 
@@ -89,6 +90,12 @@ namespace Bang.GameEvents
 
         public List<BangGameCard> CardsToChoose { get; set; }
         public Player PlayerTurn { get; set; }
+    }
+
+    public class ChooseDrawOptionResponse : Response
+    {
+        public override bool IsDone => false;
+        public DrawOptions DrawOption { get; set; }
     }
 
     public class TakeCardAfterGeneralStoreResponse : Response

@@ -75,6 +75,8 @@ namespace Bang.GameEvents
                 
                 ChooseCardToReturnResponse chooseCard => gamePlay.ProcessReplyAction(chooseCard.Player, chooseCard.CardToReturn),
 
+                ChooseDrawOptionResponse drawOptionResponse => gamePlay.ProcessDrawSelection(drawOptionResponse.Player, drawOptionResponse.DrawOption),
+
                 _ => throw new NotImplementedException(replyActionMessage.Response.ToString()) 
             };
             

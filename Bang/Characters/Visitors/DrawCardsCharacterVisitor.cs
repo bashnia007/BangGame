@@ -53,6 +53,19 @@ namespace Bang.Characters.Visitors
             };
         }
 
+        public Func<Gameplay, Player, HandlerState> Visit(PedroRamirez character)
+        {
+            return (gameplay, player) =>
+            {
+                var state = new WaitingForDrawOptionState(gameplay)
+                {
+                    SideEffect = new ChooseDrawOptionResponse()
+                };
+
+                return state;
+            };
+        }
+
         private HandlerState ProvideTwoCards(Gameplay gameplay, Player player)
         {
             for (int i = 0; i < 2; i++)
