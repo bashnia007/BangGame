@@ -1,16 +1,14 @@
 ﻿using Bang.Characters;
 using Bang.GameEvents;
 using Bang.GameEvents.Enums;
-using Bang.Players;
 using Bang.PlayingCards;
 using FluentAssertions;
 using Server.Messages;
-using System;
 using Xunit;
 
 namespace Server.Tests.Characters
 {
-    public class PedroRamirezSpecification
+    public class PedroRamirezSpecification : CharactersSpecification
     {
         [Fact]
         public void Pedro_ramirez_receives_choose_draw_option_response()
@@ -76,39 +74,5 @@ namespace Server.Tests.Characters
             var result = game.ProcessEvent(reply);
             pedroRamirez.Hand.Should().Contain(cardOnDiscarded);
         }
-
-        #region Private methods
-
-        private Player CreatePlayer()
-        {
-            string id = Guid.NewGuid().ToString();
-            Lobby.AddPlayer(id);
-            Lobby.SetPlayerName(id, "Dr. Who");
-
-            return Lobby.GetPlayer(id);
-        }
-
-        private Game CreateGame(Player player)
-        {
-            var game = new Game(player);
-            return game;
-        }
-
-        private Game CreateAndStartGame(int playersCount = 4)
-        {
-            var player = CreatePlayer();
-            var game = CreateGame(player);
-
-            for (int i = 0; i < playersCount - 1; i++)
-            {
-                game.JoinPlayer(CreatePlayer());
-            }
-
-            game.Start();
-
-            return game;
-        }
-
-        #endregion
     }
 }
