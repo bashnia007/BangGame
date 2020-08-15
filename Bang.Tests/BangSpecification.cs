@@ -152,6 +152,8 @@ namespace Bang.Tests
                     .Build();
             
             (Player actor, Player _) = ChoosePlayers(gamePlay);
+            
+            actor.PlayerTablet.PutCard(new WinchesterCardType().SpadesNine());
 
             var jourdonnais = gamePlay.FindPlayer(new Jourdonnais());
             var healthBefore = jourdonnais.PlayerTablet.Health;
@@ -163,9 +165,53 @@ namespace Bang.Tests
             response.Should().BeOfType<Done>(); 
             jourdonnais.LifePoints.Should().Be(healthBefore);
         }
+
+        [Fact]
+        public void Player_by_default_can_not_bang_on_players_at_distance_two()
+        {
+            var gamePlay = new GameplayBuilder()
+                .WithoutCharacter(new PaulRegret())
+                .WithoutCharacter(new RoseDoolan())
+                .Build();
+            
+            var hitter = gamePlay.PlayerTurn;
+            var victim = gamePlay.FindPlayerAtDistanceFrom(2, hitter);
+            
+            hitter.AddCardToHand(BangCard());
+            
+            // Act
+            var response = hitter.PlayCard(BangCard(), victim);
+            
+            // Assert
+            response.Should().BeOfType<NotAllowedOperation>();
+            ((NotAllowedOperation)response).Reason.Should().Contain("maximum reachable shooting distance is");
+        }
+        
+        [Fact]
+        public void Weapon_changes_shooting_reachable_distance()
+        {
+            var gamePlay = new GameplayBuilder()
+                .WithoutCharacter(new PaulRegret())
+                .WithoutCharacter(new RoseDoolan())
+                .Build();
+            
+            var hitter = gamePlay.PlayerTurn;
+            var target = gamePlay.FindPlayerAtDistanceFrom(2, hitter);
+            
+            hitter.AddCardToHand(RemingtonCard());
+            hitter.AddCardToHand(BangCard());
+
+            hitter.PlayCard(RemingtonCard());
+            // Act
+            var response = hitter.PlayCard(BangCard(), target);
+            
+            // Assert
+            response.Should().NotBeOfType<NotAllowedOperation>();
+        }
         
         private BangGameCard BangCard() => new BangCardType().SpadesQueen();
-        private BangGameCard MissedCard() => new MissedCardType().SpadesQueen();
+        private BangGameCard MissedCard() => new MissedCardType().HeartsJack();
+        private BangGameCard RemingtonCard() => new RemingtonCardType().ClubsSix();
 
         private Gameplay CreateGamePlay(Deck<BangGameCard> deck = null)
         {
@@ -186,7 +232,7 @@ namespace Bang.Tests
             
             actor.AddCardToHand(BangCard());
 
-            var victim = gameplay.Players.First(p => p != actor);
+            var victim = gameplay.FindPlayerAtDistanceFrom(1, actor);
             victim.AddCardToHand(MissedCard());
             
             return (actor, victim);
