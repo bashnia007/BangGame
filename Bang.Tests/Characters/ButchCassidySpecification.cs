@@ -41,7 +41,7 @@ namespace Bang.Tests.Characters
         {
             var (gamePlay, butch) = CreateGamePlayWithButch();
 
-            var cardFromDeck = gamePlay.GetTopCardFromDeck();
+            var cardFromDeck = gamePlay.PeekTopCardFromDeck();
             
             // Act
             butch.LoseLifePoint();
@@ -56,12 +56,12 @@ namespace Bang.Tests.Characters
 
             butch.LoseLifePoint(butch.MaximumLifePoints - 1);
             
-            var topDeckCard = gamePlay.GetTopCardFromDeck();
+            var topDeckCard = gamePlay.PeekTopCardFromDeck();
             
             // Act
             butch.LoseLifePoint();
 
-            gamePlay.GetTopCardFromDeck().Should().Be(topDeckCard);
+            gamePlay.PeekTopCardFromDeck().Should().Be(topDeckCard);
         }
         
         [Fact]
@@ -69,12 +69,12 @@ namespace Bang.Tests.Characters
         {
             var (gamePlay, butch) = CreateGamePlayWithButch();
 
-            var topDeckCard = gamePlay.GetTopCardFromDeck();
+            var topDeckCard = gamePlay.PeekTopCardFromDeck();
             
             // Act
             butch.Die();
 
-            gamePlay.GetTopCardFromDeck().Should().Be(topDeckCard);
+            gamePlay.PeekTopCardFromDeck().Should().Be(topDeckCard);
         }
 
         private (Gameplay, Player) CreateGamePlayWithButch()

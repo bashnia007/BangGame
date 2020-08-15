@@ -1,5 +1,6 @@
 using System;
 using Bang.Game;
+using Bang.GameEvents.Enums;
 using Bang.Players;
 using Bang.PlayingCards;
 using NLog;
@@ -34,5 +35,6 @@ namespace Bang.GameEvents.CardEffects.States
 
         public virtual HandlerState ApplyCardEffect(Player player) => throw new InvalidOperationException();
         public virtual HandlerState ApplyCardEffect(Player player, BangGameCard firstCard, BangGameCard secondCard) => throw new InvalidOperationException();
+        public virtual HandlerState ApplyDrawOption(Player player, DrawOptions drawOption) => throw new InvalidOperationException();
     }
 }

@@ -22,7 +22,7 @@ namespace Bang.Tests
             actor.PlayCard(IndiansCard());
 
             // Assert
-            gameplay.GetTopCardFromDiscarded().Should().Be(IndiansCard());
+            gameplay.PeekTopCardFromDiscarded().Should().Be(IndiansCard());
         }
 
         [Fact]
@@ -49,7 +49,7 @@ namespace Bang.Tests
             victim.Defense(BangCard());
 
             // Assert
-            gameplay.GetTopCardFromDiscarded().Should().Be(BangCard());
+            gameplay.PeekTopCardFromDiscarded().Should().Be(BangCard());
         }
 
         [Fact]

@@ -194,7 +194,7 @@ namespace Bang.Tests.Characters
             opponent.NotDefense();
 
             // Assert
-            gamePlay.GetTopCardFromDiscarded().Should().Be(MissedCard());
+            gamePlay.PeekTopCardFromDiscarded().Should().Be(MissedCard());
         }
 
         [Fact]
@@ -209,7 +209,7 @@ namespace Bang.Tests.Characters
             calamity.Defense(BangCard());
 
             // Assert
-            gamePlay.GetTopCardFromDiscarded().Should().Be(BangCard());
+            gamePlay.PeekTopCardFromDiscarded().Should().Be(BangCard());
         }
 
         [Fact]
@@ -224,7 +224,7 @@ namespace Bang.Tests.Characters
             opponent.NotDefense();
 
             // Assert
-            gamePlay.GetTopCardFromDiscarded().Should().Be(MissedCard());
+            gamePlay.PeekTopCardFromDiscarded().Should().Be(MissedCard());
         }
 
         [Fact]
@@ -238,7 +238,7 @@ namespace Bang.Tests.Characters
             calamity.Defense(MissedCard());
 
             // Assert
-            gamePlay.GetTopCardFromDiscarded().Should().Be(MissedCard());
+            gamePlay.PeekTopCardFromDiscarded().Should().Be(MissedCard());
         }
 
         [Fact]
@@ -252,7 +252,7 @@ namespace Bang.Tests.Characters
             calamity.Defense(BangCard());
 
             // Assert
-            gamePlay.GetTopCardFromDiscarded().Should().Be(BangCard());
+            gamePlay.PeekTopCardFromDiscarded().Should().Be(BangCard());
         }
 
 

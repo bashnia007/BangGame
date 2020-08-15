@@ -1,4 +1,5 @@
 using Bang.GameEvents;
+using Bang.GameEvents.Enums;
 using Bang.Players;
 using Bang.PlayingCards;
 using System.Collections.Generic;
@@ -75,6 +76,18 @@ namespace Server.Tests
                     Player = player,
                     ReplyTo = replyTo,
                     CardToReturn = card
+                }
+            };
+        }
+
+        public static BangGameMessage ReplyWithSelectedDrawOption(this BangGameMessage replyTo, Player player, DrawOptions drawOption)
+        {
+            return new ReplyActionMessage(player)
+            {
+                Response = new ChooseDrawOptionResponse 
+                {
+                    Player = player,
+                    DrawOption = drawOption
                 }
             };
         }

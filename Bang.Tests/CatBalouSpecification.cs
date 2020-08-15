@@ -42,7 +42,7 @@ namespace Bang.Tests
             actor.PlayCard(catBalouCard, victim);
             
             // Assert
-            gameplay.GetTopCardFromDiscarded().Should().Be(catBalouCard);
+            gameplay.PeekTopCardFromDiscarded().Should().Be(catBalouCard);
         }
          
         [Fact]
@@ -125,7 +125,7 @@ namespace Bang.Tests
             actor.ForceToDropCard(victim, cardToDrop);
             
             // Assert
-            gameplay.GetTopCardFromDiscarded().Should().Be(cardToDrop);
+            gameplay.PeekTopCardFromDiscarded().Should().Be(cardToDrop);
         }
         
         [Fact]
@@ -146,7 +146,7 @@ namespace Bang.Tests
             actor.ForceToDropRandomCard(victim);
             
             // Assert
-            gameplay.GetTopCardFromDiscarded().Should().Be(mustangCard);
+            gameplay.PeekTopCardFromDiscarded().Should().Be(mustangCard);
         }
             
         private (Player actor, Player victim) ChoosePlayers(Game.Gameplay gameplay)

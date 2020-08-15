@@ -22,7 +22,7 @@ namespace Bang.Tests
             actor.PlayCard(BangCard(), victim);
 
             // Assert
-            gamePlay.GetTopCardFromDiscarded().Should().Be(BangCard());
+            gamePlay.PeekTopCardFromDiscarded().Should().Be(BangCard());
             actor.Hand.Should().NotContain(BangCard());
         }
 
@@ -55,7 +55,7 @@ namespace Bang.Tests
             victim.Defense(MissedCard());
             
             // Assert
-            gamePlay.GetTopCardFromDiscarded().Should().Be(MissedCard());
+            gamePlay.PeekTopCardFromDiscarded().Should().Be(MissedCard());
         }
         
         [Fact]

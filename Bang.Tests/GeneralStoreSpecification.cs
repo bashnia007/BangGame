@@ -25,7 +25,7 @@ namespace Bang.Tests
             actor.PlayCard(GeneralStoreCard());
 
             // Assert
-            gameplay.GetTopCardFromDiscarded().Should().Be(GeneralStoreCard());
+            gameplay.PeekTopCardFromDiscarded().Should().Be(GeneralStoreCard());
         }
 
         [Fact]

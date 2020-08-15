@@ -55,7 +55,7 @@ namespace Bang.Tests.Characters
 
             var response = gamePlay.GivePhaseOneCards();
             kitCarlson.ChooseCard(MissedCard());
-            gamePlay.GetTopCardFromDeck().Should().Be(MissedCard());
+            gamePlay.PeekTopCardFromDeck().Should().Be(MissedCard());
         }
 
         [Fact]

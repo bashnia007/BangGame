@@ -111,7 +111,7 @@ namespace Bang.Tests.Characters
             elGringo.LoseLifePoint(otherPlayer);
             
             // Assert
-            gameplay.GetTopCardFromDiscarded().Should().NotBe(volcanicCard);
+            gameplay.PeekTopCardFromDiscarded().Should().NotBe(volcanicCard);
         }
         
         private BangGameCard DuelCard() => new DuelCardType().SpadesQueen();
