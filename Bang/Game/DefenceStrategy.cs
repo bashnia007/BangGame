@@ -1,4 +1,5 @@
 using System;
+using Bang.Characters;
 using Bang.Characters.Visitors;
 using Bang.Players;
 using Bang.PlayingCards;
@@ -39,6 +40,10 @@ namespace Bang.Game
             }
             else
             {
+                if (defender.Character is SuzyLafayette && requiredCards == 2)
+                {
+                    defender.DropCard(firstCard);
+                }
                 defender.LoseLifePoint(hitter);
             }
 

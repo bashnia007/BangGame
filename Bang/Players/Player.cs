@@ -132,16 +132,17 @@ namespace Bang.Players
                 }
             }
 
-            var response = gamePlay.CardPlayed(playOn?? this, card);
+            var response = gamePlay.CardPlayed(this, playOn?? this, card);
+
+            if (response is NotAllowedOperation)
+                return response;
 
             if (response is LeaveCardOnTheTableResponse)
             {
                 hand.Remove(card);
                 return response;
             }
-
-            if (!(response is NotAllowedOperation))
-                DropCard(card);
+            DropCard(card);
 
             return response;
         }
@@ -248,12 +249,17 @@ namespace Bang.Players
         {
             if (victim == null)
                 throw new ArgumentNullException(nameof(victim));
-
+                        
             var card = RandomCardChooser.ChooseCard(victim.Hand);
             if (card != null)
             {
                 victim.LoseCard(card);
                 AddCardToHand(card);
+            }
+
+            if (victim.Character is SuzyLafayette && victim.Hand.Count == 0)
+            {
+                victim.AddCardToHand(gamePlay.DealCard());
             }
         }
 
