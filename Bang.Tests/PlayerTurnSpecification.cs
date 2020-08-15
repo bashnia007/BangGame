@@ -38,6 +38,7 @@ namespace Bang.Tests
             victim.NotDefense();
 
             gamePlay.SkipTurnsUntilPlayer(actor);
+            gamePlay.SetTurnToPlayer(actor);
             
             // Act
             var response = actor.PlayCard(anotherBangCard, victim);
@@ -119,7 +120,7 @@ namespace Bang.Tests
             actor.AddCardToHand(GatlingCard());
             
 
-            var victim = gameplay.Players.First(p => p != actor);
+            var victim = gameplay.FindPlayerAtDistanceFrom(1, actor);
             victim.AddCardToHand(MissedCard());
             
             return (actor, victim);

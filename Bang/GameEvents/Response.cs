@@ -70,6 +70,14 @@ namespace Bang.GameEvents
     public class NotAllowedOperation : Response
     {
         public override bool IsDone => true;
+        public string Reason { get; }
+        
+        public NotAllowedOperation(){}
+
+        public NotAllowedOperation(string reason)
+        {
+            Reason = reason;
+        }
     }
 
     public class LeaveCardOnTheTableResponse : Response

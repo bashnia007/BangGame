@@ -1,6 +1,5 @@
 using System.Linq;
 using Bang.Characters;
-using Bang.Characters.Visitors;
 using Bang.Game;
 using Bang.GameEvents.CardEffects.States;
 using Bang.Players;
@@ -16,8 +15,11 @@ namespace Bang.GameEvents.CardEffects
 
         public override HandlerState ApplyEffect(Player victim, BangGameCard card)
         {
-            if (!CanPlayBang(gameplay))
-                return new ErrorState(state);
+            var canPlayBang = CanPlayBang(gameplay, victim);
+            if (!canPlayBang)
+            {
+                return new ErrorState(state, canPlayBang.Reason);
+            }
             
             state.BangAlreadyPlayed = true;
             
@@ -35,11 +37,27 @@ namespace Bang.GameEvents.CardEffects
             return new WaitingMissedCardAfterBangState(victim, defenceStrategy, state){SideEffect = response};
         }
 
-        private bool CanPlayBang(Gameplay gameplay)
+        private Result CanPlayBang(Gameplay gameplay, Player target)
         {
             var hitter = gameplay.PlayerTurn;
 
-            return !state.BangAlreadyPlayed || hitter.PlayerTablet.Weapon.MultipleBang; 
+            if (state.BangAlreadyPlayed && !hitter.PlayerTablet.Weapon.MultipleBang)
+            {
+                // TODO use resource
+                return Result.Error("You already played bang card in this turn!");
+            }
+
+            var distance = DistanceCalculator.GetDistance(gameplay.AlivePlayers.ToList(), hitter, target);
+
+            if (distance > hitter.Weapon.Distance)
+            {
+                // TODO use resource
+                return Result.Error(
+                    $"Distance between you and {target.Name} is {distance}. " +
+                    $"Your maximum reachable shooting distance is {hitter.Weapon.Distance}");
+            }
+            
+            return Result.Success(); 
         }
     }
 }

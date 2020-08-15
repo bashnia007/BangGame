@@ -49,5 +49,19 @@ namespace Bang.Tests
         {
             return gameplay.AlivePlayers.First(p => p.Character == character);
         }
+
+        internal static Player FindPlayerAtDistanceFrom(this Gameplay gameplay, int distance, Player player)
+        {
+            var alivePlayers = gameplay.AlivePlayers.ToList();
+            foreach (var p in alivePlayers)
+            {
+                if (player == p) continue;
+
+                if (DistanceCalculator.GetDistance(alivePlayers, player, p) == distance)
+                    return p;
+            }
+            
+            throw new InvalidOperationException($"There is no one player at distance {distance} from {player.Name}");
+        }
     }
 }
