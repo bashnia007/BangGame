@@ -41,7 +41,9 @@ namespace Bang.GameEvents.CardEffects
         {
             var hitter = gameplay.PlayerTurn;
 
-            if (state.BangAlreadyPlayed && !hitter.PlayerTablet.Weapon.MultipleBang)
+            if (state.BangAlreadyPlayed && 
+                !hitter.PlayerTablet.Weapon.MultipleBang &&
+                hitter.Character != new WillyTheKid())
             {
                 // TODO use resource
                 return Result.Error("You already played bang card in this turn!");

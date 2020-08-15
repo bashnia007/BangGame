@@ -67,8 +67,6 @@ namespace Bang.Tests
         public GameplayBuilder WithCharacter(Character character)
         {
             charactersMustToBe.Add(character);
-            
-            
             return this;
         }
 
@@ -86,7 +84,14 @@ namespace Bang.Tests
 
             for (int i = 0; i < playersAmount - charactersMustToBe.Count; i++)
             {
-                characterDeck.Put(oldDeck.Deal());
+                var character = oldDeck.Deal();
+
+                if (charactersMustToBe.Contains(character))
+                {
+                    character = oldDeck.Deal();
+                }
+                
+                characterDeck.Put(character);
             }
         }
 
@@ -94,6 +99,7 @@ namespace Bang.Tests
         {
             var players = new List<Player>();
             UpdateCharacterDeck();
+            
             for (int i = 0; i < playersAmount; i++)
             {
                 var player = new PlayerOnline(Guid.NewGuid().ToString());
