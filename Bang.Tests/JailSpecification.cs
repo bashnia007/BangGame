@@ -17,7 +17,7 @@ namespace Bang.Tests
         [Fact]
         public void Player_discards_jail_card_after_it_played()
         {
-            var gameplay = InitGameplay();
+            var gameplay = InitJailTestGameplay();
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
@@ -30,7 +30,7 @@ namespace Bang.Tests
         [Fact]
         public void Victim_has_jail_card_on_the_tablet()
         {
-            var gameplay = InitGameplay();
+            var gameplay = InitJailTestGameplay();
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
@@ -43,7 +43,7 @@ namespace Bang.Tests
         [Fact]
         public void Jail_card_cannot_be_played_on_sheriff()
         {
-            var gameplay = InitGameplay();
+            var gameplay = InitJailTestGameplay();
             (Player sheriff, Player badGuy) = ChoosePlayer(gameplay);
             badGuy.AddCardToHand(JailCard());
 
@@ -60,7 +60,7 @@ namespace Bang.Tests
             var deck = new Deck<BangGameCard>();
             deck.Put(NotHeartsCard());
 
-            var gameplay = InitGameplay(deck);
+            var gameplay = InitJailTestGameplay(deck);
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
@@ -80,7 +80,7 @@ namespace Bang.Tests
             var deck = new Deck<BangGameCard>();
             deck.Put(HeartsCard());
 
-            var gameplay = InitGameplay(deck);
+            var gameplay = InitJailTestGameplay(deck);
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
@@ -99,7 +99,7 @@ namespace Bang.Tests
             var deck = new Deck<BangGameCard>();
             deck.Put(NotHeartsCard());
 
-            var gameplay = InitGameplay(deck);
+            var gameplay = InitJailTestGameplay(deck);
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
@@ -132,6 +132,19 @@ namespace Bang.Tests
         private BangGameCard HeartsCard() => new BangCardType().HeartsAce();
 
         private BangGameCard NotHeartsCard() => new BangCardType().SpadesQueen();
+
+        private Gameplay InitJailTestGameplay(Deck<BangGameCard> deck = null)
+        {
+            var builder = new GameplayBuilder()
+                .WithoutCharacter(new KitCarlson())
+                .WithoutCharacter(new PedroRamirez())
+                .WithoutCharacter(new LuckyDuke());
+
+            if (deck != null)
+                builder.WithDeck(deck);
+
+            return builder.Build();
+        }
 
         #endregion
     }

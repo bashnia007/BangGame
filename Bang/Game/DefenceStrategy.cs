@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using Bang.Characters;
 using Bang.Characters.Visitors;
+using Bang.Exceptions;
 using Bang.Players;
 using Bang.PlayingCards;
 
@@ -25,6 +27,10 @@ namespace Bang.Game
         public bool Apply(Player defender, BangGameCard firstCard, BangGameCard secondCard = null)
         {
             if (defender == null) throw new ArgumentNullException(nameof(defender));
+            if (firstCard != null && !defender.Hand.Contains(firstCard))
+                throw new PlayerDoesntHaveSuchCardException(defender, firstCard);
+            if (secondCard != null && !defender.Hand.Contains(secondCard))
+                throw new PlayerDoesntHaveSuchCardException(defender, secondCard);
 
             Func<BangGameCard, CardType, bool> isValidCard = GetValidator(defender);
 

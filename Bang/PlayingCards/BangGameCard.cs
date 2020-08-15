@@ -42,7 +42,7 @@ namespace Bang.PlayingCards
 
         public override string ToString()
         {
-            return $"{Type.Description}, {Rank}, {Suite}";
+            return $"{Type.Description}, {{{Rank}, {Suite}}}";
         }
     }
 }

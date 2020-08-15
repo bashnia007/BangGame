@@ -8,6 +8,7 @@ using Bang.Game;
 using Bang.PlayingCards;
 using Bang.Roles;
 using Bang.GameEvents;
+using Bang.Weapons;
 
 namespace Bang.Players
 {
@@ -27,6 +28,7 @@ namespace Bang.Players
         public int MaximumLifePoints => PlayerTablet.MaximumHealth;
         public int LifePoints => PlayerTablet.Health;
         public bool IsAlive => PlayerTablet.IsAlive;
+        public Weapon Weapon => PlayerTablet.Weapon;
 
         private Gameplay gamePlay;
 

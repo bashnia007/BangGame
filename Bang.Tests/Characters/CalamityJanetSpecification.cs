@@ -273,7 +273,7 @@ namespace Bang.Tests.Characters
             calamity.AddCardToHand(BangCard());
             calamity.AddCardToHand(MissedCard());
 
-            var opponent = gameplay.Players.First(p => p != calamity);
+            var opponent = gameplay.FindPlayerAtDistanceFrom(1, calamity);
             opponent.AddCardToHand(BangCard()); 
             opponent.AddCardToHand(GatlingCard());
             opponent.AddCardToHand(IndiansCard());

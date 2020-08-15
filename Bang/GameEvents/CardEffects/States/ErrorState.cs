@@ -21,5 +21,10 @@ namespace Bang.GameEvents.CardEffects.States
         public ErrorState(HandlerState previous) : base(previous)
         {
         }
+
+        public ErrorState(HandlerState previous, string reason) : this(previous)
+        {
+            SideEffect = new NotAllowedOperation(reason);
+        }
     }
 }
