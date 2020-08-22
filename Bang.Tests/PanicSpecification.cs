@@ -146,6 +146,7 @@ namespace Bang.Tests
             return new GameplayBuilder()
                 .WithoutCharacter(new RoseDoolan())
                 .WithoutCharacter(new PaulRegret())
+                .WithoutCharacter(new KitCarlson())
                 .Build();
         }
             

@@ -123,6 +123,7 @@ namespace Bang.Tests.Characters
                 new GameplayBuilder()
                     .WithCharacter(new ElGringo())
                     .WithoutCharacter(new VultureSam())
+                    .WithoutCharacter(new KitCarlson())
                     .Build();
 
             var elGringo = gameplay.Players.First(p => p.Character == new ElGringo());
