@@ -4,6 +4,7 @@ using System.Linq;
 using Bang.Characters;
 using Bang.Characters.Visitors;
 using Bang.GameEvents;
+using Bang.GameEvents.CardEffects;
 using Bang.GameEvents.CardEffects.States;
 using Bang.GameEvents.Enums;
 using Bang.Players;
@@ -57,6 +58,9 @@ namespace Bang.Game
         {
             state = state.ApplyCardEffect(player, card);
 
+            if (player.Character is SuzyLafayette && player.Hand.Count == 0 && !(state is WaitingBangAfterDuelState))
+                player.AddCardToHand(DealCard());
+
             return true;
         }
 
@@ -65,6 +69,9 @@ namespace Bang.Game
             if (secondCard == null) return Defense(player, card);
             
             state = state.ApplyCardEffect(player, card, secondCard);
+
+            CheckSuzyHand(player, 0);
+
             return true;
         }
 
@@ -136,13 +143,15 @@ namespace Bang.Game
             }
         }
 
-        internal Response CardPlayed(Player player, BangGameCard card)
+        internal Response CardPlayed(Player currentPlayer, Player playOn, BangGameCard card)
         {
-            var nextState = state.ApplyCardEffect(player, card);
+            var nextState = state.ApplyCardEffect(playOn, card);
 
             if (!nextState.IsError)
                 state = nextState;
-            
+
+            CheckSuzyHand(currentPlayer, 1);
+
             return nextState.SideEffect;
         }
 
@@ -309,6 +318,12 @@ namespace Bang.Game
         {
             state = state.ApplyDrawOption(player, drawOption);
             return state.SideEffect;
+        }
+
+        private void CheckSuzyHand(Player player, int cardsLimit)
+        {
+            if (player.Character is SuzyLafayette && player.Hand.Count == cardsLimit && !(state is WaitingBangAfterDuelState))
+                player.AddCardToHand(DealCard());
         }
     }
 }

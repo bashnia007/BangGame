@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Bang.Characters;
 using Bang.Characters.Visitors;
 using Bang.Exceptions;
 using Bang.Players;
@@ -31,6 +32,12 @@ namespace Bang.Game
             if (secondCard != null && !defender.Hand.Contains(secondCard))
                 throw new PlayerDoesntHaveSuchCardException(defender, secondCard);
 
+            if (defender.Character is SuzyLafayette && requiredCards == 2 && defender.Hand.Count == 1)
+            {
+                defender.TakeCards(1);
+                secondCard = defender.Hand.First(c => c != firstCard);
+            }
+
             Func<BangGameCard, CardType, bool> isValidCard = GetValidator(defender);
 
             bool saveLifePoint =
@@ -45,6 +52,10 @@ namespace Bang.Game
             }
             else
             {
+                if (defender.Character is SuzyLafayette && requiredCards == 2)
+                {
+                    defender.DropCard(firstCard);
+                }
                 defender.LoseLifePoint(hitter);
             }
 
