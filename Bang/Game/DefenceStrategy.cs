@@ -32,6 +32,12 @@ namespace Bang.Game
             if (secondCard != null && !defender.Hand.Contains(secondCard))
                 throw new PlayerDoesntHaveSuchCardException(defender, secondCard);
 
+            if (defender.Character is SuzyLafayette && requiredCards == 2 && defender.Hand.Count == 1)
+            {
+                defender.TakeCards(1);
+                secondCard = defender.Hand.First(c => c != firstCard);
+            }
+
             Func<BangGameCard, CardType, bool> isValidCard = GetValidator(defender);
 
             bool saveLifePoint =

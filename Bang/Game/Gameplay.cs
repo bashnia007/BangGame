@@ -66,16 +66,6 @@ namespace Bang.Game
 
         public bool Defense(Player player, BangGameCard card, BangGameCard secondCard)
         {
-            if (secondCard == null &&
-                player.Character is SuzyLafayette &&
-                player.Hand.Count == 1 &&
-                PlayerTurn.Character is SlabTheKiller &&
-                state is WaitingMissedCardAfterBangState)
-            {
-                secondCard = DealCard();
-                player.AddCardToHand(secondCard);
-            }
-
             if (secondCard == null) return Defense(player, card);
             
             state = state.ApplyCardEffect(player, card, secondCard);
