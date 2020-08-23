@@ -15,9 +15,12 @@ namespace Bang.Tests
         [Fact]
         public void When_all_the_Outlaws_and_the_Renegade_are_killed_the_Sheriff_and_his_Deputies_win()
         {
-            var (gameplay, sheriff, renegade) = GameplayWithDeputiesAndOutlawsEliminated();
+            var gameplay = GameplayWithDeputiesAndOutlawsEliminated();
 
             var expectedWinners = gameplay.Players.Where(p => p.Role is Sheriff || p.Role is Deputy);
+
+            var sheriff = gameplay.FindPlayer(new Sheriff());
+            var renegade = gameplay.FindPlayer(new Renegade());
             
             renegade.WithOneLifePoint();
             
@@ -38,8 +41,11 @@ namespace Bang.Tests
         [Fact]
         public void If_the_Renegade_is_the_only_one_alive_then_he_wins()
         {
-            var (gameplay, sheriff, renegade) = GameplayWithDeputiesAndOutlawsEliminated();
+            var gameplay = GameplayWithDeputiesAndOutlawsEliminated();
 
+            var sheriff = gameplay.FindPlayer(new Sheriff());
+            var renegade = gameplay.FindPlayer(new Renegade());
+            
             sheriff.WithOneLifePoint();
             
             renegade.AddCardToHand(DuelCard());
@@ -175,48 +181,30 @@ namespace Bang.Tests
             return new GameplayBuilder(playersAmount).Build();
         }
 
-        private (Gameplay, Player, Player) GameplayWithDeputiesAndOutlawsEliminated()
+        private Gameplay GameplayWithDeputiesAndOutlawsEliminated()
         {
             var gamePlay = CreateGamePlay();
 
-            Player sheriff = null;
-            Player renegade = null;
             foreach (var player in gamePlay.Players)
             {
                 if (player.Role is Outlaw || player.Role is Deputy)
                     player.Die();
-
-                else if (player.Role is Sheriff)
-                {
-                    sheriff = player;
-                } 
-                else if (player.Role is Renegade)
-                {
-                    renegade = player;
-                }
             }
 
-            return (gamePlay, sheriff, renegade);
+            return gamePlay;
         }
         
-        private (Gameplay, Player) GameplayWithDeputiesEliminated()
+        private Gameplay GameplayWithDeputiesEliminated()
         {
             var gamePlay = CreateGamePlay();
 
-            Player sheriff = null;
-            Player renegade = null;
             foreach (var player in gamePlay.Players)
             {
                 if (player.Role is Deputy)
                     player.Die();
-
-                else if (player.Role is Sheriff)
-                {
-                    sheriff = player;
-                } 
             }
 
-            return (gamePlay, sheriff);
+            return gamePlay;
         }
         
         private Gameplay GameplayWithOutlawsEliminated(int playersAmount = 5)
