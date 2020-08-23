@@ -3,6 +3,7 @@ using System.Linq;
 using Bang.Characters;
 using Bang.Game;
 using Bang.Players;
+using Bang.Roles;
 
 namespace Bang.Tests
 {
@@ -48,6 +49,11 @@ namespace Bang.Tests
         internal static Player FindPlayer(this Gameplay gameplay, Character character)
         {
             return gameplay.AlivePlayers.First(p => p.Character == character);
+        }
+
+        internal static Player FindPlayer(this Gameplay gameplay, Role role)
+        {
+            return gameplay.AlivePlayers.First(p => p.Role == role);
         }
 
         internal static Player FindPlayerAtDistanceFrom(this Gameplay gameplay, int distance, Player player)

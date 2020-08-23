@@ -1,7 +1,10 @@
+using System;
 using System.Linq;
+using Bang.Exceptions;
 using Bang.Game;
 using Bang.GameEvents;
 using Bang.Players;
+using Bang.PlayingCards;
 using Bang.Roles;
 
 namespace Bang.Tests
@@ -47,6 +50,30 @@ namespace Bang.Tests
         {
             player.SetInfo(gameplay, new Outlaw(), player.Character);
             return player;
+        }
+
+        public static Response PlayDuel(this Player player, Player opponent)
+        {
+            var duelCard = player.Hand.FirstOrDefault(c => c == new DuelCardType());
+            if (duelCard == null)
+                throw new ArgumentException("Player doesn't have a duel card");
+
+            return player.PlayCard(duelCard, opponent);
+        }
+        
+        public static Response PlayIndians(this Player player) => player.PlayCard(new IndiansCardType());
+        
+        public static Response PlayGatling(this Player player) => player.PlayCard(new GatlingCardType());
+
+        public static Response PlayDynamite(this Player player) => player.PlayCard(new DynamiteCardType());
+
+        private static Response PlayCard(this Player player, CardType cardType)
+        {
+            var card = player.Hand.FirstOrDefault(c => c == cardType);
+            if (card == null)
+                throw new ArgumentException($"Player {player.Name} doesn't have a {cardType}");
+
+            return player.PlayCard(card);
         }
     }
 }

@@ -118,4 +118,15 @@ namespace Bang.GameEvents
         
         public BangGameCard Card { get; }
     }
+    
+    public class GameOverResponse : Response
+    {
+        public override bool IsDone => true;
+        public List<Player> Winners;
+
+        public GameOverResponse(List<Player> winners)
+        {
+            Winners = winners;
+        }
+    }
 }
