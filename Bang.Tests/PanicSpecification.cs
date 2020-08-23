@@ -147,6 +147,7 @@ namespace Bang.Tests
                 .WithoutCharacter(new RoseDoolan())
                 .WithoutCharacter(new PaulRegret())
                 .WithoutCharacter(new KitCarlson())
+                .WithoutCharacter(new SuzyLafayette())
                 .Build();
         }
             
