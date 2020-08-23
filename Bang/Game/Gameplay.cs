@@ -239,7 +239,6 @@ namespace Bang.Game
 
                 if (!jailChecker.Draw(this, PlayerTurn.Character))
                 {
-                    StartNextPlayerTurn();
                     return false;
                 }
             }
@@ -263,7 +262,6 @@ namespace Bang.Game
                     // TODO move to StartNextPlayerTurn
                     if (!PlayerTurn.PlayerTablet.IsAlive)
                     {
-                        StartNextPlayerTurn();
                         return false;
                     }
                 }
@@ -278,7 +276,7 @@ namespace Bang.Game
             return true;
         }
 
-        // TODO rename to NextTurn
+        // TODO make it internal or private 
         public void NextTurn()
         {
             state.BangAlreadyPlayed = false;
