@@ -222,6 +222,9 @@ namespace Bang.Game
 
         public Response StartNextPlayerTurn()
         {
+            if (!CanPassTurn(PlayerTurn))
+                return new NotAllowedOperation($"{PlayerTurn.Name} exceeds hand-size limit");
+            
             NextTurn();
             
             if (!IsPlayerAliveAfterDynamite() || !DoesPlayerLeaveJail()) return StartNextPlayerTurn();
@@ -278,7 +281,11 @@ namespace Bang.Game
             return true;
         }
 
-        // TODO rename to NextTurn
+        private bool CanPassTurn(Player player)
+        {
+            return player.Hand.Count <= player.LifePoints;
+        }
+
         public void NextTurn()
         {
             state.BangAlreadyPlayed = false;

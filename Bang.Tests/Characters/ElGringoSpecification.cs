@@ -123,6 +123,7 @@ namespace Bang.Tests.Characters
                 new GameplayBuilder()
                     .WithCharacter(new ElGringo())
                     .WithoutCharacter(new VultureSam())
+                    .WithoutCharacter(new SuzyLafayette())
                     .WithoutCharacter(new KitCarlson())
                     .Build();
 
