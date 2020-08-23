@@ -2,7 +2,6 @@ using System.Linq;
 using Bang.Characters;
 using Bang.Game;
 using Bang.GameEvents;
-using Bang.Players;
 using Bang.PlayingCards;
 using Bang.Roles;
 using FluentAssertions;
@@ -34,7 +33,8 @@ namespace Bang.Tests
             // Assert 
             response.Should().BeOfType<GameOverResponse>();
 
-            var specificResponse = ((GameOverResponse) response); 
+            var specificResponse = ((GameOverResponse) response);
+            specificResponse.Team.Should().Be(Team.Sheriff);
             specificResponse.Winners.Should().BeEquivalentTo(expectedWinners); 
         }
         
@@ -58,7 +58,8 @@ namespace Bang.Tests
             // Assert 
             response.Should().BeOfType<GameOverResponse>();
             
-            var specificResponse = ((GameOverResponse) response); 
+            var specificResponse = ((GameOverResponse) response);
+            specificResponse.Team.Should().Be(Team.Renegade);
             specificResponse.Winners.Should().OnlyContain(p => p == renegade); 
         }
         
@@ -84,7 +85,8 @@ namespace Bang.Tests
             // Assert 
             response.Should().BeOfType<GameOverResponse>();
             
-            var specificResponse = (GameOverResponse) response; 
+            var specificResponse = (GameOverResponse) response;
+            specificResponse.Team.Should().Be(Team.Outlaws);
             specificResponse.Winners.Should().BeEquivalentTo(expectedWinners); 
         }
         
@@ -112,7 +114,7 @@ namespace Bang.Tests
             response.Should().BeOfType<GameOverResponse>();
             
             var specificResponse = (GameOverResponse) response; 
-            specificResponse.Winners.Should().BeEquivalentTo(renegade); 
+            specificResponse.Team.Should().Be(Team.Renegade);
         }
         
         [Fact]
@@ -139,7 +141,7 @@ namespace Bang.Tests
             response.Should().BeOfType<GameOverResponse>();
             
             var specificResponse = (GameOverResponse) response; 
-            specificResponse.Winners.Should().BeEquivalentTo(renegade); 
+            specificResponse.Team.Should().Be(Team.Renegade); 
         }
 
         [Fact]

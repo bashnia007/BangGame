@@ -232,7 +232,8 @@ namespace Bang.Game
             {
                 if (IsGameOver())
                 {
-                    state = new GameoverState(this, FindWinners());
+                    var (team, winners) = FindWinners();
+                    state = new GameoverState(this, team, winners);
                     return state.SideEffect;
                 }
             }
@@ -347,10 +348,7 @@ namespace Bang.Game
         {
             state = state.ApplyCardEffect(player);
 
-            if (state.IsFinalState && IsGameOver())
-            {
-                state = new GameoverState(this, FindWinners());
-            }
+            state = UpdateStateIfGameOver(state);
 
             return state;
         }
@@ -359,10 +357,7 @@ namespace Bang.Game
         {
             state = state.ApplyCardEffect(player, card);
 
-            if (state.IsFinalState && IsGameOver())
-            {
-                state = new GameoverState(this, FindWinners());
-            }
+            state = UpdateStateIfGameOver(state);
 
             return state;
         }
@@ -371,9 +366,17 @@ namespace Bang.Game
         {
             state = state.ApplyCardEffect(player, firstCard, secondCard);
 
+            state = UpdateStateIfGameOver(state);
+
+            return state;
+        }
+
+        private HandlerState UpdateStateIfGameOver(HandlerState state)
+        {
             if (state.IsFinalState && IsGameOver())
             {
-                state = new GameoverState(this, FindWinners());
+                var (team, winners) = FindWinners();
+                return new GameoverState(this, team, winners);
             }
 
             return state;
@@ -394,25 +397,35 @@ namespace Bang.Game
             return false;
         }
 
-        private List<Player> FindWinners()
+        private (Team, List<Player>) FindWinners()
         {
             Debug.Assert(IsGameOver());
 
+            IEnumerable<Player> players;
+            Team team;
+            
             if (AlivePlayers.Any(p => p.Role is Sheriff))
             {
-                return Players.Where(p => p.Role is Sheriff || p.Role is Deputy).ToList();
+                team = Team.Sheriff;
+                players = Players.Where(p => p.Role is Sheriff || p.Role is Deputy);
             }
             
             // Sheriff is dead
 
             // If Renegade is only alive then he will be winner
-            if (AlivePlayers.All(p => p.Role is Renegade))
+            else if (AlivePlayers.All(p => p.Role is Renegade))
             {
-                return Players.Where(p => p.Role is Renegade).ToList();
+                team = Team.Renegade;
+                players = Players.Where(p => p.Role is Renegade);
             }
-            
             // otherwise outlaws are winner
-            return Players.Where(p => p.Role is Outlaw).ToList();
+            else
+            {
+                team = Team.Outlaws;
+                players = Players.Where(p => p.Role is Outlaw);
+            }
+
+            return (team, players.ToList());
         }
     }
 }

@@ -12,11 +12,11 @@ namespace Bang.GameEvents.CardEffects.States
     {
         public override bool IsFinalState => true;
 
-        internal GameoverState(Gameplay gameplay, List<Player> winners) : base(gameplay)
+        internal GameoverState(Gameplay gameplay, Team team, List<Player> winners) : base(gameplay)
         {
             Debug.Assert(winners.Any());
             
-            SideEffect = new GameOverResponse(winners);
+            SideEffect = new GameOverResponse(team, winners);
         }
 
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
