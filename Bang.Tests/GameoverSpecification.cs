@@ -65,10 +65,11 @@ namespace Bang.Tests
         [Fact]
         public void If_Sheriff_killed_and_non_Renegade_player_is_alive_then_Outlaws_win()
         {
-            var (gameplay, sheriff) = GameplayWithDeputiesEliminated();
+            var gameplay = GameplayWithDeputiesEliminated();
 
             var expectedWinners = gameplay.Players.Where(p => p.Role is Outlaw);
-            
+
+            var sheriff = gameplay.FindPlayer(new Sheriff());
             var outlaw = gameplay.FindPlayer(new Outlaw());
             
             sheriff.WithOneLifePoint();
@@ -173,6 +174,8 @@ namespace Bang.Tests
             return new GameplayBuilder()
                 .WithDeck(deck)
                 .WithoutCharacter(new KitCarlson())
+                .WithoutCharacter(new PedroRamirez())
+                .WithoutCharacter(new JessyJones())
                 .Build();
         }
         
