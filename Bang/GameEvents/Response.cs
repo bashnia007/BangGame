@@ -118,4 +118,24 @@ namespace Bang.GameEvents
         
         public BangGameCard Card { get; }
     }
+
+    public enum Team
+    {
+        Sheriff,
+        Outlaws,
+        Renegade
+    }
+    
+    public class GameOverResponse : Response
+    {
+        public override bool IsDone => true;
+        public Team Team;
+        public List<Player> Winners;
+
+        public GameOverResponse(Team team, List<Player> winners)
+        {
+            Team = team;
+            Winners = winners;
+        }
+    }
 }
