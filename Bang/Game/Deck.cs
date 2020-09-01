@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Bang.Game
@@ -46,7 +47,6 @@ namespace Bang.Game
         public T Deal()
         {
             if (IsEmpty()) throw new InvalidOperationException();
-
             return cards.Pop();
         }
 

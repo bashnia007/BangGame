@@ -78,14 +78,14 @@ namespace Bang.Tests
         public void After_hearts_card_player_does_not_miss_his_turn()
         {
             var deck = new Deck<BangGameCard>();
-            deck.Put(HeartsCard());
-
+            
             var gameplay = InitJailTestGameplay(deck);
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
             actor.PlayCard(JailCard(), victim);
             gameplay.SkipTurnsUntilPlayer(victim);
+            gameplay.PutCardOnDeck(HeartsCard());
 
             gameplay.StartNextPlayerTurn();
 

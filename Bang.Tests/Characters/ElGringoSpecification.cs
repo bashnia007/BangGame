@@ -122,6 +122,7 @@ namespace Bang.Tests.Characters
             var gameplay = 
                 new GameplayBuilder()
                     .WithCharacter(new ElGringo())
+                    .WithCharacter(new CalamityJanet())
                     .WithoutCharacter(new VultureSam())
                     .WithoutCharacter(new SuzyLafayette())
                     .WithoutCharacter(new KitCarlson())
@@ -130,7 +131,7 @@ namespace Bang.Tests.Characters
             var elGringo = gameplay.Players.First(p => p.Character == new ElGringo());
             elGringo.AddCardToHand(DuelCard());
 
-            var otherPlayer = gameplay.Players.First(p => p != elGringo);
+            var otherPlayer = gameplay.Players.First(p => p.Character == new CalamityJanet());
             otherPlayer.AddCardToHand(BangCard());
 
             return (gameplay, elGringo, otherPlayer);
