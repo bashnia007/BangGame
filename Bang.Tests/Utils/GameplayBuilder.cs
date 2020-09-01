@@ -21,9 +21,7 @@ namespace Bang.Tests
         {
             this.playersAmount = playersAmount;
             cardsDeck = GamePlayInitializer.BangGameDeck();
-            Debug.WriteLine("Playing cards in the deck = " + cardsDeck.Count);
             characterDeck = GamePlayInitializer.CharactersDeck();
-            Debug.WriteLine("Characters cards in the deck = " + characterDeck.Count);
         }
 
         public GameplayBuilder WithDeck(Deck<BangGameCard> deck)

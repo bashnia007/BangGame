@@ -47,7 +47,6 @@ namespace Bang.Game
         public T Deal()
         {
             if (IsEmpty()) throw new InvalidOperationException();
-            Debug.WriteLine($"Dealing card from the deck. Currently there is {Count} cards");
             return cards.Pop();
         }
 
