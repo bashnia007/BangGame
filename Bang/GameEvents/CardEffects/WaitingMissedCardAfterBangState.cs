@@ -8,7 +8,6 @@ namespace Bang.GameEvents.CardEffects
 {
     internal class WaitingMissedCardAfterBangState : HandlerState
     {
-        public override bool IsFinalState => false;
         public override bool IsError => false;
 
         private Player victim;

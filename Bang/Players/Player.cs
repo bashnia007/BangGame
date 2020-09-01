@@ -110,9 +110,9 @@ namespace Bang.Players
             gamePlay.Defense(this, firstCard, secondCard);
         }
 
-        public void NotDefense()
+        public Response NotDefense()
         {
-            gamePlay.Defense(this, null);
+            return gamePlay.Defense(this, null);
         }
 
         public Response PlayCard(BangGameCard card, Player playOn = null)

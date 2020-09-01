@@ -124,6 +124,7 @@ namespace Bang.Tests.Characters
                     .WithCharacter(new ElGringo())
                     .WithCharacter(new CalamityJanet())
                     .WithoutCharacter(new VultureSam())
+                    .WithoutCharacter(new SuzyLafayette())
                     .WithoutCharacter(new KitCarlson())
                     .WithoutCharacter(new SuzyLafayette())
                     .Build();

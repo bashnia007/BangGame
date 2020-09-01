@@ -104,12 +104,34 @@ namespace Bang.Tests
             // Assert
             response.Should().BeOfType<DefenceAgainstBang>();
         }
+
+        [Fact]
+        public void Player_can_not_pass_turn_if_he_exceeds_hand_size_limit()
+        {
+            // Arrange
+            var gamePlay = CreateGameplay();
+            var actor = gamePlay.PlayerTurn;
+            
+            actor.AddCardToHand(BangCard());
+            actor.AddCardToHand(AnotherBangCard());
+            actor.AddCardToHand(MissedCard());
+            actor.AddCardToHand(DuelCard());
+            actor.AddCardToHand(GatlingCard());
+            actor.AddCardToHand(SaloonCard());
+            
+            // Act
+            var result = actor.EndTurn();
+
+            result.Should().BeOfType<NotAllowedOperation>();
+            ((NotAllowedOperation) result).Reason.Should().Contain("exceeds hand-size limit");
+        }
         
         private BangGameCard BangCard() => new BangCardType().SpadesQueen();
         private BangGameCard AnotherBangCard() => new BangCardType().HeartsAce();
         private BangGameCard MissedCard() => new MissedCardType().SpadesQueen();
         private BangGameCard DuelCard() => new DuelCardType().SpadesQueen();
         private BangGameCard GatlingCard() => new GatlingCardType().SpadesQueen();
+        private BangGameCard SaloonCard() => new SaloonCardType().ClubsSix();
 
         private (Player actor, Player victim) ChoosePlayers(Game.Gameplay gameplay)
         {

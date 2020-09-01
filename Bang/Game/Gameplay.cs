@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Bang.Characters;
 using Bang.Characters.Visitors;
@@ -54,25 +55,25 @@ namespace Bang.Game
                 FillPlayerHand(player);
         }
         
-        public bool Defense(Player player, BangGameCard card)
+        public Response Defense(Player player, BangGameCard card)
         {
-            state = state.ApplyCardEffect(player, card);
+            state = ApplyEffects(player, card);
 
             if (player.Character is SuzyLafayette && player.Hand.Count == 0 && !(state is WaitingBangAfterDuelState))
                 player.AddCardToHand(DealCard());
 
-            return true;
+            return state.SideEffect;
         }
 
-        public bool Defense(Player player, BangGameCard card, BangGameCard secondCard)
+        public Response Defense(Player player, BangGameCard card, BangGameCard secondCard)
         {
             if (secondCard == null) return Defense(player, card);
             
-            state = state.ApplyCardEffect(player, card, secondCard);
+            state = ApplyEffects(player, card, secondCard);
 
             CheckSuzyHand(player, 0);
 
-            return true;
+            return state.SideEffect;
         }
 
         /// <summary>
@@ -145,7 +146,7 @@ namespace Bang.Game
 
         internal Response CardPlayed(Player currentPlayer, Player playOn, BangGameCard card)
         {
-            var nextState = state.ApplyCardEffect(playOn, card);
+            var nextState = ApplyEffects(playOn, card);
 
             if (!nextState.IsError)
                 state = nextState;
@@ -207,24 +208,38 @@ namespace Bang.Game
 
         public void StealCard(Player victim, BangGameCard card)
         {
-            state = state.ApplyCardEffect(victim, card);
+            state = ApplyEffects(victim, card);
         }
 
         public void StealCard(Player victim)
         {
-            state = state.ApplyCardEffect(victim);
+            state = ApplyEffects(victim);
         }
 
         public void ChooseCard(BangGameCard card, Player player)
         {
-            state = state.ApplyCardEffect(player, card);
+            state = ApplyEffects(player, card);
         }
 
         public Response StartNextPlayerTurn()
         {
-            NextTurn();
+            if (!CanPassTurn(PlayerTurn))
+                return new NotAllowedOperation($"{PlayerTurn.Name} exceeds hand-size limit");
             
-            if (!IsPlayerAliveAfterDynamite() || !DoesPlayerLeaveJail()) return StartNextPlayerTurn();
+            NextTurn();
+
+            if (!IsPlayerAliveAfterDynamite())
+            {
+                if (IsGameOver())
+                {
+                    var (team, winners) = FindWinners();
+                    state = new GameoverState(this, team, winners);
+                    return state.SideEffect;
+                }
+            }
+
+            if (!DoesPlayerLeaveJail()) 
+                return StartNextPlayerTurn();
 
             return GivePhaseOneCards();
         }
@@ -239,7 +254,6 @@ namespace Bang.Game
 
                 if (!jailChecker.Draw(this, PlayerTurn.Character))
                 {
-                    StartNextPlayerTurn();
                     return false;
                 }
             }
@@ -263,7 +277,6 @@ namespace Bang.Game
                     // TODO move to StartNextPlayerTurn
                     if (!PlayerTurn.PlayerTablet.IsAlive)
                     {
-                        StartNextPlayerTurn();
                         return false;
                     }
                 }
@@ -278,7 +291,12 @@ namespace Bang.Game
             return true;
         }
 
-        // TODO rename to NextTurn
+        private bool CanPassTurn(Player player)
+        {
+            return player.Hand.Count <= player.LifePoints;
+        }
+
+        // TODO make it internal or private 
         public void NextTurn()
         {
             state.BangAlreadyPlayed = false;
@@ -302,7 +320,7 @@ namespace Bang.Game
 
         public Response ProcessReplyAction(Player player, BangGameCard card)
         {
-            state = state.ApplyCardEffect(player, card);
+            state = ApplyEffects(player, card);
             return state.SideEffect;
         }
         
@@ -310,7 +328,7 @@ namespace Bang.Game
         {
             if (secondCard == null) return ProcessReplyAction(player, firstCard);
             
-            state = state.ApplyCardEffect(player, firstCard, secondCard);
+            state = ApplyEffects(player, firstCard, secondCard);
             return state.SideEffect;
         }
 
@@ -324,6 +342,90 @@ namespace Bang.Game
         {
             if (player.Character is SuzyLafayette && player.Hand.Count == cardsLimit && !(state is WaitingBangAfterDuelState))
                 player.AddCardToHand(DealCard());
+        }
+
+        private HandlerState ApplyEffects(Player player)
+        {
+            state = state.ApplyCardEffect(player);
+
+            state = UpdateStateIfGameOver(state);
+
+            return state;
+        }
+        
+        private HandlerState ApplyEffects(Player player, BangGameCard card)
+        {
+            state = state.ApplyCardEffect(player, card);
+
+            state = UpdateStateIfGameOver(state);
+
+            return state;
+        }
+        
+        private HandlerState ApplyEffects(Player player, BangGameCard firstCard, BangGameCard secondCard)
+        {
+            state = state.ApplyCardEffect(player, firstCard, secondCard);
+
+            state = UpdateStateIfGameOver(state);
+
+            return state;
+        }
+
+        private HandlerState UpdateStateIfGameOver(HandlerState state)
+        {
+            if (state.IsFinalState && IsGameOver())
+            {
+                var (team, winners) = FindWinners();
+                return new GameoverState(this, team, winners);
+            }
+
+            return state;
+        }
+
+        private bool IsGameOver()
+        {
+            if (!AlivePlayers.Any(p => p.Role is Sheriff))
+            {
+                return true;
+            }
+
+            if (AlivePlayers.All(p => !(p.Role is Renegade) && !(p.Role is Outlaw)))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private (Team, List<Player>) FindWinners()
+        {
+            Debug.Assert(IsGameOver());
+
+            IEnumerable<Player> players;
+            Team team;
+            
+            if (AlivePlayers.Any(p => p.Role is Sheriff))
+            {
+                team = Team.Sheriff;
+                players = Players.Where(p => p.Role is Sheriff || p.Role is Deputy);
+            }
+            
+            // Sheriff is dead
+
+            // If Renegade is only alive then he will be winner
+            else if (AlivePlayers.All(p => p.Role is Renegade))
+            {
+                team = Team.Renegade;
+                players = Players.Where(p => p.Role is Renegade);
+            }
+            // otherwise outlaws are winner
+            else
+            {
+                team = Team.Outlaws;
+                players = Players.Where(p => p.Role is Outlaw);
+            }
+
+            return (team, players.ToList());
         }
     }
 }
