@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Bang.Game
@@ -46,7 +47,7 @@ namespace Bang.Game
         public T Deal()
         {
             if (IsEmpty()) throw new InvalidOperationException();
-
+            Debug.WriteLine($"Dealing card from the deck. Currently there is {Count} cards");
             return cards.Pop();
         }
 
@@ -54,5 +55,7 @@ namespace Bang.Game
         
 
         public void Put(T card) => cards.Push(card);
+
+        public int Count => cards.Count;
     }
 }
