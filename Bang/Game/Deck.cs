@@ -54,7 +54,5 @@ namespace Bang.Game
         
 
         public void Put(T card) => cards.Push(card);
-
-        public int Count => cards.Count;
     }
 }
