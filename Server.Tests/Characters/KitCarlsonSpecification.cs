@@ -2,6 +2,7 @@
 using Bang.GameEvents;
 using FluentAssertions;
 using Server.Messages;
+using System.Linq;
 using Xunit;
 
 namespace Server.Tests.Characters
@@ -52,6 +53,24 @@ namespace Server.Tests.Characters
             var response = (ChooseCardsResponse)replayActionMessage.Response;
 
             var reply = responseMessage.ReplyWithChoosingCard(nextPlayer, response.CardsToChoose[0]);
+            var result = game.ProcessEvent(reply);
+            result.Should().BeOfType<ActionDoneMessage>();
+        }
+
+        [Fact]
+        public void Kit_Karlson_cannot_drop_card_from_hand_during_phase_one()
+        {
+            var game = CreateAndStartGame();
+            var nextPlayer = game.Gameplay.GetNextPlayer();
+            nextPlayer.SetInfo(game.Gameplay, nextPlayer.Role, new KitCarlson());
+
+            var nextPlayerTurnMessage = new NextPlayerTurnMessage(game.Gameplay.PlayerTurn);
+
+            var responseMessage = game.ProcessEvent(nextPlayerTurnMessage);
+            var replayActionMessage = (ReplyActionMessage)responseMessage;
+            var response = (ChooseCardsResponse)replayActionMessage.Response;
+
+            var reply = responseMessage.ReplyWithChoosingCard(nextPlayer, nextPlayer.Hand.First());
             var result = game.ProcessEvent(reply);
             result.Should().BeOfType<ActionDoneMessage>();
         }
