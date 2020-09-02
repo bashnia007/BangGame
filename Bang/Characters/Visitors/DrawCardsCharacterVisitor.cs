@@ -42,13 +42,8 @@ namespace Bang.Characters.Visitors
                     player.AddCardToHand(newCard);
                     list.Add(newCard);
                 }
-                var state = new WaitingForCardSelectionState(gameplay)
-                {
-                    SideEffect = new ChooseCardsResponse
-                    {
-                        CardsToChoose = list
-                    }
-                };
+                var state = new WaitingForCardSelectionState(gameplay, list);
+
                 return state;
             };
         }
