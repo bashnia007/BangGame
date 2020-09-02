@@ -72,9 +72,7 @@ namespace Server.Tests.Characters
 
             var reply = responseMessage.ReplyWithChoosingCard(nextPlayer, nextPlayer.Hand.First());
             var result = game.ProcessEvent(reply);
-
-            replayActionMessage = (ReplyActionMessage)result;
-            replayActionMessage.Response.Should().BeOfType<ChooseCardsResponse>();
+            result.Should().BeOfType<ActionDoneMessage>();
         }
 
         [Fact]
