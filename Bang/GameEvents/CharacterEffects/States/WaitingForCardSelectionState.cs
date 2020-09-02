@@ -13,6 +13,12 @@ namespace Bang.GameEvents.CharacterEffects.States
 
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
         {
+            if (!((ChooseCardsResponse)SideEffect).CardsToChoose.Contains(card))
+            {
+                Logger.Error("Kit Karlson can't drop card from his hand during phase one");
+                return this;
+            }
+
             player.PutCardOnDeck(card);
             return new DoneState(gameplay);
         }
