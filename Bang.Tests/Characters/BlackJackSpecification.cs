@@ -10,41 +10,33 @@ namespace Bang.Tests.Characters
 {
     public class BlackJackSpecification
     {
-        private readonly ITestOutputHelper output;
-        
-        public BlackJackSpecification(ITestOutputHelper output)
-        {
-            this.output = output;
-        }
-
         #region Tests
 
         [Fact]
         public void BlackJack_receives_three_cards_if_the_second_is_heart()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(new BangCardType().DiamondsThree());
-            deck.Put(new StagecoachCardType().HeartsAce());
-            deck.Put(new MissedCardType().ClubsSeven());
+            var (gamePlay, blackJack) = CreateGameplay(new BlackJack());
+            
+            gamePlay.PutCardOnDeck(new BangCardType().DiamondsThree());
+            gamePlay.PutCardOnDeck(new StagecoachCardType().HeartsAce());
+            gamePlay.PutCardOnDeck(new MissedCardType().ClubsSeven());
 
-            var (gamePlay, blackJack) = CreateGameplay(new BlackJack(), deck); 
-                
-            gamePlay.GivePhaseOneCards();
+            gamePlay.StartPlayerTurn();
 
+            gamePlay.PlayerTurn.Should().Be(blackJack);
             blackJack.Hand.Should().HaveCount(3);
         }
 
         [Fact]
         public void BlackJack_receives_three_cards_if_the_second_is_diamond()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(new BangCardType().HeartsAce());
-            deck.Put(new StagecoachCardType().DiamondsThree());
-            deck.Put(new MissedCardType().ClubsSeven());
+            var (gamePlay, blackJack) = CreateGameplay(new BlackJack());
+            
+            gamePlay.PutCardOnDeck(new BangCardType().HeartsAce());
+            gamePlay.PutCardOnDeck(new StagecoachCardType().DiamondsThree());
+            gamePlay.PutCardOnDeck(new MissedCardType().ClubsSeven());
 
-            var (gamePlay, blackJack) = CreateGameplay(new BlackJack(), deck);
-
-            gamePlay.GivePhaseOneCards();
+            gamePlay.StartPlayerTurn();
 
             blackJack.Hand.Should().HaveCount(3);
         }
@@ -52,41 +44,40 @@ namespace Bang.Tests.Characters
         [Fact]
         public void BlackJack_receives_two_cards_if_the_second_is_neither_hearts_nor_diamond()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(new BangCardType().HeartsAce());
-            deck.Put(new StagecoachCardType().ClubsSeven());
-            deck.Put(new MissedCardType().DiamondsThree ());
+            var (gamePlay, blackJack) = CreateGameplay(new BlackJack());
+            
+            gamePlay.PutCardOnDeck(new BangCardType().HeartsAce());
+            gamePlay.PutCardOnDeck(new StagecoachCardType().ClubsSeven());
+            gamePlay.PutCardOnDeck(new MissedCardType().DiamondsThree());
 
-            var (gamePlay, blackJack) = CreateGameplay(new BlackJack(), deck);
+            gamePlay.StartPlayerTurn();
 
-            gamePlay.GivePhaseOneCards();
-
+            gamePlay.PlayerTurn.Should().Be(blackJack);
             blackJack.Hand.Should().HaveCount(2);
         }
 
         [Fact]
         public void Not_BlackJack_receives_two_cards()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(new BangCardType().DiamondsThree());
-            deck.Put(new StagecoachCardType().HeartsAce());
-            deck.Put(new MissedCardType().ClubsSeven());
+            var (gamePlay, nonBlackJack) = CreateGameplay(new SlabTheKiller());
+            
+            gamePlay.PutCardOnDeck(new BangCardType().DiamondsThree());
+            gamePlay.PutCardOnDeck(new StagecoachCardType().HeartsAce());
+            gamePlay.PutCardOnDeck(new MissedCardType().ClubsSeven());
 
-            var (gamePlay, nonBlackJack) = CreateGameplay(new SlabTheKiller(), deck);
-
-            gamePlay.GivePhaseOneCards();
+            gamePlay.StartPlayerTurn();
 
             nonBlackJack.Hand.Should().HaveCount(2);
         }
 
         #endregion
 
-        private (Gameplay, Player) CreateGameplay(Character character, Deck<BangGameCard> deck)
+        private (Gameplay, Player) CreateGameplay(Character character)
         {
             var gamePlay = 
                 new GameplayBuilder()
                     .WithCharacter(character)
-                    .WithDeck(deck).Build();
+                    .Build();
 
             var actor = gamePlay.SetTurnToCharacter(character);
 

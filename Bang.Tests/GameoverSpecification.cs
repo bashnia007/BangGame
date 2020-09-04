@@ -27,8 +27,8 @@ namespace Bang.Tests
             gameplay.SetTurnToPlayer(sheriff);
             
             // Act 
-            sheriff.PlayDuel(renegade);
-            var response = renegade.NotDefense();
+            sheriff.PlayDuel(gameplay, renegade);
+            var response = renegade.LoseDuel(gameplay);
             
             // Assert 
             response.Should().BeOfType<GameOverResponse>();
@@ -52,8 +52,8 @@ namespace Bang.Tests
             gameplay.SetTurnToPlayer(renegade);
             
             // Act 
-            renegade.PlayDuel(sheriff);
-            var response = sheriff.NotDefense();
+            renegade.PlayDuel(gameplay, sheriff);
+            var response = sheriff.LoseDuel(gameplay);
             
             // Assert 
             response.Should().BeOfType<GameOverResponse>();
@@ -79,8 +79,8 @@ namespace Bang.Tests
             gameplay.SetTurnToPlayer(outlaw);
             
             // Act 
-            outlaw.PlayDuel(sheriff);
-            var response = sheriff.NotDefense();
+            outlaw.PlayDuel(gameplay, sheriff);
+            var response = sheriff.LoseDuel(gameplay);
             
             // Assert 
             response.Should().BeOfType<GameOverResponse>();
@@ -106,9 +106,9 @@ namespace Bang.Tests
             gameplay.SetTurnToPlayer(renegade);
             
             // Act 
-            renegade.PlayIndians();
-            sheriff.NotDefense();
-            var response = deputy.NotDefense();
+            renegade.PlayIndians(gameplay);
+            sheriff.NotDefenseAgainstIndians(gameplay);
+            var response = deputy.NotDefenseAgainstIndians(gameplay);
             
             // Assert 
             response.Should().BeOfType<GameOverResponse>();
@@ -133,9 +133,9 @@ namespace Bang.Tests
             gameplay.SetTurnToPlayer(renegade);
             
             // Act 
-            renegade.PlayGatling();
-            sheriff.NotDefense();
-            var response = deputy.NotDefense();
+            renegade.PlayGatling(gameplay);
+            sheriff.NotDefenseAgainstBang(gameplay);
+            var response = deputy.NotDefenseAgainstBang(gameplay);
             
             // Assert 
             response.Should().BeOfType<GameOverResponse>();
@@ -147,19 +147,19 @@ namespace Bang.Tests
         [Fact]
         public void Game_can_be_over_after_dynamite_exploding()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(ExplodeCard());
-            var gamePlay = CreateGamePlay(deck);
+            var gamePlay = CreateGamePlay();
             var sheriff = gamePlay.FindPlayer(new Sheriff());
             
             sheriff.AddCardToHand(DynamiteCard());
             sheriff.WithOneLifePoint();
-            sheriff.PlayDynamite();
+            sheriff.PlayDynamite(gamePlay);
+            sheriff.EndTurn();
             
-            gamePlay.SkipTurnsUntilPlayer(sheriff);
+            gamePlay.SetTurnToPlayer(sheriff);
+            gamePlay.PutCardOnDeck(ExplodeCard());
 
             // Act
-            var response = gamePlay.StartNextPlayerTurn();
+            var response = gamePlay.StartPlayerTurn();
 
             response.Should().BeOfType<GameOverResponse>();
         }
@@ -171,19 +171,13 @@ namespace Bang.Tests
         
         private BangGameCard ExplodeCard() => new MissedCardType().ClubsFive();
 
-        private Gameplay CreateGamePlay(Deck<BangGameCard> deck)
+        private Gameplay CreateGamePlay(int playersAmount = 5)
         {
-            return new GameplayBuilder()
-                .WithDeck(deck)
+            return new GameplayBuilder(playersAmount)
                 .WithoutCharacter(new KitCarlson())
                 .WithoutCharacter(new PedroRamirez())
                 .WithoutCharacter(new JessyJones())
                 .Build();
-        }
-        
-        private Gameplay CreateGamePlay(int playersAmount = 5)
-        {
-            return new GameplayBuilder(playersAmount).Build();
         }
 
         private Gameplay GameplayWithDeputiesAndOutlawsEliminated()

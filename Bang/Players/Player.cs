@@ -88,33 +88,6 @@ namespace Bang.Players
             }
         }
 
-        public void Defense(BangGameCard firstCard, BangGameCard secondCard = null)
-        {
-            if (firstCard == null)
-            {
-                NotDefense();
-                return;
-            }
-            
-            if (!hand.Contains(firstCard))
-                throw new PlayerDoesntHaveSuchCardException(this, firstCard);
-
-            if (secondCard != null)
-            {
-                if (!hand.Contains(secondCard))
-                {
-                    throw new PlayerDoesntHaveSuchCardException(this, secondCard);
-                }
-            }
-
-            gamePlay.Defense(this, firstCard, secondCard);
-        }
-
-        public Response NotDefense()
-        {
-            return gamePlay.Defense(this, null);
-        }
-
         public Response PlayCard(BangGameCard card, Player playOn = null)
         {
             if (!hand.Contains(card))
@@ -172,16 +145,6 @@ namespace Bang.Players
             return new Done();
         }
 
-        public void ForceToDropCard(Player victim, BangGameCard card)
-        {
-            gamePlay.ForceDropCard(victim, card);
-        }
-
-        public void ForceToDropRandomCard(Player victim)
-        {
-            gamePlay.ForceDropRandomCard(victim);
-        }
-
         public void RegainLifePoint()
         {
             PlayerTablet.Health++;
@@ -228,19 +191,6 @@ namespace Bang.Players
             hand.Remove(card);
         }
 
-        public void LoseActiveCard(BangGameCard card)
-        {
-            PlayerTablet.RemoveCard(card);
-        }
-
-        public void ChooseCard(BangGameCard card)
-        {
-            gamePlay.ChooseCard(card, this);
-        }
-
-
-        public void DrawCardFromPlayer(Player victim, BangGameCard card) => gamePlay.StealCard(victim, card);
-
         public void DrawPlayerActiveCard(Player victim, BangGameCard card)
         {
             victim.PlayerTablet.RemoveCard(card);
@@ -276,7 +226,7 @@ namespace Bang.Players
 
         public Response EndTurn()
         {
-            return gamePlay.StartNextPlayerTurn();
+            return gamePlay.EndTurn();
         }
     }
 }

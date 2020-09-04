@@ -20,7 +20,7 @@ namespace Bang.Tests
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(GatlingCard());
+            actor.PlayGatling(gameplay);
 
             // Assert
             gameplay.PeekTopCardFromDiscarded().Should().Be(GatlingCard());
@@ -33,7 +33,7 @@ namespace Bang.Tests
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(GatlingCard());
+            actor.PlayGatling(gameplay);
 
             // Assert
             actor.Hand.Should().NotContain(GatlingCard());
@@ -46,8 +46,8 @@ namespace Bang.Tests
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(GatlingCard());
-            victim.Defense(MissedCard());
+            actor.PlayGatling(gameplay);
+            victim.DefenseAgainstGatling(gameplay, MissedCard());
 
             // Assert
             gameplay.PeekTopCardFromDiscarded().Should().Be(MissedCard());
@@ -60,8 +60,8 @@ namespace Bang.Tests
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(GatlingCard());
-            victim.Defense(MissedCard());
+            actor.PlayGatling(gameplay);
+            victim.DefenseAgainstGatling(gameplay, MissedCard());
 
             // Assert
             victim.Hand.Should().NotContain(MissedCard());
@@ -76,8 +76,8 @@ namespace Bang.Tests
             int healthBefore = victim.LifePoints;
 
             // act
-            actor.PlayCard(GatlingCard());
-            victim.NotDefense();
+            actor.PlayGatling(gameplay);
+            victim.NotDefenseAgainstBang(gameplay);
 
             // Assert
             victim.LifePoints.Should().Be(healthBefore - 1);
@@ -86,21 +86,19 @@ namespace Bang.Tests
         [Fact]
         public void If_one_victim_does_barrel_then_he_will_not_lose_life_point()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(new StagecoachCardType().HeartsAce());
-
-            var gameplay = InitGameplay(deck);
+            var gameplay = InitGameplay();
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             var barrelCard = new BarrelCardType().SpadesQueen();
             victim.AddCardToHand(barrelCard);
-            victim.PlayCard(barrelCard);
+            victim.PlayBarrel(gameplay);
             actor.AddCardToHand(GatlingCard());
 
             var healthBefore = victim.PlayerTablet.Health;
+            gameplay.PutCardOnDeck(new StagecoachCardType().HeartsAce());
 
             // Act
-            actor.PlayCard(GatlingCard());
+            actor.PlayGatling(gameplay);
 
             // Assert
             victim.LifePoints.Should().Be(healthBefore);
@@ -119,10 +117,10 @@ namespace Bang.Tests
             var healthBefore = victim.PlayerTablet.Health;
 
             victim.AddCardToHand(anotherMissedCard);
-            slabTheKiller.PlayCard(GatlingCard());
+            slabTheKiller.PlayGatling(gameplay);
 
             // Act
-            victim.Defense(MissedCard());
+            victim.DefenseAgainstGatling(gameplay, MissedCard());
 
             // Assert
             victim.LifePoints.Should().Be(healthBefore);

@@ -19,7 +19,7 @@ namespace Bang.Tests
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(IndiansCard());
+            actor.PlayIndians(gameplay);
 
             // Assert
             gameplay.PeekTopCardFromDiscarded().Should().Be(IndiansCard());
@@ -32,7 +32,7 @@ namespace Bang.Tests
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(IndiansCard());
+            actor.PlayIndians(gameplay);
 
             // Assert
             actor.Hand.Should().NotContain(IndiansCard());
@@ -45,8 +45,8 @@ namespace Bang.Tests
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(IndiansCard());
-            victim.Defense(BangCard());
+            actor.PlayIndians(gameplay);
+            victim.DefenseAgainstBang(gameplay, BangCard());
 
             // Assert
             gameplay.PeekTopCardFromDiscarded().Should().Be(BangCard());
@@ -59,8 +59,8 @@ namespace Bang.Tests
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(IndiansCard());
-            victim.Defense(BangCard());
+            actor.PlayIndians(gameplay);
+            victim.DefenseAgainstBang(gameplay, BangCard());
 
             // Assert
             victim.Hand.Should().NotContain(BangCard());
@@ -75,8 +75,8 @@ namespace Bang.Tests
             int healthBefore = victim.LifePoints;
 
             // act
-            actor.PlayCard(IndiansCard());
-            victim.NotDefense();
+            actor.PlayIndians(gameplay);
+            victim.NotDefenseAgainstBang(gameplay);
 
             // Assert
             victim.LifePoints.Should().Be(healthBefore - 1);
@@ -85,17 +85,16 @@ namespace Bang.Tests
         [Fact]
         public void If_one_victim_plays_then_he_will_not_lose_life_point()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(new StagecoachCardType().HeartsAce());
-
-            var gameplay = InitGameplay(deck);
+            var gameplay = InitGameplay();
             (Player actor, Player victim) = ChoosePlayer(gameplay);
+            var stageCoach = new StagecoachCardType().HeartsAce();
 
             var healthBefore = victim.PlayerTablet.Health;
+            gameplay.PutCardOnDeck(stageCoach);
 
             // Act
-            actor.PlayCard(IndiansCard());
-            victim.Defense(BangCard());
+            actor.PlayIndians(gameplay);
+            victim.DefenseAgainstBang(gameplay, BangCard());
 
             // Assert
             victim.LifePoints.Should().Be(healthBefore);

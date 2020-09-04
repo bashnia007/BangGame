@@ -55,27 +55,6 @@ namespace Bang.Game
                 FillPlayerHand(player);
         }
         
-        public Response Defense(Player player, BangGameCard card)
-        {
-            state = ApplyEffects(player, card);
-
-            if (player.Character is SuzyLafayette && player.Hand.Count == 0 && !(state is WaitingBangAfterDuelState))
-                player.AddCardToHand(DealCard());
-
-            return state.SideEffect;
-        }
-
-        public Response Defense(Player player, BangGameCard card, BangGameCard secondCard)
-        {
-            if (secondCard == null) return Defense(player, card);
-            
-            state = ApplyEffects(player, card, secondCard);
-
-            CheckSuzyHand(player, 0);
-
-            return state.SideEffect;
-        }
-
         /// <summary>
         /// Return the top card from the discarded without removing it. Use it to check the top card only
         /// </summary>
@@ -156,17 +135,7 @@ namespace Bang.Game
             return nextState.SideEffect;
         }
 
-        public void ForceDropCard(Player victim, BangGameCard card)
-        {
-            state = state.ApplyCardEffect(victim, card);
-        }
-
-        public void ForceDropRandomCard(Player victim)
-        {
-            state = state.ApplyCardEffect(victim);
-        }
-
-        public Response GivePhaseOneCards()
+        private Response GivePhaseOneCards()
         {
             var nextState = PlayerTurn
                 .Character
@@ -221,13 +190,8 @@ namespace Bang.Game
             state = ApplyEffects(player, card);
         }
 
-        public Response StartNextPlayerTurn()
+        public Response StartPlayerTurn()
         {
-            if (!CanPassTurn(PlayerTurn))
-                return new NotAllowedOperation($"{PlayerTurn.Name} exceeds hand-size limit");
-            
-            NextTurn();
-
             if (!IsPlayerAliveAfterDynamite())
             {
                 if (IsGameOver())
@@ -238,10 +202,22 @@ namespace Bang.Game
                 }
             }
 
-            if (!DoesPlayerLeaveJail()) 
-                return StartNextPlayerTurn();
+            if (!DoesPlayerLeaveJail())
+            {
+                NextTurn();
+                return StartPlayerTurn();
+            }
 
             return GivePhaseOneCards();
+        }
+
+        internal Response EndTurn()
+        {
+            if (!CanPassTurn(PlayerTurn))
+                return new NotAllowedOperation($"{PlayerTurn.Name} exceeds hand-size limit");
+            
+            NextTurn();
+            return new Done();
         }
 
         private bool DoesPlayerLeaveJail()
@@ -356,6 +332,8 @@ namespace Bang.Game
         private HandlerState ApplyEffects(Player player, BangGameCard card)
         {
             state = state.ApplyCardEffect(player, card);
+            
+            CheckSuzyHand(player, 0);
 
             state = UpdateStateIfGameOver(state);
 
@@ -366,6 +344,7 @@ namespace Bang.Game
         {
             state = state.ApplyCardEffect(player, firstCard, secondCard);
 
+            CheckSuzyHand(player, 0);
             state = UpdateStateIfGameOver(state);
 
             return state;

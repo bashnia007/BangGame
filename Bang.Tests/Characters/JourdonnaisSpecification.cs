@@ -26,16 +26,14 @@ namespace Bang.Tests.Characters
         [Fact]
         public void Jourdonnais_checks_default_barrel_when_attacked()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(new StagecoachCardType().HeartsAce());
-
-            var gamePlay = InitGame(deck);
+            var gamePlay = InitGame();
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
 
             var healthBefore = victim.PlayerTablet.Health;
-
+            
+            gamePlay.PutCardOnDeck(new StagecoachCardType().HeartsAce());
             // Act
-            var response = actor.PlayCard(BangCard(), victim);
+            var response = actor.PlayBang(gamePlay, victim);
 
             // Assert
             response.Should().BeOfType<Done>();
@@ -45,25 +43,22 @@ namespace Bang.Tests.Characters
         [Fact]
         public void Jourdonnais_can_use_second_barrel_if_default_barrel_did_not_help()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(new MissedCardType().ClubsSeven());
-            deck.Put(new StagecoachCardType().HeartsAce());
-
-            var gamePlay = InitGame(deck);
-            (Player actor, Player victim) = ChoosePlayers(gamePlay);
+            var gamePlay = InitGame();
+            (Player actor, Player jourdonnais) = ChoosePlayers(gamePlay);
 
             var barrelCard = new BarrelCardType().SpadesQueen();
-            victim.AddCardToHand(barrelCard);
-            victim.PlayCard(barrelCard);
+            jourdonnais.PlayerTablet.PutCard(barrelCard);
 
-            var healthBefore = victim.PlayerTablet.Health;
+            var healthBefore = jourdonnais.PlayerTablet.Health;
 
+            gamePlay.PutCardOnDeck(new StagecoachCardType().HeartsAce());
+            gamePlay.PutCardOnDeck(new MissedCardType().ClubsSeven());
             // Act
-            var response = actor.PlayCard(BangCard(), victim);
+            var response = actor.PlayBang(gamePlay, jourdonnais);
 
             // Assert
             response.Should().BeOfType<Done>();
-            victim.LifePoints.Should().Be(healthBefore);
+            jourdonnais.LifePoints.Should().Be(healthBefore);
         }
 
         #endregion
@@ -72,29 +67,28 @@ namespace Bang.Tests.Characters
 
         private BangGameCard BangCard() => new BangCardType().SpadesQueen();
 
-        private Gameplay InitGame(Deck<BangGameCard> deck = null)
+        private Gameplay InitGame()
         {
             var builder = new GameplayBuilder()
                 .WithCharacter(new Jourdonnais())
                 .WithoutCharacter(new SlabTheKiller());
-
-            if (deck != null)
-                builder.WithDeck(deck);
 
             return builder.Build();
         }
 
         private (Player actor, Player victim) ChoosePlayers(Gameplay gameplay)
         {
-            var victim = gameplay.FindPlayer(new Jourdonnais());
+            var jourdonnais = gameplay.FindPlayer(new Jourdonnais());
 
-            gameplay.SkipTurnsUntilPlayer(victim);
-            var actor = gameplay.PlayerTurn;
+            var actor = gameplay.FindPlayerAtDistanceFrom(1, jourdonnais);
             actor.AddCardToHand(BangCard());
-            
-            Debug.Assert(victim != actor, "player can't bang to himself!");
 
-            return (actor, victim);
+            gameplay.SetTurnToPlayer(actor);
+            gameplay.StartPlayerTurn();
+
+            Debug.Assert(jourdonnais != actor, "player can't bang to himself!");
+
+            return (actor, jourdonnais);
         }
 
         #endregion

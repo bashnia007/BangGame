@@ -20,7 +20,7 @@ namespace Bang.Tests.Characters
             suzy.AddCardToHand(BangCard);
             var victim = gamePlay.Players.First(p => p != suzy);
 
-            suzy.PlayCard(BangCard, victim);
+            suzy.PlayBang(gamePlay, victim);
 
             suzy.Hand.Count.Should().Be(1);
         }
@@ -33,8 +33,8 @@ namespace Bang.Tests.Characters
             var attacker = gamePlay.Players.First(p => p != suzy);
             attacker.AddCardToHand(BangCard);
 
-            attacker.PlayCard(BangCard, suzy);
-            suzy.Defense(MissedCard);
+            attacker.PlayBang(gamePlay, suzy);
+            suzy.DefenseAgainstBang(gamePlay, MissedCard);
 
             suzy.Hand.Count.Should().Be(1);
         }
@@ -47,11 +47,22 @@ namespace Bang.Tests.Characters
             var opponent = gamePlay.Players.First(p => p != suzy);
             opponent.AddCardToHand(BangCard);
             var suzyLife = suzy.LifePoints;
+            
+            gamePlay.PutCardOnDeck(new SaloonCardType().HeartsKing());
+            gamePlay.PutCardOnDeck(new WinchesterCardType().ClubsFive());
 
-            suzy.PlayCard(DuelCard, opponent);
+            gamePlay.StartPlayerTurn();
+
+            suzy.PlaySaloon(gamePlay);
+            suzy.PlayWinchester(gamePlay);
+            
+            // now Suzy has Duel card only
+
+            // Act
+            suzy.PlayDuel(gamePlay, opponent);
             suzy.Hand.Count.Should().Be(0);
-            opponent.Defense(BangCard);
-            suzy.NotDefense();
+            opponent.DefenseAgainstDuel(gamePlay, BangCard);
+            suzy.LoseDuel(gamePlay);
 
             suzy.LifePoints.Should().Be(suzyLife - 1);
             suzy.Hand.Count.Should().Be(1);
@@ -67,8 +78,8 @@ namespace Bang.Tests.Characters
 
             var suzyLife = suzy.LifePoints;
 
-            slab.PlayCard(BangCard, suzy);
-            suzy.Defense(MissedCard);
+            slab.PlayBang(gameplay, suzy);
+            suzy.DefenseAgainstBang(gameplay, MissedCard);
 
             suzy.LifePoints.Should().Be(suzyLife);
             gameplay.PeekTopCardFromDeck().Should().NotBe(SecondMissedCard);
@@ -82,8 +93,8 @@ namespace Bang.Tests.Characters
             slab.AddCardToHand(BangCard);
             gameplay.PutCardOnDeck(SecondMissedCard);
 
-            slab.PlayCard(BangCard, suzy);
-            suzy.Defense(MissedCard);
+            slab.PlayBang(gameplay, suzy);
+            suzy.DefenseAgainstBang(gameplay, MissedCard);
 
             suzy.Hand.Should().NotContain(MissedCard);
             suzy.Hand.Should().NotContain(SecondMissedCard);
@@ -97,8 +108,8 @@ namespace Bang.Tests.Characters
             slab.AddCardToHand(BangCard);
             gameplay.PutCardOnDeck(SecondMissedCard);
 
-            slab.PlayCard(BangCard, suzy);
-            suzy.Defense(MissedCard);
+            slab.PlayBang(gameplay, suzy);
+            suzy.DefenseAgainstBang(gameplay, MissedCard);
 
             suzy.Hand.Count.Should().Be(1);
         }
@@ -111,8 +122,8 @@ namespace Bang.Tests.Characters
             slab.AddCardToHand(BangCard);
             gameplay.PutCardOnDeck(DuelCard);
 
-            slab.PlayCard(BangCard, suzy);
-            suzy.Defense(MissedCard);
+            slab.PlayBang(gameplay, suzy);
+            suzy.DefenseAgainstBang(gameplay, MissedCard);
 
             suzy.Hand.Count.Should().Be(1);
             suzy.Hand.Should().Contain(DuelCard);
@@ -126,8 +137,8 @@ namespace Bang.Tests.Characters
             slab.AddCardToHand(BangCard);
             gameplay.PutCardOnDeck(DuelCard);
 
-            slab.PlayCard(BangCard, suzy);
-            suzy.Defense(MissedCard);
+            slab.PlayBang(gameplay, suzy);
+            suzy.DefenseAgainstBang(gameplay, MissedCard);
 
             suzy.Hand.Should().NotContain(MissedCard);
         }
@@ -142,8 +153,8 @@ namespace Bang.Tests.Characters
 
             var suzyLife = suzy.LifePoints;
 
-            slab.PlayCard(BangCard, suzy);
-            suzy.Defense(MissedCard);
+            slab.PlayBang(gameplay, suzy);
+            suzy.DefenseAgainstBang(gameplay, MissedCard);
 
             suzy.LifePoints.Should().Be(suzyLife - 1);
         }
@@ -155,8 +166,8 @@ namespace Bang.Tests.Characters
             suzy.AddCardToHand(BangCard);
             gameplay.PutCardOnDeck(MissedCard);
 
-            suzy.PlayCard(BangCard, el);
-            el.NotDefense();
+            suzy.PlayBang(gameplay, el);
+            el.NotDefenseAgainstBang(gameplay);
 
             el.Hand.Should().Contain(MissedCard);
         }
@@ -169,8 +180,8 @@ namespace Bang.Tests.Characters
             gameplay.PutCardOnDeck(MissedCard);
             gameplay.PutCardOnDeck(DuelCard);
 
-            suzy.PlayCard(BangCard, el);
-            el.NotDefense();
+            suzy.PlayBang(gameplay, el);
+            el.NotDefenseAgainstBang(gameplay);
 
             suzy.Hand.Count.Should().Be(1);
             suzy.Hand.Should().Contain(MissedCard);

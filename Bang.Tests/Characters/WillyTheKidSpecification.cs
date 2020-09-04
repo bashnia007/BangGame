@@ -43,10 +43,10 @@ namespace Bang.Tests.Characters
             willy.AddCardToHand(secondBang);
             
             // Act
-            willy.PlayCard(firstBang, willyNeighbour);
-            willyNeighbour.NotDefense();
+            willy.PlayCard(gameplay, firstBang, willyNeighbour);
+            willyNeighbour.NotDefenseAgainstBang(gameplay);
             
-            var response = willy.PlayCard(secondBang, willyNeighbour);
+            var response = willy.PlayCard(gameplay, secondBang, willyNeighbour);
 
             // Assert
             response.Should().NotBeOfType<NotAllowedOperation>();

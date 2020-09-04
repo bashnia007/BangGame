@@ -20,7 +20,7 @@ namespace Bang.Tests
             var otherPlayer = gameplay.Players.First(p => p != actor);
             
             // act
-            Action action = () => actor.PlayCard(beerCard, otherPlayer);
+            Action action = () => actor.PlayCard(gameplay, beerCard, otherPlayer);
             
             // assert
             action.Should().Throw<InvalidOperationException>().WithMessage("* can not be played to another player!");
@@ -33,7 +33,7 @@ namespace Bang.Tests
             (Player actor, BangGameCard beerCard) = ChoosePlayer(gameplay);
             
             // act
-            actor.PlayCard(beerCard);
+            actor.PlayBeer(gameplay);
             
             // Assert
             gameplay.PeekTopCardFromDiscarded().Should().Be(beerCard);
@@ -46,7 +46,7 @@ namespace Bang.Tests
             (Player actor, BangGameCard beerCard) = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(beerCard);
+            actor.PlayBeer(gameplay);
             
             // Assert
             actor.Hand.Should().NotContain(beerCard);
@@ -60,7 +60,7 @@ namespace Bang.Tests
 
             int healthBefore = actor.LifePoints;
             // act
-            actor.PlayCard(beerCard);
+            actor.PlayBeer(gameplay);
             
             // Assert
             actor.LifePoints.Should().Be(healthBefore + 1);
@@ -76,7 +76,7 @@ namespace Bang.Tests
             actor.PlayerTablet.Health = fullHealth;
             
             // act
-            actor.PlayCard(beerCard);
+            actor.PlayBeer(gameplay);
             
             // Assert
             actor.LifePoints.Should().Be(fullHealth);
@@ -98,7 +98,7 @@ namespace Bang.Tests
             var lifePointsBefore = actor.LifePoints;
 
             // act
-            actor.PlayCard(beerCard);
+            actor.PlayBeer(gameplay);
             
             // Assert
             actor.LifePoints.Should().Be(lifePointsBefore);

@@ -16,16 +16,5 @@ namespace Bang.Tests
 
             player.Character.Should().Be(calamityJanet);
         }
-        
-        [Fact]
-        public void SkipTurnsUntilCharacter()
-        {
-            var calamityJanet = new CalamityJanet();
-            var gameplay = InitGameplayWithCharacter(calamityJanet);
-            
-            gameplay.SkipTurnsUntilCharacter(calamityJanet);
-
-            gameplay.GetNextPlayer().Character.Should().Be(calamityJanet);
-        }
     }
 }

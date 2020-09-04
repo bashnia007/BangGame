@@ -91,13 +91,11 @@ namespace Bang.Tests.Characters
             var dynamite = new DynamiteCardType().HeartsAce();
             outLaw.PlayerTablet.PutCard(dynamite);
             
-            gameplay.SkipTurnsUntilPlayer(outLaw);
-            while (gameplay.GetNextPlayer() != outLaw)
-                gameplay.NextTurn();
+            gameplay.SetTurnToPlayer(outLaw);
 
             // Act
             deck.Put(new StagecoachCardType().ClubsSeven()); // card to explode
-            gameplay.StartNextPlayerTurn();
+            gameplay.StartPlayerTurn();
             
             // Assert 
             vultureSam.Hand.Should().NotContain(dynamite);
