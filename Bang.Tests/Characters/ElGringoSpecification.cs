@@ -23,7 +23,7 @@ namespace Bang.Tests.Characters
         [Fact]
         public void When_El_Gringo_loses_a_life_point_he_draws_a_card()
         {
-            var (elGringo, otherPlayer) = ChoosePlayers();
+            var (gameplay, elGringo, otherPlayer) = InitGame();
 
             var hand = elGringo.Hand.Count;
             
@@ -37,7 +37,7 @@ namespace Bang.Tests.Characters
         [Fact]
         public void When_El_Gringo_loses_a_life_point_he_draws_a_card_from_hitter_hand()
         {
-            var (elGringo, otherPlayer) = ChoosePlayers();
+            var (gameplay, elGringo, otherPlayer) = InitGame();
 
             var hand = otherPlayer.Hand.Count;
             
@@ -51,7 +51,7 @@ namespace Bang.Tests.Characters
         [Fact]
         public void If_hitter_does_not_have_a_card_in_hand_El_Gringo_will_draw_nothing()
         {
-            var (elGringo, otherPlayer) = ChoosePlayers();
+            var (gameplay, elGringo, otherPlayer) = InitGame();
 
             otherPlayer.DropAllCards();
 
@@ -84,14 +84,14 @@ namespace Bang.Tests.Characters
         [Fact]
         public void If_El_Gringo_plays_a_duel_and_lose_he_will_not_draw_a_card_from_the_player_who_won()
         {
-            var (elGringo, otherPlayer) = ChoosePlayers();
+            var (gameplay, elGringo, otherPlayer) = InitGame();
 
             var elGringoHandSize = elGringo.Hand.Count;
             
             // Act
-            elGringo.PlayCard(DuelCard(), otherPlayer);
-            otherPlayer.Defense(BangCard());
-            elGringo.NotDefense();
+            elGringo.PlayDuel(gameplay, otherPlayer);
+            otherPlayer.DefenseAgainstDuel(gameplay, BangCard());
+            elGringo.LoseDuel(gameplay);
             
             // Assert
             
@@ -128,20 +128,13 @@ namespace Bang.Tests.Characters
                     .WithoutCharacter(new KitCarlson())
                     .Build();
 
-            var elGringo = gameplay.Players.First(p => p.Character == new ElGringo());
+            var elGringo = gameplay.FindPlayer(new ElGringo());
             elGringo.AddCardToHand(DuelCard());
 
             var otherPlayer = gameplay.Players.First(p => p.Character == new CalamityJanet());
             otherPlayer.AddCardToHand(BangCard());
 
             return (gameplay, elGringo, otherPlayer);
-        }
-
-        private (Player, Player) ChoosePlayers()
-        {
-            var (_, elGringo, otherPlayer) = InitGame();
-
-            return (elGringo, otherPlayer);
         }
     }
 }

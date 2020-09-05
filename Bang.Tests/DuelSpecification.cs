@@ -18,7 +18,7 @@ namespace Bang.Tests
             (Player actor, Player victim, BangGameCard duelCard) = ChoosePlayers(gamePlay);
             
             // Act
-            Action act = () => actor.PlayCard(duelCard, actor);
+            Action act = () => actor.PlayDuel(gamePlay, actor);
             act.Should().Throw<InvalidOperationException>().WithMessage("* must be played to another player!");
         }
         
@@ -29,7 +29,7 @@ namespace Bang.Tests
             (Player actor, Player victim, BangGameCard duelCard) = ChoosePlayers(gamePlay);
             
             // Act
-            actor.PlayCard(duelCard, victim);
+            actor.PlayDuel(gamePlay, victim);
 
             // Assert
             gamePlay.PeekTopCardFromDiscarded().Should().Be(duelCard);
@@ -42,11 +42,11 @@ namespace Bang.Tests
             var gamePlay = InitGameplay();
             (Player actor, Player victim, BangGameCard duelCard) = ChoosePlayers(gamePlay);
             
-            actor.PlayCard(duelCard, victim);
+            actor.PlayDuel(gamePlay, victim);
 
             var healthBefore = victim.PlayerTablet.Health;
             // Act
-            victim.NotDefense();
+            victim.NotDefenseAgainstBang(gamePlay);
             
             // Assert
             victim.LifePoints.Should().Be(healthBefore - 1);
@@ -58,15 +58,15 @@ namespace Bang.Tests
             var gamePlay = InitGameplay();
             (Player actor, Player victim, BangGameCard duelCard) = ChoosePlayers(gamePlay);
             
-            actor.PlayCard(duelCard, victim);
+            actor.PlayDuel(gamePlay, victim);
             
             var bangCard = new BangCardType().ClubsSeven();
             victim.AddCardToHand(bangCard);
 
             var healthBefore = actor.PlayerTablet.Health;
             // Act
-            victim.Defense(bangCard);
-            actor.NotDefense();
+            victim.DefenseAgainstBang(gamePlay, bangCard);
+            actor.NotDefenseAgainstBang(gamePlay);
             
             // Assert
             actor.LifePoints.Should().Be(healthBefore - 1);
@@ -78,13 +78,13 @@ namespace Bang.Tests
             var gamePlay = InitGameplay();
             (Player actor, Player victim, BangGameCard duelCard) = ChoosePlayers(gamePlay);
             
-            actor.PlayCard(duelCard, victim);
+            actor.PlayDuel(gamePlay, victim);
             
             var bangCard = new BangCardType().ClubsSeven();
             victim.AddCardToHand(bangCard);
 
             // Act
-            victim.Defense(bangCard);
+            victim.DefenseAgainstDuel(gamePlay, bangCard);
             
             // Assert
             gamePlay.PeekTopCardFromDiscarded().Should().Be(bangCard);
@@ -96,13 +96,13 @@ namespace Bang.Tests
             var gamePlay = InitGameplay();
             (Player actor, Player victim, BangGameCard duelCard) = ChoosePlayers(gamePlay);
             
-            actor.PlayCard(duelCard, victim);
+            actor.PlayDuel(gamePlay, victim);
             
             var bangCard = new BangCardType().ClubsSeven();
             victim.AddCardToHand(bangCard);
 
             // Act
-            victim.Defense(bangCard);
+            victim.DefenseAgainstBang(gamePlay, bangCard);
             
             // Assert
             victim.Hand.Should().NotContain(bangCard);
@@ -122,13 +122,13 @@ namespace Bang.Tests
 
             var healthBefore = victim.PlayerTablet.Health;
             
-            actor.PlayCard(duelCard, victim);
+            actor.PlayDuel(gamePlay, victim);
             
-            victim.Defense(anotherBangCard);
-            actor.Defense(bangCard);
+            victim.DefenseAgainstDuel(gamePlay, anotherBangCard);
+            actor.DefenseAgainstDuel(gamePlay, bangCard);
             
             // Act
-            victim.NotDefense();
+            victim.LoseDuel(gamePlay);
             
             // Assert
             victim.LifePoints.Should().Be(healthBefore - 1);

@@ -116,8 +116,10 @@ namespace Bang.Tests.Characters
             sid.AddCardToHand(stagecoach);
             sid.WithOneLifePoint();
 
-            var playerTurn = gameplay.AlivePlayers.First(p => p != sid);
-            gameplay.SetTurnToPlayer(playerTurn);
+            var playerTurn = gameplay.PlayerTurn;
+            if (playerTurn == sid)
+                sid.EndTurn();
+            playerTurn = gameplay.PlayerTurn;
 
             // Act
             sid.PlayCard(bangCard, stagecoach);
@@ -131,7 +133,7 @@ namespace Bang.Tests.Characters
             var sid = new SidKetchum();
             var gamePlay = TestUtils.InitGameplayWithCharacter(sid);
 
-            return (gamePlay, gamePlay.Players.First(p => p.Character == sid));
+            return (gamePlay, gamePlay.FindPlayer(sid));
         }
     }
 }

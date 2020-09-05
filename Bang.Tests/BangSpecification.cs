@@ -19,7 +19,7 @@ namespace Bang.Tests
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
             
             // Act
-            actor.PlayCard(BangCard(), victim);
+            actor.PlayBang(gamePlay, victim);
 
             // Assert
             gamePlay.PeekTopCardFromDiscarded().Should().Be(BangCard());
@@ -32,11 +32,11 @@ namespace Bang.Tests
             var gamePlay = CreateGamePlay();
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
             
-            actor.PlayCard(BangCard(), victim);
+            actor.PlayBang(gamePlay, victim);
 
             var healthBefore = victim.PlayerTablet.Health;
             // Act
-            victim.Defense(MissedCard());
+            victim.DefenseAgainstBang(gamePlay, MissedCard());
             
             // Assert
             victim.LifePoints.Should().Be(healthBefore);
@@ -49,10 +49,10 @@ namespace Bang.Tests
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
             
             victim.AddCardToHand(MissedCard());
-            actor.PlayCard(BangCard(), victim);
+            actor.PlayBang(gamePlay, victim);
 
             // Act
-            victim.Defense(MissedCard());
+            victim.DefenseAgainstBang(gamePlay, MissedCard());
             
             // Assert
             gamePlay.PeekTopCardFromDiscarded().Should().Be(MissedCard());
@@ -64,10 +64,10 @@ namespace Bang.Tests
             var gamePlay = CreateGamePlay();
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
             
-            actor.PlayCard(BangCard(), victim);
+            actor.PlayBang(gamePlay, victim);
 
             // Act
-            victim.Defense(MissedCard());
+            victim.DefenseAgainstBang(gamePlay, MissedCard());
             
             // Assert
             victim.Hand.Should().NotContain(MissedCard());
@@ -79,11 +79,11 @@ namespace Bang.Tests
             var gamePlay = CreateGamePlay();
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
             
-            actor.PlayCard(BangCard(), victim);
+            actor.PlayBang(gamePlay, victim);
 
             var healthBefore = victim.PlayerTablet.Health;
             // Act
-            victim.NotDefense();
+            victim.NotDefenseAgainstBang(gamePlay);
             
             // Assert
             victim.LifePoints.Should().Be(healthBefore - 1);
@@ -100,12 +100,12 @@ namespace Bang.Tests
 
             var barrelCard = new BarrelCardType().SpadesQueen();
             victim.AddCardToHand(barrelCard);
-            victim.PlayCard(barrelCard);
+            victim.PlayBarrel(gamePlay);
             
             var healthBefore = victim.PlayerTablet.Health;
             
             // Act
-            var response = actor.PlayCard(BangCard(), victim);
+            var response = actor.PlayBang(gamePlay, victim);
             
             // Assert
             response.Should().BeOfType<Done>(); 
@@ -128,10 +128,10 @@ namespace Bang.Tests
             
             var healthBefore = victim.PlayerTablet.Health;
             
-            slabTheKiller.PlayCard(BangCard(), victim);
+            slabTheKiller.PlayBang(gamePlay, victim);
             
             // Act
-            victim.Defense(MissedCard(), anotherMissedCard);
+            victim.DefenseAgainstBang(gamePlay, MissedCard(), anotherMissedCard);
             
             // Assert
             victim.LifePoints.Should().Be(healthBefore);
@@ -159,7 +159,7 @@ namespace Bang.Tests
             var healthBefore = jourdonnais.PlayerTablet.Health;
             
             // Act
-            var response = actor.PlayCard(BangCard(), jourdonnais);
+            var response = actor.PlayBang(gamePlay, jourdonnais);
             
             // Assert
             response.Should().BeOfType<Done>(); 
@@ -180,7 +180,7 @@ namespace Bang.Tests
             hitter.AddCardToHand(BangCard());
             
             // Act
-            var response = hitter.PlayCard(BangCard(), victim);
+            var response = hitter.PlayBang(gamePlay, victim);
             
             // Assert
             response.Should().BeOfType<NotAllowedOperation>();
@@ -201,9 +201,9 @@ namespace Bang.Tests
             hitter.AddCardToHand(RemingtonCard());
             hitter.AddCardToHand(BangCard());
 
-            hitter.PlayCard(RemingtonCard());
+            hitter.PlayRemington(gamePlay);
             // Act
-            var response = hitter.PlayCard(BangCard(), target);
+            var response = hitter.PlayBang(gamePlay, target);
             
             // Assert
             response.Should().NotBeOfType<NotAllowedOperation>();

@@ -29,14 +29,12 @@ namespace Bang.Tests.Characters
         [Fact]
         public void Kit_Carlson_receives_three_cards_to_choose()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(BangCard());
-            deck.Put(MissedCard());
-            deck.Put(MustangCard());
+            var (gamePlay, kitCarlson) = InitGame();
 
-            var (gamePlay, kitCarlson) = InitGame(deck);
-
-            var response = gamePlay.GivePhaseOneCards();
+            gamePlay.PutCardOnDeck(BangCard());
+            gamePlay.PutCardOnDeck(MissedCard());
+            gamePlay.PutCardOnDeck(MustangCard());
+            var response = gamePlay.StartPlayerTurn();
 
             // Assertion
             response.Should().BeOfType<ChooseCardsResponse>();
@@ -46,30 +44,28 @@ namespace Bang.Tests.Characters
         [Fact]
         public void Declined_card_by_Kit_Carlson_is_going_back_to_deck()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(BangCard());
-            deck.Put(MissedCard());
-            deck.Put(MustangCard());
+            var (gamePlay, kitCarlson) = InitGame();
+            
+            gamePlay.PutCardOnDeck(BangCard());
+            gamePlay.PutCardOnDeck(MissedCard());
+            gamePlay.PutCardOnDeck(MustangCard());
 
-            var (gamePlay, kitCarlson) = InitGame(deck);
-
-            var response = gamePlay.GivePhaseOneCards();
-            kitCarlson.ChooseCard(MissedCard());
+            var response = gamePlay.StartPlayerTurn();
+            kitCarlson.ChooseCardToReturn(gamePlay, MissedCard());
             gamePlay.PeekTopCardFromDeck().Should().Be(MissedCard());
         }
 
         [Fact]
         public void Kit_Carlson_leaves_two_cards_after_selection()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(BangCard());
-            deck.Put(MissedCard());
-            deck.Put(MustangCard());
+            var (gamePlay, kitCarlson) = InitGame();
+            
+            gamePlay.PutCardOnDeck(BangCard());
+            gamePlay.PutCardOnDeck(MissedCard());
+            gamePlay.PutCardOnDeck(MustangCard());
 
-            var (gamePlay, kitCarlson) = InitGame(deck);
-
-            var response = gamePlay.GivePhaseOneCards();
-            kitCarlson.ChooseCard(MissedCard());
+            var response = gamePlay.StartPlayerTurn();
+            kitCarlson.ChooseCardToReturn(gamePlay, MissedCard());
             kitCarlson.Hand.Count.Should().Be(2);
         }
 

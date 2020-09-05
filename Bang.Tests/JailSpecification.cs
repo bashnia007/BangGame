@@ -21,7 +21,7 @@ namespace Bang.Tests
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(JailCard(), victim);
+            actor.PlayJail(gameplay, victim);
 
             // Assert
             actor.Hand.Should().NotContain(JailCard());
@@ -34,7 +34,7 @@ namespace Bang.Tests
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(JailCard(), victim);
+            actor.PlayJail(gameplay, victim);
 
             // Assert
             victim.ActiveCards.Should().Contain(JailCard());
@@ -48,7 +48,7 @@ namespace Bang.Tests
             badGuy.AddCardToHand(JailCard());
 
             // act
-            badGuy.PlayCard(JailCard(), sheriff);
+            badGuy.PlayJail(gameplay, sheriff);
 
             // Assert
             sheriff.ActiveCards.Should().NotContain(JailCard());
@@ -57,18 +57,17 @@ namespace Bang.Tests
         [Fact]
         public void Player_with_jail_card_drops_it_on_his_turn()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(NotHeartsCard());
-
-            var gameplay = InitJailTestGameplay(deck);
+            var gameplay = InitJailTestGameplay();
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(JailCard(), victim);
+            actor.PlayJail(gameplay, victim);
+            actor.EndTurn();
 
-            gameplay.SkipTurnsUntilPlayer(victim);
+            gameplay.SetTurnToPlayer(victim);
+            gameplay.PutCardOnDeck(NotHeartsCard());
 
-            gameplay.StartNextPlayerTurn();
+            gameplay.StartPlayerTurn();
 
             // Assert
             victim.ActiveCards.Should().NotContain(JailCard());
@@ -77,17 +76,17 @@ namespace Bang.Tests
         [Fact]
         public void After_hearts_card_player_does_not_miss_his_turn()
         {
-            var deck = new Deck<BangGameCard>();
-            
-            var gameplay = InitJailTestGameplay(deck);
+            var gameplay = InitJailTestGameplay();
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(JailCard(), victim);
-            gameplay.SkipTurnsUntilPlayer(victim);
-            gameplay.PutCardOnDeck(HeartsCard());
+            actor.PlayJail(gameplay, victim);
+            actor.EndTurn();
+            gameplay.SetTurnToPlayer(victim);
 
-            gameplay.StartNextPlayerTurn();
+            gameplay.PutCardOnDeck(HeartsCard());
+            gameplay.StartPlayerTurn();
+            
 
             // Assert
             gameplay.PlayerTurn.Should().Be(victim);
@@ -96,18 +95,17 @@ namespace Bang.Tests
         [Fact]
         public void After_not_hearts_card_player_does_not_miss_his_turn()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(NotHeartsCard());
-
-            var gameplay = InitJailTestGameplay(deck);
+            var gameplay = InitJailTestGameplay();
             (Player actor, Player victim) = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(JailCard(), victim);
+            actor.PlayJail(gameplay, victim);
+            actor.EndTurn();
 
-            gameplay.SkipTurnsUntilPlayer(victim);
+            gameplay.SetTurnToPlayer(victim);
 
-            gameplay.StartNextPlayerTurn();
+            gameplay.PutCardOnDeck(NotHeartsCard());
+            gameplay.StartPlayerTurn();
 
             // Assert
             gameplay.PlayerTurn.Should().NotBe(victim);
@@ -133,15 +131,12 @@ namespace Bang.Tests
 
         private BangGameCard NotHeartsCard() => new BangCardType().SpadesQueen();
 
-        private Gameplay InitJailTestGameplay(Deck<BangGameCard> deck = null)
+        private Gameplay InitJailTestGameplay()
         {
             var builder = new GameplayBuilder()
                 .WithoutCharacter(new KitCarlson())
                 .WithoutCharacter(new PedroRamirez())
                 .WithoutCharacter(new LuckyDuke());
-
-            if (deck != null)
-                builder.WithDeck(deck);
 
             return builder.Build();
         }

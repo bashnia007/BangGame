@@ -18,9 +18,9 @@ namespace Bang.Tests
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
 
             // Act
-            actor.PlayCard(BangCard(), victim);
-            victim.NotDefense();
-            var response = actor.PlayCard(AnotherBangCard(), victim);
+            actor.PlayBang(gamePlay, victim);
+            victim.NotDefenseAgainstBang(gamePlay);
+            var response = actor.PlayBang(gamePlay, victim);
 
             // Assert
             response.Should().BeOfType<NotAllowedOperation>();
@@ -34,14 +34,15 @@ namespace Bang.Tests
             var anotherBangCard = new BangCardType().DiamondsThree();
             actor.AddCardToHand(anotherBangCard);
             
-            actor.PlayCard(BangCard(), victim);
-            victim.NotDefense();
+            actor.PlayBang(gamePlay, victim);
+            victim.NotDefenseAgainstBang(gamePlay);
 
-            gamePlay.SkipTurnsUntilPlayer(actor);
+            actor.EndTurn();
+
             gamePlay.SetTurnToPlayer(actor);
-            
+
             // Act
-            var response = actor.PlayCard(anotherBangCard, victim);
+            var response = actor.PlayBang(gamePlay, victim);
 
             // Assert
             response.Should().BeOfType<DefenceAgainstBang>();
@@ -55,15 +56,15 @@ namespace Bang.Tests
             
             var volcanic = new VolcanicCardType().ClubsSeven();
             actor.AddCardToHand(volcanic);
-            actor.PlayCard(volcanic);
+            actor.PlayVolcanic(gamePlay);
             
             var anotherBangCard = new BangCardType().DiamondsThree();
             actor.AddCardToHand(anotherBangCard);
 
             // Act
-            actor.PlayCard(BangCard(), victim);
-            victim.NotDefense();
-            var response = actor.PlayCard(anotherBangCard, victim);
+            actor.PlayBang(gamePlay, victim);
+            victim.NotDefenseAgainstBang(gamePlay);
+            var response = actor.PlayBang(gamePlay, victim);
 
             // Assert
             response.Should().BeOfType<DefenceAgainstBang>();
@@ -76,10 +77,10 @@ namespace Bang.Tests
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
 
             // Act
-            actor.PlayCard(DuelCard(), victim);
+            actor.PlayDuel(gamePlay, victim);
             
-            victim.NotDefense();
-            var response = actor.PlayCard(BangCard(), victim);
+            victim.NotDefenseAgainstBang(gamePlay);
+            var response = actor.PlayBang(gamePlay, victim);
 
             // Assert
             response.Should().BeOfType<DefenceAgainstBang>();
@@ -92,14 +93,14 @@ namespace Bang.Tests
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
 
             // Act
-            actor.PlayCard(GatlingCard());
+            actor.PlayGatling(gamePlay);
 
             foreach (var gatlingVictim in gamePlay.Players.Where(p => p != actor))
             {
-                gatlingVictim.NotDefense();
+                gatlingVictim.NotDefenseAgainstBang(gamePlay);
             }
             
-            var response = actor.PlayCard(BangCard(), victim);
+            var response = actor.PlayBang(gamePlay, victim);
 
             // Assert
             response.Should().BeOfType<DefenceAgainstBang>();
@@ -154,6 +155,8 @@ namespace Bang.Tests
                 .WithoutCharacter(new ElGringo())
                 .WithoutCharacter(new WillyTheKid())
                 .WithoutCharacter(new Jourdonnais())
+                .WithoutCharacter(new KitCarlson())
+                .WithoutCharacter(new PedroRamirez())
                 .Build();
         }
     }

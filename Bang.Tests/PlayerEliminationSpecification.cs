@@ -49,29 +49,39 @@ namespace Bang.Tests
         public void Hand_cards_of_eliminated_player_are_discarded()
         {
             var gamePlay = InitGameplay();
-            var victim = gamePlay.Players.First();
+            var actor = gamePlay.PlayerTurn;
+            var victim = gamePlay.AlivePlayers.First(p => p != actor);
 
+            actor.AddCardToHand(new DuelCardType().SpadesEight());
             var catBalouCard = new CatBalouCardType().HeartsAce();
             victim.AddCardToHand(catBalouCard);
+            victim.WithOneLifePoint();
             
             // Act
-            victim.Die();
+            actor.PlayDuel(gamePlay, victim);
+            victim.LoseDuel(gamePlay);
             
             // Assert
-            gamePlay.PeekTopCardFromDiscarded().Should().Be(catBalouCard);
+            gamePlay.PeekTopCardFromDiscarded().Should().Be(catBalouCard, $"Victim was {victim.Character}");
         }
         
         [Fact]
         public void Active_cards_of_eliminated_player_are_discarded()
         {
             var gamePlay = InitGameplay();
-            var victim = gamePlay.Players.First();
+            var actor = gamePlay.PlayerTurn;
+            var victim = gamePlay.AlivePlayers.First(p => p != actor);
 
+            actor.AddCardToHand(new DuelCardType().ClubsFive());
+            
             var scopeCard = new ScopeCardType().HeartsAce();
             victim.PlayerTablet.PutCard(scopeCard);
+            victim.WithOneLifePoint();
             
             // Act
-            victim.Die();
+            actor.PlayDuel(gamePlay, victim);
+            victim.LoseDuel(gamePlay);
+            
             
             // Assert
             gamePlay.PeekTopCardFromDiscarded().Should().Be(scopeCard);
@@ -87,20 +97,20 @@ namespace Bang.Tests
             var duelCard = new DuelCardType().ClubsSeven();
             outlaw.AddCardToHand(duelCard);
             
-            gameplay.SkipTurnsUntilPlayer(outlaw);
-            gameplay.StartNextPlayerTurn();
+            gameplay.SetTurnToPlayer(outlaw);
+            gameplay.StartPlayerTurn();
 
             var otherPlayer = gameplay.Players.First(p => p != outlaw);
             var bangCard = new BangCardType().SpadesQueen();
             otherPlayer.AddCardToHand(bangCard);
             
             // Act
-            outlaw.PlayCard(duelCard, otherPlayer);
-            otherPlayer.Defense(bangCard);
-            outlaw.NotDefense();
+            outlaw.PlayDuel(gameplay, otherPlayer);
+            otherPlayer.DefenseAgainstDuel(gameplay, bangCard);
+            outlaw.NotDefenseAgainstBang(gameplay);
             
             // Assert
-            otherPlayer.Hand.Should().BeEmpty();
+            otherPlayer.Hand.Should().BeEmpty($"Other player was {otherPlayer.Character}");
         }
         
         [Fact]
@@ -113,9 +123,9 @@ namespace Bang.Tests
             var duelCard = new DuelCardType().ClubsSeven();
             deputy.AddCardToHand(duelCard);
 
-            gameplay.SkipTurnsUntilPlayer(deputy);
+            gameplay.SetTurnToPlayer(deputy);
 
-            gameplay.StartNextPlayerTurn();
+            gameplay.StartPlayerTurn();
 
             var sheriff = gameplay.Players.First(p => p.Role is Sheriff);
             var bangCard = new BangCardType().SpadesQueen();
@@ -124,10 +134,10 @@ namespace Bang.Tests
             sheriff.PlayerTablet.PutCard(new ScopeCardType().SpadesQueen());
             
             // Act
-            var resp = deputy.PlayCard(duelCard, sheriff);
+            var resp = deputy.PlayDuel(gameplay, sheriff);
             resp.Should().BeOfType<DefenceAgainstDuel>();
-            sheriff.Defense(bangCard);
-            deputy.NotDefense();
+            sheriff.DefenseAgainstBang(gameplay, bangCard);
+            deputy.NotDefenseAgainstBang(gameplay);
             
             // Assert
             sheriff.Hand.Should().NotBeEmpty();
@@ -140,6 +150,8 @@ namespace Bang.Tests
                 .WithoutCharacter(new VultureSam())
                 .WithoutCharacter(new KitCarlson())
                 .WithoutCharacter(new PedroRamirez())
+                .WithoutCharacter(new SuzyLafayette())
+                .WithoutCharacter(new BartCassidy())
                 .Build();
         }
     }

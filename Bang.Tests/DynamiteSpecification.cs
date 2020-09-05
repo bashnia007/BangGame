@@ -20,7 +20,7 @@ namespace Bang.Tests
             Player actor = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(DynamiteCard());
+            actor.PlayDynamite(gameplay);
 
             // Assert
             actor.Hand.Should().NotContain(DynamiteCard());
@@ -33,7 +33,7 @@ namespace Bang.Tests
             Player actor = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(DynamiteCard());
+            actor.PlayDynamite(gameplay);
 
             // Assert
             actor.PlayerTablet.ActiveCards.Should().Contain(DynamiteCard());
@@ -51,10 +51,10 @@ namespace Bang.Tests
             // act
             actor.PlayerTablet.PutCard(DynamiteCard());
 
-            gameplay.SkipTurnsUntilPlayer(actor);
+            gameplay.SetTurnToPlayer(actor);
 
             gameplay.PutCardOnDeck(ExplodeCard());
-            gameplay.StartNextPlayerTurn();
+            gameplay.StartPlayerTurn();
 
             // Assert
             actor.LifePoints.Should().Be(healthBefore - 3);
@@ -72,9 +72,9 @@ namespace Bang.Tests
             // act
             actor.PlayerTablet.PutCard(DynamiteCard());
             
-            gameplay.SkipTurnsUntilPlayer(actor);
+            gameplay.SetTurnToPlayer(actor);
 
-            gameplay.StartNextPlayerTurn();
+            gameplay.StartPlayerTurn();
 
             // Assert
             actor.ActiveCards.Should().NotContain(DynamiteCard());
@@ -92,9 +92,9 @@ namespace Bang.Tests
             // act
             actor.PlayerTablet.PutCard(DynamiteCard());
 
-            gameplay.SkipTurnsUntilPlayer(actor);
+            gameplay.SetTurnToPlayer(actor);
 
-            gameplay.StartNextPlayerTurn();
+            gameplay.StartPlayerTurn();
 
             // Assert
             actor.ActiveCards.Should().NotContain(DynamiteCard());
@@ -103,22 +103,20 @@ namespace Bang.Tests
         [Fact]
         public void Player_with_dynamite_card_transfers_dynamite_card_to_the_next_player_if_dynamite_doesnot_explode()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(NotExplodeCard());
-
-            var gameplay = InitGameplay(deck);
+            var gameplay = InitGameplay();
             Player actor = ChoosePlayer(gameplay);
 
-            // act
             actor.PlayerTablet.PutCard(DynamiteCard());
-
-            gameplay.SkipTurnsUntilPlayer(actor);
-
-            gameplay.StartNextPlayerTurn();
-            gameplay.NextTurn();
+            actor.EndTurn();
+            gameplay.SetTurnToPlayer(actor);
+            
+            // act
+            gameplay.PutCardOnDeck(new VolcanicCardType().DiamondsFour());
+            gameplay.StartPlayerTurn();
+            
 
             // Assert
-            gameplay.PlayerTurn.ActiveCards.Should().Contain(DynamiteCard());
+            gameplay.GetNextPlayer().ActiveCards.Should().Contain(DynamiteCard());
         }
 
         #endregion

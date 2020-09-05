@@ -12,7 +12,7 @@ namespace Server.Messages
         }
         public override Response Handle(BangEventsHandler handler)
         {
-            return Player.EndTurn();
+            return handler.EndTurnAndStartNext();
         }
     }
 }

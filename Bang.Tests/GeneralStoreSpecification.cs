@@ -22,7 +22,7 @@ namespace Bang.Tests
             Player actor = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(GeneralStoreCard());
+            actor.PlayGeneralStore(gameplay);
 
             // Assert
             gameplay.PeekTopCardFromDiscarded().Should().Be(GeneralStoreCard());
@@ -35,7 +35,7 @@ namespace Bang.Tests
             Player actor = ChoosePlayer(gameplay);
 
             // act
-            actor.PlayCard(GeneralStoreCard());
+            actor.PlayGeneralStore(gameplay);
 
             // Assert
             actor.Hand.Should().NotContain(GeneralStoreCard());
@@ -48,7 +48,7 @@ namespace Bang.Tests
             Player actor = ChoosePlayer(gameplay);
 
             // act
-            var response = actor.PlayCard(GeneralStoreCard());
+            var response = actor.PlayGeneralStore(gameplay);
 
             // Assert
             var chooseCardsResponse = (ChooseCardsResponse) response;
@@ -62,7 +62,7 @@ namespace Bang.Tests
             Player actor = ChoosePlayer(gameplay);
 
             // act
-            var response = actor.PlayCard(GeneralStoreCard());
+            var response = actor.PlayGeneralStore(gameplay);
 
             // Assert
             var chooseCardsResponse = (ChooseCardsResponse)response;
@@ -76,13 +76,13 @@ namespace Bang.Tests
             Player actor = ChoosePlayer(gameplay);
 
             // act
-            var response = actor.PlayCard(GeneralStoreCard());
+            var response = actor.PlayGeneralStore(gameplay);
 
             // Assert
             var chooseCardsResponse = (ChooseCardsResponse)response;
             var card = chooseCardsResponse.CardsToChoose[0];
 
-            actor.ChooseCard(card);
+            actor.ChooseCardAfterGeneralStore(gameplay, card);
 
             actor.Hand.Should().Contain(card);
         }

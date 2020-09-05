@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Bang.Characters;
 using Bang.Game;
+using Bang.GameEvents;
 using Bang.Players;
 using Bang.Roles;
 
@@ -14,35 +15,17 @@ namespace Bang.Tests
             return SetTurnToCharacter(gameplay, player.Character);
         }
 
-        internal static Gameplay SkipTurnsUntilCharacter(this Gameplay gameplay, Character character)
-        {
-            if (gameplay.PlayerTurn.Character == character)
-                gameplay.NextTurn();
-
-            while (gameplay.GetNextPlayer().Character != character)
-            {
-                gameplay.NextTurn();
-            }
-
-            return gameplay;
-        }
-        internal static Gameplay SkipTurnsUntilPlayer(this Gameplay gameplay, Player player)
-        {
-            return SkipTurnsUntilCharacter(gameplay, player.Character);
-        }
-        
         internal static Player SetTurnToCharacter(this Gameplay gameplay, Character character)
         {
             if (gameplay.AlivePlayers.All(p => p.Character != character))
                 throw new ArgumentException($"There isn't {character} in game!");
-            
-            while (gameplay.GetNextPlayer().Character != character)
+
+            while (gameplay.PlayerTurn.Character != character)
             {
-                gameplay.NextTurn();
+                gameplay.StartPlayerTurn();
+                gameplay.PlayerTurn.FinishTurn();
             }
             
-            gameplay.NextTurn();
-
             return gameplay.PlayerTurn;
         }
 

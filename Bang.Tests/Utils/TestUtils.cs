@@ -42,22 +42,15 @@ namespace Bang.Tests
         
         internal static Gameplay InitGameplay(int playersCount = 4)
         {
-            return InitGameplay(GamePlayInitializer.BangGameDeck(), GamePlayInitializer.CharactersDeck(), playersCount);
-        }
-        
-        internal static Gameplay InitGameplay(Deck<BangGameCard> deck, int playersAmount = 4)
-        {
-            return InitGameplay(deck, GamePlayInitializer.CharactersDeck(), playersAmount);
+            return InitGameplay(GamePlayInitializer.CharactersDeck(), playersCount);
         }
         
         internal static Gameplay InitGameplay(Deck<Character> charactersDeck, int playersAmount = 4)
         {
-            return InitGameplay(GamePlayInitializer.BangGameDeck(), charactersDeck, playersAmount);
-        }
-        
-        internal static Gameplay InitGameplay(Deck<BangGameCard> deck, Deck<Character> charactersDeck, int playersAmount = 4)
-        {
-            return new GameplayBuilder(playersAmount).WithCharacterDeck(charactersDeck).WithDeck(deck).Build();
+            return 
+                new GameplayBuilder(playersAmount)
+                    .WithCharacterDeck(charactersDeck)
+                    .Build();
         }
     }
 }

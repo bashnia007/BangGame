@@ -22,7 +22,7 @@ namespace Bang.Tests
             (Player player, BangGameCard saloonCard) = ChoosePlayer(gameplay);
 
             // act
-            player.PlayCard(saloonCard);
+            player.PlaySaloon(gameplay);
             
             // Assert
             gameplay.PeekTopCardFromDiscarded().Should().Be(saloonCard);
@@ -35,7 +35,7 @@ namespace Bang.Tests
             (Player player, BangGameCard saloonCard) = ChoosePlayer(gameplay);
 
             // act
-            player.PlayCard(saloonCard);
+            player.PlaySaloon(gameplay);
 
             // Assert
             player.Hand.Should().NotContain(saloonCard);
@@ -56,7 +56,7 @@ namespace Bang.Tests
             otherPlayer.LoseLifePoint();
 
             // act
-            player.PlayCard(saloonCard);
+            player.PlaySaloon(gameplay);
             
             // assert
             player.LifePoints.Should().Be(playerHealth);

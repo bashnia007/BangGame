@@ -12,7 +12,7 @@ namespace Bang.Tests
     public class CatBalouSpecification
     {
         [Fact]
-        public void Victim_of_Cat_Balou_card_always_have_any_card()
+        public void Victim_of_Cat_Balou_card_always_has_any_card()
         {
             var gameplay = InitGameplay();
             (Player actor, Player victim) = ChoosePlayers(gameplay);
@@ -21,7 +21,7 @@ namespace Bang.Tests
             actor.AddCardToHand(catBalouCard);
             
             // act
-            var response = actor.PlayCard(catBalouCard, victim);
+            var response = actor.PlayCatBalou(gameplay, victim);
             
             // assert
             response.Should().BeOfType(typeof(NotAllowedOperation));
@@ -39,7 +39,7 @@ namespace Bang.Tests
             victim.AddCardToHand(new BangCardType().DiamondsThree());
 
             // act
-            actor.PlayCard(catBalouCard, victim);
+            actor.PlayCatBalou(gameplay, victim);
             
             // Assert
             gameplay.PeekTopCardFromDiscarded().Should().Be(catBalouCard);
@@ -57,7 +57,7 @@ namespace Bang.Tests
             victim.AddCardToHand(new BangCardType().DiamondsThree());
 
             // act
-            actor.PlayCard(catBalouCard, victim);
+            actor.PlayCatBalou(gameplay, victim);
             
             // Assert
             actor.Hand.Should().NotContain(catBalouCard);
@@ -75,10 +75,10 @@ namespace Bang.Tests
             var bangCard = new BangCardType().DiamondsThree();
             victim.AddCardToHand(bangCard);
 
-            var availableCards = actor.PlayCard(catBalouCard, victim) as ChooseOneCardResponse;
+            var availableCards = actor.PlayCatBalou(gameplay, victim);
             
             // Act
-            actor.ForceToDropRandomCard(victim);
+            actor.ForceToDropRandomCard(gameplay, victim);
             
             // Assert
             victim.Hand.Should().NotContain(bangCard);
@@ -96,10 +96,10 @@ namespace Bang.Tests
             var mustangCard = new MustangCardType().DiamondsThree();
             victim.PlayerTablet.PutCard(mustangCard);
 
-            var availableCards = actor.PlayCard(catBalouCard, victim) as ChooseOneCardResponse;
+            var availableCards = actor.PlayCatBalou(gameplay, victim) as ChooseOneCardResponse;
             
             // Act
-            actor.ForceToDropCard(victim, availableCards.ActiveCards.First());
+            actor.ForceToDropCard(gameplay, victim,  availableCards.ActiveCards.First());
             
             // Assert
             victim.ActiveCards.Should().NotContain(mustangCard);
@@ -117,12 +117,12 @@ namespace Bang.Tests
             var mustangCard = new MustangCardType().DiamondsThree();
             victim.PlayerTablet.PutCard(mustangCard);
 
-            var availableCards = actor.PlayCard(catBalouCard, victim) as ChooseOneCardResponse;
+            var availableCards = actor.PlayCatBalou(gameplay, victim) as ChooseOneCardResponse;
 
             var cardToDrop = availableCards.ActiveCards.First();
             
             // Act
-            actor.ForceToDropCard(victim, cardToDrop);
+            actor.ForceToDropCard(gameplay, victim, cardToDrop);
             
             // Assert
             gameplay.PeekTopCardFromDiscarded().Should().Be(cardToDrop);
@@ -140,10 +140,10 @@ namespace Bang.Tests
             var mustangCard = new MustangCardType().DiamondsThree();
             victim.AddCardToHand(mustangCard);
 
-            var availableCards = actor.PlayCard(catBalouCard, victim) as ChooseOneCardResponse;
+            var availableCards = actor.PlayCatBalou(gameplay, victim);
 
             // Act
-            actor.ForceToDropRandomCard(victim);
+            actor.ForceToDropRandomCard(gameplay, victim);
             
             // Assert
             gameplay.PeekTopCardFromDiscarded().Should().Be(mustangCard);

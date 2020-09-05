@@ -82,5 +82,14 @@ namespace Bang.GameEvents
             
             return response;
         }
+
+        public Response EndTurnAndStartNext()
+        {
+            var resp = gamePlay.EndTurn();
+            if (resp is Done)
+                return gamePlay.StartPlayerTurn();
+
+            return resp;
+        }
     }
 }

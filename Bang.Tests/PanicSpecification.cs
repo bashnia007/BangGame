@@ -18,7 +18,7 @@ namespace Bang.Tests
             var (actor, victim, panicCard) = ChoosePlayers(gameplay);
 
             // act
-            var response = actor.PlayCard(panicCard, victim);
+            var response = actor.PlayPanic(gameplay, victim);
             
             // assert
             response.Should().BeOfType(typeof(NotAllowedOperation));
@@ -33,7 +33,7 @@ namespace Bang.Tests
             victim.PlayerTablet.PutCard(new MustangCardType().HeartsAce());
             
             // act
-            var response = actor.PlayCard(panicCard, victim);
+            var response = actor.PlayPanic(gameplay, victim);
             
             // assert
             response.Should().BeOfType(typeof(NotAllowedOperation));
@@ -48,7 +48,7 @@ namespace Bang.Tests
             victim.AddCardToHand(new BangCardType().DiamondsThree());
 
             // act
-            actor.PlayCard(panicCard, victim);
+            actor.PlayPanic(gameplay, victim);
             
             // Assert
             gameplay.PeekTopCardFromDiscarded().Should().Be(panicCard);
@@ -63,7 +63,7 @@ namespace Bang.Tests
             victim.AddCardToHand(new BangCardType().DiamondsThree());
 
             // act
-            actor.PlayCard(panicCard, victim);
+            actor.PlayPanic(gameplay, victim);
             
             // Assert
             actor.Hand.Should().NotContain(panicCard);
@@ -78,10 +78,10 @@ namespace Bang.Tests
             var volcanic = new VolcanicCardType().SpadesQueen();
             victim.PlayerTablet.PutCard(volcanic);
 
-            var availableCards = actor.PlayCard(panicCard, victim) as ChooseOneCardResponse;
+            var availableCards = (ChooseOneCardResponse) actor.PlayPanic(gameplay, victim);
             
             // Act
-            actor.DrawCardFromPlayer(victim, availableCards.ActiveCards[0]);
+            actor.DrawCardFromPlayer(gameplay, victim, availableCards.ActiveCards[0]);
      
             // Assert
             actor.Hand.Should().Contain(volcanic);
@@ -96,10 +96,10 @@ namespace Bang.Tests
             var volcanic = new VolcanicCardType().SpadesQueen();
             victim.PlayerTablet.PutCard(volcanic);
 
-            var availableCards = actor.PlayCard(panicCard, victim) as ChooseOneCardResponse;
+            var availableCards = (ChooseOneCardResponse) actor.PlayPanic(gameplay, victim);
             
             // Act
-            actor.DrawCardFromPlayer(victim, availableCards.ActiveCards[0]);
+            actor.DrawCardFromPlayer(gameplay, victim, availableCards.ActiveCards[0]);
             
             // Assert
             victim.ActiveCards.Should().NotContain(volcanic);
@@ -114,10 +114,10 @@ namespace Bang.Tests
             var gatlingCard = new GatlingCardType().DiamondsThree();
             victim.AddCardToHand(gatlingCard);
 
-            var availableCards = actor.PlayCard(panicCard, victim) as ChooseOneCardResponse;
+            var availableCards = actor.PlayPanic(gameplay, victim);
 
             // Act
-            actor.DrawCardFromPlayer(victim);
+            actor.DrawCardFromPlayer(gameplay, victim);
             
             // Assert
             actor.Hand.Should().Contain(gatlingCard);
@@ -132,10 +132,10 @@ namespace Bang.Tests
             var volcanic = new VolcanicCardType().SpadesQueen();
             victim.AddCardToHand(volcanic);
 
-            var availableCards = actor.PlayCard(panicCard, victim) as ChooseOneCardResponse;
+            var availableCards = actor.PlayPanic(gameplay, victim);
             
             // Act
-            actor.DrawCardFromPlayer(victim);
+            actor.DrawCardFromPlayer(gameplay, victim);
             
             // Assert
             victim.Hand.Should().BeEmpty();

@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Bang.GameEvents;
 using Bang.Players;
-using Bang.PlayingCards;
 using Bang.Messages;
-using FluentAssertions;
-using Server.Messages;
 using Server.Processors;
 using Xunit;
 
@@ -289,49 +286,6 @@ namespace Server.Tests
             Assert.Equal(cardsAmountBeforeMessage + cardsToTake, player.Hand.Count);
         }
 
-        [Fact]
-        public void Change_weapon_message_removes_card_from_hand()
-        {
-            var game = CreateAndStartGame();
-            var player = game.Players.First();
-            var card = new VolcanicCardType().ClubsSeven();
-            player.AddCardToHand(card);
-
-            player.PlayCard(card);
-
-            Assert.DoesNotContain(card, player.Hand);
-        }
-
-        // TODO this test should not live in ServerMessageProcessorTests
-        [Theory]
-        [MemberData(nameof(ReplenishCardsToCardsAmountMapping))]
-        public void Replenish_hand_card_message_returns_properly_cards_amount_in_message(BangGameCard card, int cardsShouldBeAdded)
-        {
-            var game = CreateAndStartGame();
-            var player = game.Gameplay.PlayerTurn;
-            player.AddCardToHand(card);
-
-            var hand = player.Hand.Count;
-            
-            player.PlayCard(card);
-
-            player.Hand.Count.Should().Be(hand - 1 + cardsShouldBeAdded);
-        }
-
-        // TODO this test should not live in ServerMessageProcessorTests
-        [Theory]
-        [MemberData(nameof(ReplenishCards))]
-        public void Replenish_hand_card_message_removes_used_card_from_hand(BangGameCard card)
-        {
-            var game = CreateAndStartGame();
-            var player = game.Gameplay.PlayerTurn;
-            player.AddCardToHand(card);
-            
-            player.PlayCard(card);
-
-            Assert.DoesNotContain(card, player.Hand);
-        }
-        
         #endregion
 
         #region Private methods
@@ -345,9 +299,9 @@ namespace Server.Tests
             return Lobby.GetPlayer(id);
         }
 
-        private List<global::Server.Game> CreateGames(int amount, Player player)
+        private List<Game> CreateGames(int amount, Player player)
         {
-            var result = new List<global::Server.Game>();
+            var result = new List<Game>();
             for (int i = 0; i < amount; i++)
             {
                 result.Add(CreateGame(player));
@@ -356,9 +310,9 @@ namespace Server.Tests
             return result;
         }
 
-        private global::Server.Game CreateGame(Player player)
+        private Game CreateGame(Player player)
         {
-            var game = new global::Server.Game(player);
+            var game = new Game(player);
             Lobby.AddGame(game);
             return game;
         }
@@ -371,7 +325,7 @@ namespace Server.Tests
             }
         }
 
-        private global::Server.Game CreateAndStartGame()
+        private Game CreateAndStartGame()
         {
             var player = CreatePlayer();
             var game = CreateGame(player);
@@ -386,34 +340,6 @@ namespace Server.Tests
             return game;
         }
         
-        #endregion
-
-        #region Fields
-
-        public static IEnumerable<object[]> ReplenishCardsToCardsAmountMapping
-        {
-            get
-            {
-                return new[]
-                {
-                    new object[] { new StagecoachCardType().ClubsSeven(), 2},
-                    new object[] { new WellsFargoCardType().ClubsSeven(), 3,}
-                };
-            }
-        }
-
-        public static IEnumerable<object[]> ReplenishCards
-        {
-            get
-            {
-                return new[]
-                {
-                    new object[] { new StagecoachCardType().ClubsSeven(), },
-                    new object[] { new WellsFargoCardType().ClubsSeven(), },
-                };
-            }
-        }
-
         #endregion
     }
 }

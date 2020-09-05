@@ -24,11 +24,11 @@ namespace Bang.Tests.Characters
             
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
-            calamity.PlayCard(MissedCard(), opponent);
+            calamity.PlayMissed(gamePlay, opponent);
 
             var healthBefore = opponent.PlayerTablet.Health;
             // Act
-            opponent.NotDefense();
+            opponent.NotDefenseAgainstBang(gamePlay);
 
             // Assert
             opponent.LifePoints.Should().Be(healthBefore - 1);
@@ -40,11 +40,11 @@ namespace Bang.Tests.Characters
             var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
-            calamity.PlayCard(BangCard(), opponent);
+            calamity.PlayBang(gamePlay, opponent);
 
             var healthBefore = opponent.PlayerTablet.Health;
             // Act
-            opponent.NotDefense();
+            opponent.NotDefenseAgainstBang(gamePlay);
 
             // Assert
             opponent.LifePoints.Should().Be(healthBefore - 1);
@@ -58,10 +58,10 @@ namespace Bang.Tests.Characters
 
             var healthBefore = calamity.PlayerTablet.Health;
 
-            opponent.PlayCard(BangCard(), calamity);
+            opponent.PlayBang(gamePlay, calamity);
 
             // Act
-            calamity.Defense(BangCard());
+            calamity.DefenseAgainstBang(gamePlay, BangCard());
 
             // Assert
             calamity.LifePoints.Should().Be(healthBefore);
@@ -75,10 +75,10 @@ namespace Bang.Tests.Characters
 
             var healthBefore = calamity.PlayerTablet.Health;
 
-            opponent.PlayCard(BangCard(), calamity);
+            opponent.PlayBang(gamePlay, calamity);
 
             // Act
-            calamity.Defense(MissedCard());
+            calamity.DefenseAgainstBang(gamePlay, MissedCard());
 
             // Assert
             calamity.LifePoints.Should().Be(healthBefore);
@@ -93,9 +93,9 @@ namespace Bang.Tests.Characters
             var healthBefore = calamity.PlayerTablet.Health;
 
             // Act
-            opponent.PlayCard(DuelCard(), calamity);
-            calamity.Defense(MissedCard());
-            opponent.NotDefense();
+            opponent.PlayDuel(gamePlay, calamity);
+            calamity.DefenseAgainstBang(gamePlay, MissedCard());
+            opponent.NotDefenseAgainstBang(gamePlay);
 
             // Assert
             calamity.LifePoints.Should().Be(healthBefore);
@@ -110,9 +110,9 @@ namespace Bang.Tests.Characters
             var healthBefore = calamity.PlayerTablet.Health;
 
             // Act
-            opponent.PlayCard(DuelCard(), calamity);
-            calamity.Defense(BangCard());
-            opponent.NotDefense();
+            opponent.PlayDuel(gamePlay, calamity);
+            calamity.DefenseAgainstBang(gamePlay, BangCard());
+            opponent.NotDefenseAgainstBang(gamePlay);
 
             // Assert
             calamity.LifePoints.Should().Be(healthBefore);
@@ -127,8 +127,8 @@ namespace Bang.Tests.Characters
             var healthBefore = calamity.PlayerTablet.Health;
 
             // Act
-            opponent.PlayCard(IndiansCard());
-            calamity.Defense(MissedCard());
+            opponent.PlayIndians(gamePlay);
+            calamity.DefenseAgainstBang(gamePlay, MissedCard());
 
             // Assert
             calamity.LifePoints.Should().Be(healthBefore);
@@ -143,8 +143,8 @@ namespace Bang.Tests.Characters
             var healthBefore = calamity.PlayerTablet.Health;
 
             // Act
-            opponent.PlayCard(IndiansCard());
-            calamity.Defense(BangCard());
+            opponent.PlayIndians(gamePlay);
+            calamity.DefenseAgainstBang(gamePlay, BangCard());
 
             // Assert
             calamity.LifePoints.Should().Be(healthBefore);
@@ -159,8 +159,8 @@ namespace Bang.Tests.Characters
             var healthBefore = calamity.PlayerTablet.Health;
 
             // Act
-            opponent.PlayCard(GatlingCard());
-            calamity.Defense(BangCard());
+            opponent.PlayGatling(gamePlay);
+            calamity.DefenseAgainstBang(gamePlay, BangCard());
 
             // Assert
             calamity.LifePoints.Should().Be(healthBefore);
@@ -175,8 +175,8 @@ namespace Bang.Tests.Characters
             var healthBefore = calamity.PlayerTablet.Health;
 
             // Act
-            opponent.PlayCard(GatlingCard());
-            calamity.Defense(MissedCard());
+            opponent.PlayGatling(gamePlay);
+            calamity.DefenseAgainstBang(gamePlay, MissedCard());
 
             // Assert
             calamity.LifePoints.Should().Be(healthBefore);
@@ -188,10 +188,10 @@ namespace Bang.Tests.Characters
             var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
-            calamity.PlayCard(MissedCard(), opponent);
+            calamity.PlayMissed(gamePlay, opponent);
 
             // Act
-            opponent.NotDefense();
+            opponent.NotDefenseAgainstBang(gamePlay);
 
             // Assert
             gamePlay.PeekTopCardFromDiscarded().Should().Be(MissedCard());
@@ -203,10 +203,10 @@ namespace Bang.Tests.Characters
             var gamePlay = InitGameplayWithCharacter(new CalamityJanet());
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
-            opponent.PlayCard(BangCard(), calamity);
+            opponent.PlayBang(gamePlay, calamity);
 
             // Act
-            calamity.Defense(BangCard());
+            calamity.DefenseAgainstBang(gamePlay, BangCard());
 
             // Assert
             gamePlay.PeekTopCardFromDiscarded().Should().Be(BangCard());
@@ -219,9 +219,9 @@ namespace Bang.Tests.Characters
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             // Act
-            opponent.PlayCard(DuelCard(), calamity);
-            calamity.Defense(MissedCard());
-            opponent.NotDefense();
+            opponent.PlayDuel(gamePlay, calamity);
+            calamity.DefenseAgainstDuel(gamePlay, MissedCard());
+            opponent.LoseDuel(gamePlay);
 
             // Assert
             gamePlay.PeekTopCardFromDiscarded().Should().Be(MissedCard());
@@ -234,8 +234,8 @@ namespace Bang.Tests.Characters
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             // Act
-            opponent.PlayCard(IndiansCard());
-            calamity.Defense(MissedCard());
+            opponent.PlayIndians(gamePlay);
+            calamity.DefenseAgainstDuel(gamePlay, MissedCard());
 
             // Assert
             gamePlay.PeekTopCardFromDiscarded().Should().Be(MissedCard());
@@ -248,8 +248,8 @@ namespace Bang.Tests.Characters
             (Player calamity, Player opponent) = ChoosePlayers(gamePlay);
 
             // Act
-            opponent.PlayCard(GatlingCard());
-            calamity.Defense(BangCard());
+            opponent.PlayGatling(gamePlay);
+            calamity.DefenseAgainstBang(gamePlay, BangCard());
 
             // Assert
             gamePlay.PeekTopCardFromDiscarded().Should().Be(BangCard());
