@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DragDrop : MonoBehaviour
 {
+    public GameObject Canvas;
+
     private bool isDragging = false;
     private bool isOverDropZone = false;
     private GameObject dropZone;
@@ -11,11 +13,17 @@ public class DragDrop : MonoBehaviour
 
     private Queue<GameObject> dropZones = new Queue<GameObject>();
 
+    private void Awake()
+    {
+        Canvas = GameObject.Find("Main Canvas");
+    }
+
     void Update()
     {
         if (isDragging)
         {
             transform.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+            transform.SetParent(Canvas.transform, true);
         }
     }
 
