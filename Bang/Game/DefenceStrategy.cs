@@ -46,15 +46,15 @@ namespace Bang.Game
 
             if (saveLifePoint)
             {
-                defender.DropCard(firstCard);
+                defender.DropPlayedCard(firstCard);
                 if (requiredCards == 2)
-                    defender.DropCard(secondCard);
+                    defender.DropPlayedCard(secondCard);
             }
             else
             {
                 if (defender.Character is SuzyLafayette && requiredCards == 2)
                 {
-                    defender.DropCard(firstCard);
+                    defender.DropPlayedCard(firstCard);
                 }
                 defender.LoseLifePoint(hitter);
             }

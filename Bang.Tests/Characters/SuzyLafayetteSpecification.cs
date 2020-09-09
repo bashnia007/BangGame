@@ -20,8 +20,10 @@ namespace Bang.Tests.Characters
             suzy.AddCardToHand(BangCard);
             var victim = gamePlay.Players.First(p => p != suzy);
 
+            // Act
             suzy.PlayBang(gamePlay, victim);
 
+            // Assert
             suzy.Hand.Count.Should().Be(1);
         }
 
@@ -163,12 +165,19 @@ namespace Bang.Tests.Characters
         public void ElGringo_draws_taken_by_Suzy_card_when_she_hits_him_with_the_last_card()
         {
             var (gameplay, suzy, el) = CreateGameplayWithElGringoAndSuzy();
-            suzy.AddCardToHand(BangCard);
             gameplay.PutCardOnDeck(MissedCard);
+            gameplay.PutCardOnDeck(ScopeCard);
+            gameplay.PutCardOnDeck(BangCard);
+            gameplay.StartPlayerTurn();
 
+            suzy.PlayScope(gameplay);
+            // Now Suzy has only card in hand
+
+            // Act
             suzy.PlayBang(gameplay, el);
             el.NotDefenseAgainstBang(gameplay);
 
+            // Assert
             el.Hand.Should().Contain(MissedCard);
         }
 
@@ -176,23 +185,28 @@ namespace Bang.Tests.Characters
         public void Suzy_receives_additional_card_when_she_hits_ElGringo_with_the_last_card()
         {
             var (gameplay, suzy, el) = CreateGameplayWithElGringoAndSuzy();
-            suzy.AddCardToHand(BangCard);
+            
             gameplay.PutCardOnDeck(MissedCard);
             gameplay.PutCardOnDeck(DuelCard);
+            gameplay.PutCardOnDeck(BangCard);
+            gameplay.StartPlayerTurn();
 
-            suzy.PlayBang(gameplay, el);
-            el.NotDefenseAgainstBang(gameplay);
+            // Act
+            suzy.PlayDuel(gameplay, el);
+            el.LoseDuel(gameplay);
 
+            // Assert
             suzy.Hand.Count.Should().Be(1);
             suzy.Hand.Should().Contain(MissedCard);
         }
 
         #endregion
 
-        readonly BangGameCard BangCard = new BangCardType().ClubsFive();
-        readonly BangGameCard MissedCard = new MissedCardType().ClubsFive();
-        readonly BangGameCard SecondMissedCard = new MissedCardType().ClubsSeven();
+        readonly BangGameCard BangCard = new BangCardType().DiamondsTwo();
+        readonly BangGameCard MissedCard = new MissedCardType().DiamondsThree();
+        readonly BangGameCard SecondMissedCard = new MissedCardType().DiamondsTwo();
         readonly BangGameCard DuelCard = new DuelCardType().ClubsFive();
+        readonly BangGameCard ScopeCard = new ScopeCardType().ClubsFive();
 
         private (Gameplay, Player) CreateGameplayWithSuzy()
         {
@@ -216,11 +230,12 @@ namespace Bang.Tests.Characters
 
         private (Gameplay, Player, Player) CreateGameplayWithElGringoAndSuzy()
         {
-            var gamePlay = InitGameplay();
-            var suzy = gamePlay.PlayerTurn;
-            suzy.SetInfo(gamePlay, suzy.Role, new SuzyLafayette());
-            var el = gamePlay.Players.First(p => p != suzy);
-            el.SetInfo(gamePlay, el.Role, new ElGringo());
+            var gamePlay = new GameplayBuilder(4).WithCharacter(new ElGringo()).WithCharacter(new SuzyLafayette())
+                .Build();
+            var suzy = gamePlay.FindPlayer(new SuzyLafayette());
+            var el = gamePlay.FindPlayer(new ElGringo());
+
+            gamePlay.SetTurnToPlayer(suzy);
 
             return (gamePlay, suzy, el);
         }

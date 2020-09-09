@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Bang.Characters;
 using Bang.Characters.Visitors;
@@ -12,6 +13,7 @@ using Bang.Weapons;
 
 namespace Bang.Players
 {
+    [DebuggerDisplay("Name = {Name}, Character = {this.Character}")]
     [Serializable]
     public abstract class Player : Entity
     {
@@ -52,13 +54,17 @@ namespace Bang.Players
             hand.Add(card);
         }
 
-        public void DropActiveCard(BangGameCard card)
+        public void DiscardActiveCard(BangGameCard card)
         {
             PlayerTablet.RemoveCard(card);
             
-            gamePlay.DropCard(card);
+            gamePlay.Discard(card);
         }
 
+        /// <summary>
+        /// Drops card as discard phase
+        /// </summary>
+        /// <param name="cardsToDrop"></param>
         public void DropCards(List<BangGameCard> cardsToDrop)
         {
             gamePlay.DropCardsFromHand(cardsToDrop);
@@ -68,11 +74,16 @@ namespace Bang.Players
             }
         }
 
+        public void DropPlayedCard(BangGameCard card)
+        {
+            gamePlay.DropPlayedCard(this, card);
+        }
+
         public void DropCard(BangGameCard cardToDrop)
         {
             DropCards(new List<BangGameCard> { cardToDrop });
         }
-
+        
         public void PutCardOnDeck(BangGameCard card)
         {
             gamePlay.PutCardOnDeck(card);
@@ -86,63 +97,6 @@ namespace Bang.Players
                 var newCard = gamePlay.DealCard();
                 hand.Add(newCard);
             }
-        }
-
-        public Response PlayCard(BangGameCard card, Player playOn = null)
-        {
-            if (!hand.Contains(card))
-                throw new PlayerDoesntHaveSuchCardException(this, card);
-
-            if (!card.IsUniversalCard)
-            {
-                if (card.CanBePlayedToAnotherPlayer)
-                {
-                    if (playOn == null || playOn == this)
-                        throw new InvalidOperationException($"Card {card.Description} must be played to another player!");
-                }
-                else
-                {
-                    if (playOn != null && playOn != this)
-                        throw new InvalidOperationException($"Card {card.Description} can not be played to another player!");
-                }
-            }
-
-            var response = gamePlay.CardPlayed(this, playOn?? this, card);
-
-            if (response is NotAllowedOperation)
-                return response;
-
-            if (response is LeaveCardOnTheTableResponse)
-            {
-                hand.Remove(card);
-                return response;
-            }
-            DropCard(card);
-
-            return response;
-        }
-
-        public Response PlayCard(BangGameCard firstCard, BangGameCard secondCard)
-        {
-            if (secondCard == null) return PlayCard(firstCard); 
-            
-            if (!hand.Contains(firstCard))
-                throw new PlayerDoesntHaveSuchCardException(this, firstCard);
-            
-            if (!hand.Contains(secondCard))
-                throw new PlayerDoesntHaveSuchCardException(this, secondCard);
-            
-            if (Character != new SidKetchum())
-                return new NotAllowedOperation();
-            
-            if (LifePoints == MaximumLifePoints)
-                return new NotAllowedOperation();
-            
-            DropCard(firstCard);
-            DropCard(secondCard);
-            RegainLifePoint();
-            
-            return new Done();
         }
 
         public void RegainLifePoint()
@@ -180,15 +134,22 @@ namespace Bang.Players
         }
         
         /// <summary>
-        /// Remove card from hand (but don't put it on discard pile)
+        /// Remove card (but don't put it on discard pile)
         /// </summary>
         /// <param name="card"></param>
         public void LoseCard(BangGameCard card)
         {
             if (card == null)
                 throw new ArgumentNullException(nameof(card));
-            
-            hand.Remove(card);
+
+            if (Hand.Any(c => c == card))
+            {
+                hand.Remove(card);
+            }
+            else
+            {
+                PlayerTablet.RemoveCard(card);
+            }
         }
 
         public void DrawPlayerActiveCard(Player victim, BangGameCard card)
@@ -197,7 +158,7 @@ namespace Bang.Players
             AddCardToHand(card);
         }
 
-        public void DrawCardFromPlayer(Player victim)
+        internal void DrawCardFromPlayer(Player victim)
         {
             if (victim == null)
                 throw new ArgumentNullException(nameof(victim));
@@ -215,18 +176,33 @@ namespace Bang.Players
             }
         }
 
+        /// <summary>
+        /// Drops all cards (active and hand) to discard pile without changing the phase
+        /// </summary>
         public void DropAllCards()
         {
-            DropCards(Hand.ToList());
+            foreach (var card in Hand.ToList())
+            {
+                LoseCard(card);
+                gamePlay.Discard(card);
+            }
+            
             foreach (var activeCard in ActiveCards.ToList())
             {
-                DropActiveCard(activeCard);
+                LoseCard(activeCard);
+                gamePlay.Discard(activeCard);
             }
         }
 
+        // TODO remove it
         public Response EndTurn()
         {
             return gamePlay.EndTurn();
+        }
+
+        public override string ToString()
+        {
+            return $"{Name}({Character})";
         }
     }
 }
