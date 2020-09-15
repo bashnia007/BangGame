@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Bang.Characters;
+using Bang.Game;
 using Bang.Players;
 using Bang.PlayingCards;
 using FluentAssertions;
@@ -18,7 +19,7 @@ namespace Bang.Tests
             (Player actor, Player victim, BangGameCard duelCard) = ChoosePlayers(gamePlay);
             
             // Act
-            Action act = () => actor.PlayDuel(gamePlay, actor);
+            Action act = () => actor.PlayCard(gamePlay, duelCard, actor);
             act.Should().Throw<InvalidOperationException>().WithMessage("* must be played to another player!");
         }
         
@@ -56,7 +57,7 @@ namespace Bang.Tests
         public void If_victim_replies_with_bang_card_and_attacker_does_not_defence_attacker_will_lose_life()
         {
             var gamePlay = InitGameplay();
-            (Player actor, Player victim, BangGameCard duelCard) = ChoosePlayers(gamePlay);
+            (Player actor, Player victim, _) = ChoosePlayers(gamePlay);
             
             actor.PlayDuel(gamePlay, victim);
             
@@ -65,8 +66,8 @@ namespace Bang.Tests
 
             var healthBefore = actor.PlayerTablet.Health;
             // Act
-            victim.DefenseAgainstBang(gamePlay, bangCard);
-            actor.NotDefenseAgainstBang(gamePlay);
+            victim.DefenseAgainstDuel(gamePlay, bangCard);
+            actor.LoseDuel(gamePlay);
             
             // Assert
             actor.LifePoints.Should().Be(healthBefore - 1);
@@ -112,7 +113,7 @@ namespace Bang.Tests
         public void If_victim_and_attacker_play_by_one_bang_card_then_victim_will_lose_one_life()
         {
             var gamePlay = InitGameplay();
-            (Player actor, Player victim, BangGameCard duelCard) = ChoosePlayers(gamePlay);
+            (Player actor, Player victim, _) = ChoosePlayers(gamePlay);
             
             var bangCard = new BangCardType().ClubsSeven();
             actor.AddCardToHand(bangCard);

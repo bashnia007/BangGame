@@ -92,18 +92,15 @@ namespace Bang.Tests
         [Fact]
         public void If_victim_does_barrel_then_he_or_she_will_not_lose_life_point()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(new StagecoachCardType().HeartsAce());
-            
-            var gamePlay = CreateGamePlay(deck);
+            var gamePlay = CreateGamePlay();
             (Player actor, Player victim) = ChoosePlayers(gamePlay);
 
-            var barrelCard = new BarrelCardType().SpadesQueen();
-            victim.AddCardToHand(barrelCard);
-            victim.PlayBarrel(gamePlay);
+            victim.PlayerTablet.PutCard(new BarrelCardType().SpadesQueen());
             
             var healthBefore = victim.PlayerTablet.Health;
-            
+
+            gamePlay.StartPlayerTurn();
+            gamePlay.PutCardOnDeck(new StagecoachCardType().HeartsAce());
             // Act
             var response = actor.PlayBang(gamePlay, victim);
             
@@ -213,13 +210,10 @@ namespace Bang.Tests
         private BangGameCard MissedCard() => new MissedCardType().HeartsJack();
         private BangGameCard RemingtonCard() => new RemingtonCardType().ClubsSix();
 
-        private Gameplay CreateGamePlay(Deck<BangGameCard> deck = null)
+        private Gameplay CreateGamePlay()
         {
             var builder = new GameplayBuilder();
 
-            if (deck != null)
-                builder = builder.WithDeck(deck);
-            
             return builder.WithoutCharacter(new Jourdonnais())
                     .WithoutCharacter(new SlabTheKiller())
                     .Build();

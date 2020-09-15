@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Bang.Players;
 
 namespace Bang.GameEvents
 {
@@ -37,10 +38,10 @@ namespace Bang.GameEvents
             var player = message.Player;
 
             return message.AdditionalCard != null ? 
-                player.PlayCard(message.Card, message.AdditionalCard) : 
-                player.PlayCard(message.Card, message.PlayAgainst);
+                gamePlay.CardPlayed(player, message.Card, message.AdditionalCard) : 
+                gamePlay.CardPlayed(player, message.Card, message.PlayAgainst);
         }
-
+        
         public Response CheckDrawCard(CheckDrawCardMessage checkDrawCardMessage)
         {
             throw new NotImplementedException();
@@ -75,7 +76,7 @@ namespace Bang.GameEvents
                 
                 ChooseCardToReturnResponse chooseCard => gamePlay.ProcessReplyAction(chooseCard.Player, chooseCard.CardToReturn),
 
-                ChooseDrawOptionResponse drawOptionResponse => gamePlay.ProcessDrawSelection(drawOptionResponse.Player, drawOptionResponse.DrawOption),
+                ChooseDrawOptionResponse drawOptionResponse => gamePlay.ProcessDrawSelection(drawOptionResponse.DrawOption),
 
                 _ => throw new NotImplementedException(replyActionMessage.Response.ToString()) 
             };

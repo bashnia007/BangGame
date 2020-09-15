@@ -18,11 +18,6 @@ namespace Bang.GameEvents.CardEffects.States
             this.hitter = gameplay.PlayerTurn;
         }
 
-        public override HandlerState ApplyCardEffect(Player victim, BangGameCard firstCard, BangGameCard secondCard)
-        {
-            return ApplyCardEffect(victim, firstCard);
-        }
-
         public override HandlerState ApplyCardEffect(Player victim, BangGameCard card)
         {
             var bangState = victimStates[victim];

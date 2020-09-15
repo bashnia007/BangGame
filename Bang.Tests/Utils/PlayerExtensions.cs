@@ -121,6 +121,12 @@ namespace Bang.Tests
             return gameplay.Handle(new PlayCardMessage(player, card, target));;
         }
 
+        public static Response PlayTwoCardsAsOne(this Player player, Gameplay gameplay, BangGameCard firstCard,
+            BangGameCard secondCard)
+        {
+            return gameplay.Handle(new PlayCardMessage(player, firstCard, secondCard));
+        }
+
         public static Response ForceToDropCard(this Player player, Gameplay gameplay, Player victim, BangGameCard card)
         {
             return gameplay.Handle(

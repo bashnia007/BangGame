@@ -25,7 +25,7 @@ namespace Bang.Tests.Characters
         public void Sid_Ketchum_may_discard_2_cards_from_hand_to_regain_one_life_point()
         {
             // Arrange
-            var (_, sid) = GameplayWithSidKetchim();
+            var (gameplay, sid) = GameplayWithSidKetchim();
             var bangCard = new BangCardType().DiamondsTwo();
             var stagecoach = new StagecoachCardType().ClubsSix();
             
@@ -34,7 +34,7 @@ namespace Bang.Tests.Characters
             sid.WithOneLifePoint();
 
             // Act
-            sid.PlayCard(bangCard, stagecoach);
+            sid.PlayTwoCardsAsOne(gameplay, bangCard, stagecoach);
             
             // Assert
             sid.LifePoints.Should().Be(2);
@@ -44,7 +44,7 @@ namespace Bang.Tests.Characters
         public void Sid_Ketchum_discards_cards_to_use_his_ability()
         {
             // Arrange
-            var (_, sid) = GameplayWithSidKetchim();
+            var (gameplay, sid) = GameplayWithSidKetchim();
             var bangCard = new BangCardType().DiamondsTwo();
             var stagecoach = new StagecoachCardType().ClubsSix();
             
@@ -53,7 +53,7 @@ namespace Bang.Tests.Characters
             sid.WithOneLifePoint();
 
             // Act
-            sid.PlayCard(bangCard, stagecoach);
+            sid.PlayTwoCardsAsOne(gameplay, bangCard, stagecoach);
             
             // Assert
             sid.Hand.Should().NotContain(bangCard);
@@ -65,7 +65,7 @@ namespace Bang.Tests.Characters
         public void Sid_Ketchum_can_use_his_ability_more_than_once_at_a_time()
         {
             // Arrange
-            var (_, sid) = GameplayWithSidKetchim();
+            var (gameplay, sid) = GameplayWithSidKetchim();
             var bangCard = new BangCardType().DiamondsTwo();
             var stagecoach = new StagecoachCardType().ClubsSix();
             var panicCard = new PanicCardType().HeartsJack();
@@ -78,8 +78,8 @@ namespace Bang.Tests.Characters
             sid.WithOneLifePoint();
 
             // Act
-            sid.PlayCard(bangCard, stagecoach); // first 
-            sid.PlayCard(panicCard, generalStore); // second
+            sid.PlayTwoCardsAsOne(gameplay, bangCard, stagecoach); // first 
+            sid.PlayTwoCardsAsOne(gameplay, panicCard, generalStore); // second
             
             // Assert
             sid.LifePoints.Should().Be(3);
@@ -89,7 +89,7 @@ namespace Bang.Tests.Characters
         public void Sid_Ketchum_can_not_use_his_ability_if_he_has_maximum_life_points()
         {
             // Arrange
-            var (_, sid) = GameplayWithSidKetchim();
+            var (gameplay, sid) = GameplayWithSidKetchim();
             var bangCard = new BangCardType().DiamondsTwo();
             var stagecoach = new StagecoachCardType().ClubsSix();
             
@@ -97,7 +97,7 @@ namespace Bang.Tests.Characters
             sid.AddCardToHand(stagecoach);
 
             // Act
-            var result = sid.PlayCard(bangCard, stagecoach);
+            var result = sid.PlayTwoCardsAsOne(gameplay, bangCard, stagecoach);
             
             // Assert
             sid.LifePoints.Should().Be(sid.MaximumLifePoints);
@@ -119,10 +119,9 @@ namespace Bang.Tests.Characters
             var playerTurn = gameplay.PlayerTurn;
             if (playerTurn == sid)
                 sid.EndTurn();
-            playerTurn = gameplay.PlayerTurn;
 
             // Act
-            sid.PlayCard(bangCard, stagecoach);
+            sid.PlayTwoCardsAsOne(gameplay, bangCard, stagecoach);
             
             // Assert
             sid.LifePoints.Should().Be(2);

@@ -153,7 +153,7 @@ namespace Bang.Tests
             sheriff.AddCardToHand(DynamiteCard());
             sheriff.WithOneLifePoint();
             sheriff.PlayDynamite(gamePlay);
-            sheriff.EndTurn();
+            sheriff.FinishTurn();
             
             gamePlay.SetTurnToPlayer(sheriff);
             gamePlay.PutCardOnDeck(ExplodeCard());

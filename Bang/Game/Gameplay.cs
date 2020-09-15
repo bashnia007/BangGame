@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Bang.Characters;
-using Bang.Characters.Visitors;
+using Bang.Exceptions;
+using Bang.Game.Phases;
 using Bang.GameEvents;
-using Bang.GameEvents.CardEffects;
-using Bang.GameEvents.CardEffects.States;
 using Bang.GameEvents.Enums;
 using Bang.Players;
 using Bang.PlayingCards;
@@ -24,9 +23,9 @@ namespace Bang.Game
 
         private BangEventsHandler handler;
 
-        private HandlerState state;
+        private PhaseTransition phaseTransition;
+        public Player PlayerTurn => phaseTransition.PlayerTurn;
 
-        public Player PlayerTurn { get; private set; }
         public IReadOnlyList<Player> AlivePlayers => Players.Where(p => p.IsAlive).ToList();
 
         public Gameplay(Deck<Character> characters, Deck<BangGameCard> gameCards)
@@ -35,7 +34,6 @@ namespace Bang.Game
             discardedCards = new Deck<BangGameCard>();
 
             this.characters = characters;
-            this.state = new DoneState(this);
         }
 
         public void Initialize(List<Player> players)
@@ -44,10 +42,10 @@ namespace Bang.Game
             
             Players = players;
             ProvideCardsForPlayers(characters);
-            PlayerTurn = players.First(p => p.PlayerTablet.IsSheriff);
+            phaseTransition = new PhaseTransition(this, players.First(p => p.PlayerTablet.IsSheriff));
         }
 
-        public void DealFirstCards()
+        internal void DealFirstCards()
         {
             deck.Shuffle();
 
@@ -69,7 +67,7 @@ namespace Bang.Game
         /// Return the top card from the discarded deck
         /// </summary>
         /// <returns></returns>
-        public BangGameCard DealCardFromDiscarded()
+        internal BangGameCard DealCardFromDiscarded()
         {
             if (discardedCards.IsEmpty()) return null;
             return discardedCards.Deal();
@@ -97,7 +95,22 @@ namespace Bang.Game
             return deck.Deal();
         }
 
-        public void DropCard(BangGameCard card) => discardedCards.Put(card);
+        /// <summary>
+        /// Drops card as part of discard phase.
+        /// </summary>
+        /// <param name="card"></param>
+        public void DropCard(BangGameCard card)
+        {
+            if (card == null)
+                throw new ArgumentNullException(nameof(card));
+
+            var discardPhase = phaseTransition.ToDiscardPhase();
+            
+            if (!discardPhase.IsSuccess)
+                throw new InvalidOperationException(discardPhase.Reason);
+            
+            discardPhase.Value.Do(card);
+        }
 
         public void DropCardsFromHand(List<BangGameCard> cardsToDrop)
         {
@@ -123,29 +136,78 @@ namespace Bang.Game
             }
         }
 
-        internal Response CardPlayed(Player currentPlayer, Player playOn, BangGameCard card)
+        internal Response CardPlayed(Player player, BangGameCard card, Player target = null)
         {
-            var nextState = ApplyEffects(playOn, card);
+            if (!player.Hand.Contains(card))
+                return new NotAllowedOperation($"Player {player.Name} doesn't have card ${card}");
+            
+            if (!card.IsUniversalCard)
+            {
+                if (card.CanBePlayedToAnotherPlayer)
+                {
+                    if (target == null || player == target)
+                        throw new InvalidOperationException($"Card {card.Description} must be played to another player!");
+                }
+                else
+                {
+                    if (target != null && player != target)
+                        throw new InvalidOperationException($"Card {card.Description} can not be played to another player!");
+                }
+            }
 
-            if (!nextState.IsError)
-                state = nextState;
+            var playCardsPhaseResult = phaseTransition.ToPlayCardsPhase();
+            
+            if (!playCardsPhaseResult.IsSuccess)
+                return new NotAllowedOperation(playCardsPhaseResult.Reason);
 
-            CheckSuzyHand(currentPlayer, 1);
+            var phase = playCardsPhaseResult.Value;
 
-            return nextState.SideEffect;
+            var response = phase.ApplyCardEffect(card, target);
+
+            if (response is NotAllowedOperation)
+            {
+                return response;
+            }
+            else if (response is LeaveCardOnTheTableResponse)
+            {
+                player.LoseCard(card);
+                return response;
+            }
+            else
+            {
+                DropPlayedCard(player, card);
+            }
+
+            if (!(response is DefenceAgainstDuel))
+            {
+                CheckSuzyHand(PlayerTurn, 0);
+            }
+            
+            return response;
         }
 
-        private Response GivePhaseOneCards()
+        internal Response CardPlayed(Player player, BangGameCard firstCard, BangGameCard secondCard)
         {
-            var nextState = PlayerTurn
-                .Character
-                .Accept(new DrawCardsCharacterVisitor())
-                .Invoke(this, PlayerTurn);
-
-            if (!nextState.IsError)
-                state = nextState;
-
-            return state.SideEffect;
+            if (secondCard == null) return CardPlayed(player, firstCard); 
+            
+            if (!player.Hand.Contains(firstCard))
+                throw new PlayerDoesntHaveSuchCardException(player, firstCard);
+            
+            if (!player.Hand.Contains(secondCard))
+                throw new PlayerDoesntHaveSuchCardException(player, secondCard);
+            
+            if (player.Character != new SidKetchum())
+                return new NotAllowedOperation();
+            
+            if (player.LifePoints == player.MaximumLifePoints)
+                return new NotAllowedOperation();
+            
+            DropPlayedCard(player, firstCard);
+            DropPlayedCard(player, secondCard);
+            
+            player.RegainLifePoint();
+            
+            return new Done();
         }
 
         private void FillPlayerHand(Player player)
@@ -170,54 +232,47 @@ namespace Bang.Game
             return response;
         }
 
+        /// <summary>
+        /// Puts card to the discard pile
+        /// </summary>
+        /// <param name="card"></param>
         public void Discard(BangGameCard card)
         {
             discardedCards.Put(card);
         }
 
-        public void StealCard(Player victim, BangGameCard card)
+        public Response EndTurn()
         {
-            state = ApplyEffects(victim, card);
+            var result1 = phaseTransition.ToDiscardPhase();
+            if (!result1.IsSuccess)
+                return new NotAllowedOperation(result1.Reason);
+            
+            var result2 = phaseTransition.ToDrawCardsPhase();
+            return result2.IsSuccess? (Response) new Done() : new NotAllowedOperation(result2.Reason);
         }
-
-        public void StealCard(Player victim)
-        {
-            state = ApplyEffects(victim);
-        }
-
-        public void ChooseCard(BangGameCard card, Player player)
-        {
-            state = ApplyEffects(player, card);
-        }
-
+        
         public Response StartPlayerTurn()
         {
+            if (phaseTransition.DrawCardsPhase == null)
+                throw new InvalidOperationException($"{nameof(DrawCardsPhase)} is null");
+            
             if (!IsPlayerAliveAfterDynamite())
             {
                 if (IsGameOver())
                 {
                     var (team, winners) = FindWinners();
-                    state = new GameoverState(this, team, winners);
-                    return state.SideEffect;
+                    return new GameOverResponse(team, winners);
                 }
             }
 
             if (!DoesPlayerLeaveJail())
             {
-                NextTurn();
+                phaseTransition.SkipTurn(this, GetNextPlayer());
+                // TODO maybe it would be nicer to return response directly here
                 return StartPlayerTurn();
             }
 
-            return GivePhaseOneCards();
-        }
-
-        internal Response EndTurn()
-        {
-            if (!CanPassTurn(PlayerTurn))
-                return new NotAllowedOperation($"{PlayerTurn.Name} exceeds hand-size limit");
-            
-            NextTurn();
-            return new Done();
+            return phaseTransition.DrawCardsPhase.Do();
         }
 
         private bool DoesPlayerLeaveJail()
@@ -226,7 +281,7 @@ namespace Bang.Game
             if (jailCard != null)
             {
                 var jailChecker = new JailChecker();
-                PlayerTurn.DropActiveCard(jailCard);
+                PlayerTurn.DiscardActiveCard(jailCard);
 
                 if (!jailChecker.Draw(this, PlayerTurn.Character))
                 {
@@ -246,7 +301,7 @@ namespace Bang.Game
 
                 if (dynamiteChecker.Draw(this, PlayerTurn.Character))
                 {
-                    PlayerTurn.DropActiveCard(dynamiteCard);
+                    PlayerTurn.DiscardActiveCard(dynamiteCard);
                     // TODO introduce constant or maybe even enum
                     PlayerTurn.LoseLifePoint(3);
                     
@@ -266,99 +321,69 @@ namespace Bang.Game
 
             return true;
         }
-
-        private bool CanPassTurn(Player player)
-        {
-            return player.Hand.Count <= player.LifePoints;
-        }
-
-        // TODO make it internal or private 
-        public void NextTurn()
-        {
-            state.BangAlreadyPlayed = false;
-            PlayerTurn = GetNextPlayer();
-        }
-
+        
         public Player GetNextPlayer()
         {
-            // TODO use AlivePlayers instead
-            var playersAlive = Players.Where(p => p.PlayerTablet.IsAlive).ToList();
-            int indexOfCurrentPlayer = playersAlive.IndexOf(PlayerTurn);
+            int indexOfCurrentPlayer = AlivePlayers.ToList().IndexOf(PlayerTurn);
 
-            return playersAlive[(indexOfCurrentPlayer + 1) % playersAlive.Count];
+            return AlivePlayers[(indexOfCurrentPlayer + 1) % AlivePlayers.Count];
         }
 
         public Response ProcessReplyAction(Player victim)
         {
-            state = state.ApplyCardEffect(victim);
-            return state.SideEffect;
+            var response = phaseTransition.PlayCardPhase.ApplyCardEffect(victim);
+            
+            CheckSuzyHand(victim, 0);
+            return response;
         }
 
         public Response ProcessReplyAction(Player player, BangGameCard card)
         {
-            state = ApplyEffects(player, card);
-            return state.SideEffect;
+            Debug.Assert(phaseTransition.DrawCardsPhase != null || phaseTransition.PlayCardPhase != null);
+
+            if (phaseTransition.DrawCardsPhase != null)
+            {
+                return phaseTransition.DrawCardsPhase.Reply(card);
+            }
+
+            var response = phaseTransition.PlayCardPhase.ApplyCardEffect(card, player);
+            
+            CheckSuzyHand(player, 0);
+
+            if (response is Done)
+            {
+                if (IsGameOver())
+                    return GameOverResponse();
+            }
+            
+            return response;
         }
         
         public Response ProcessReplyAction(Player player, BangGameCard firstCard, BangGameCard secondCard)
         {
             if (secondCard == null) return ProcessReplyAction(player, firstCard);
-            
-            state = ApplyEffects(player, firstCard, secondCard);
-            return state.SideEffect;
+            if (phaseTransition.PlayCardPhase == null) throw new InvalidOperationException();
+
+            return phaseTransition.PlayCardPhase.ApplyCardEffect(firstCard, secondCard, player);
         }
 
-        public Response ProcessDrawSelection(Player player, DrawOptions drawOption)
+        public Response ProcessDrawSelection(DrawOptions drawOption)
         {
-            state = state.ApplyDrawOption(player, drawOption);
-            return state.SideEffect;
+            return phaseTransition.DrawCardsPhase.ApplyDrawOption(drawOption);
         }
 
         private void CheckSuzyHand(Player player, int cardsLimit)
         {
-            if (player.Character is SuzyLafayette && player.Hand.Count == cardsLimit && !(state is WaitingBangAfterDuelState))
+            if (player.Character is SuzyLafayette && player.Hand.Count == cardsLimit)
                 player.AddCardToHand(DealCard());
         }
 
-        private HandlerState ApplyEffects(Player player)
+        private GameOverResponse GameOverResponse()
         {
-            state = state.ApplyCardEffect(player);
-
-            state = UpdateStateIfGameOver(state);
-
-            return state;
-        }
-        
-        private HandlerState ApplyEffects(Player player, BangGameCard card)
-        {
-            state = state.ApplyCardEffect(player, card);
-            
-            CheckSuzyHand(player, 0);
-
-            state = UpdateStateIfGameOver(state);
-
-            return state;
-        }
-        
-        private HandlerState ApplyEffects(Player player, BangGameCard firstCard, BangGameCard secondCard)
-        {
-            state = state.ApplyCardEffect(player, firstCard, secondCard);
-
-            CheckSuzyHand(player, 0);
-            state = UpdateStateIfGameOver(state);
-
-            return state;
-        }
-
-        private HandlerState UpdateStateIfGameOver(HandlerState state)
-        {
-            if (state.IsFinalState && IsGameOver())
-            {
-                var (team, winners) = FindWinners();
-                return new GameoverState(this, team, winners);
-            }
-
-            return state;
+            Debug.Assert(IsGameOver());
+                
+            var (team, winners) = FindWinners();
+            return new GameOverResponse(team, winners);
         }
 
         private bool IsGameOver()
@@ -405,6 +430,12 @@ namespace Bang.Game
             }
 
             return (team, players.ToList());
+        }
+
+        internal void DropPlayedCard(Player player, BangGameCard card)
+        {
+            player.LoseCard(card);
+            discardedCards.Put(card);
         }
     }
 }

@@ -42,9 +42,7 @@ namespace Bang.Tests
         [Fact]
         public void Player_with_dynamite_card_loses_3_life_points_if_dynamite_explodes()
         {
-            var deck = new Deck<BangGameCard>();
-
-            var gameplay = CreateGameplay(deck);
+            var gameplay = CreateGameplay();
             Player actor = ChoosePlayer(gameplay);
             int healthBefore = actor.LifePoints;
 
@@ -63,10 +61,7 @@ namespace Bang.Tests
         [Fact]
         public void When_dynamite_explodes_it_leaves_player_tablet()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(ExplodeCard());
-
-            var gameplay = CreateGameplay(deck);
+            var gameplay = CreateGameplay();
             Player actor = ChoosePlayer(gameplay);
 
             // act
@@ -74,6 +69,7 @@ namespace Bang.Tests
             
             gameplay.SetTurnToPlayer(actor);
 
+            gameplay.PutCardOnDeck(ExplodeCard());
             gameplay.StartPlayerTurn();
 
             // Assert
@@ -83,10 +79,7 @@ namespace Bang.Tests
         [Fact]
         public void Player_with_dynamite_card_transfers_dynamite_card_if_dynamite_doesnot_explode()
         {
-            var deck = new Deck<BangGameCard>();
-            deck.Put(NotExplodeCard());
-
-            var gameplay = CreateGameplay(deck);
+            var gameplay = CreateGameplay();
             Player actor = ChoosePlayer(gameplay);
 
             // act
@@ -94,6 +87,7 @@ namespace Bang.Tests
 
             gameplay.SetTurnToPlayer(actor);
 
+            gameplay.PutCardOnDeck(NotExplodeCard());
             gameplay.StartPlayerTurn();
 
             // Assert
@@ -103,7 +97,7 @@ namespace Bang.Tests
         [Fact]
         public void Player_with_dynamite_card_transfers_dynamite_card_to_the_next_player_if_dynamite_doesnot_explode()
         {
-            var gameplay = InitGameplay();
+            var gameplay = CreateGameplay();
             Player actor = ChoosePlayer(gameplay);
 
             actor.PlayerTablet.PutCard(DynamiteCard());
@@ -137,11 +131,12 @@ namespace Bang.Tests
 
         private BangGameCard NotExplodeCard() => new DynamiteCardType().SpadesQueen();
 
-        private Gameplay CreateGameplay(Deck<BangGameCard> deck)
+        private Gameplay CreateGameplay()
         {
             return new GameplayBuilder()
-                .WithDeck(deck)
                 .WithoutCharacter(new BartCassidy())
+                .WithoutCharacter(new PedroRamirez())
+                .WithoutCharacter(new KitCarlson())
                 .Build(); 
         }
 

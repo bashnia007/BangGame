@@ -18,7 +18,7 @@ namespace Bang.GameEvents.CardEffects.States
         
         public override HandlerState ApplyCardEffect(Player player, BangGameCard card)
         {
-            victim.DropActiveCard(card);
+            victim.DiscardActiveCard(card);
             return new DoneState(this);
         }
 
