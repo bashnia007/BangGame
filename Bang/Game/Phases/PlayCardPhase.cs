@@ -5,11 +5,11 @@ using Bang.PlayingCards;
 
 namespace Bang.Game.Phases
 {
-    class PlayCardPhase : IPhase<DiscardPhase>
+    class PlayCardPhase
     {
         public Player PlayerTurn { get; }
         private HandlerState state;
-        private Gameplay gameplay;
+        private readonly Gameplay gameplay;
         
         public PlayCardPhase(Gameplay gameplay, Player playerTurn)
         {

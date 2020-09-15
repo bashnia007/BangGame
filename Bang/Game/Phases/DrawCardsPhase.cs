@@ -1,17 +1,16 @@
 using Bang.Characters.Visitors;
-using Bang.Game.Phases;
 using Bang.GameEvents;
 using Bang.GameEvents.CardEffects.States;
 using Bang.GameEvents.Enums;
 using Bang.Players;
 using Bang.PlayingCards;
 
-namespace Bang.Game
+namespace Bang.Game.Phases
 {
-    class DrawCardsPhase : IPhase<PlayCardPhase>
+    class DrawCardsPhase
     {
         private HandlerState state;
-        private Gameplay gameplay;
+        private readonly Gameplay gameplay;
         public Player PlayerTurn { get; }
 
         public DrawCardsPhase(Gameplay gameplay, Player playerTurn)

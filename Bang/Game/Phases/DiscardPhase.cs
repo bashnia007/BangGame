@@ -3,7 +3,7 @@ using Bang.PlayingCards;
 
 namespace Bang.Game.Phases
 {
-    class DiscardPhase : IPhase<DrawCardsPhase>
+    class DiscardPhase
     {
         private readonly Gameplay gameplay;
         public Player PlayerTurn { get; }
