@@ -16,8 +16,8 @@ public class CardZoom : MonoBehaviour
 
     public void OnHoverEnter()
     {
-        zoom = Instantiate(gameObject, new Vector2(Input.mousePosition.x, Input.mousePosition.y + 130), Quaternion.identity);
-        zoom.transform.SetParent(Canvas.transform, false);
+        zoom = Instantiate(gameObject, new Vector2(200, 250), Quaternion.identity);
+        zoom.transform.SetParent(Canvas.transform, true);
         zoom.layer = LayerMask.NameToLayer("Zoom");
         zoom.GetComponent<Image>().raycastTarget = false;
 
